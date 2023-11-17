@@ -16,6 +16,7 @@ import com.appreman.app.Adapter.EmpresaAdapter;
 import com.appreman.app.Models.Empresa;
 import com.appreman.app.Database.DBHelper;
 import com.appreman.appreman.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class EmpresasFragment extends Fragment {
         recyclerViewEmpresas = view.findViewById(R.id.recyclerViewEmpresas);
         dbHelper = new DBHelper(getActivity());
 
-        Button btnNuevaEmpresa = view.findViewById(R.id.btnNuevaEmpresa);
+        FloatingActionButton btnNuevaEmpresa = view.findViewById(R.id.fabNuevaEmpresa);
         btnNuevaEmpresa.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), NuevaEmpresaActivity.class);
             startActivity(intent);
