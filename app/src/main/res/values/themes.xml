@@ -1,0 +1,188 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+    </style>
+
+    <!-- Base application theme. -->
+    <style name="Base.Theme.AppREMAN" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="Theme.AppREMAN" parent="Base.Theme.AppREMAN" />
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+
+
+        <style name="Widget.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView">
+            <item name="fontFamily">@font/opensans_regular</item>
+            <item name="android:textColor">@color/secondaryTextColor</item>
+        </style>
+
+
+        <style name="ToolbarThemeDialog" parent="Widget.MaterialComponents.Toolbar">
+            <item name="android:fontFamily">@font/opensans_regular</item>
+            <item name="android:textSize">@dimen/_18sdp</item>
+            <item name="android:textColorHint">@color/colorPrimary</item>
+        </style>
+
+        <style name="ToolbarTheme" parent="Widget.MaterialComponents.Toolbar">
+            <item name="android:fontFamily">@font/opensans_regular</item>
+            <item name="android:textSize">@dimen/_18sdp</item>
+        </style>
+
+        <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" >
+            <item name="colorAccent">@color/colorAccent</item>
+        </style>>
+
+        <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+
+        <style name="ShapeAppearanceOverlay.MyApp.TextInputLayout.Rounded" parent="">
+            <item name="cornerFamily">rounded</item>
+            <item name="cornerSize">@dimen/_10sdp</item>
+        </style>
+
+        <style name="AppTheme.RoundedCornerMaterialButton" parent="Widget.AppCompat.Button.Colored">
+            <item name="android:background">@drawable/rounded_shape</item>
+        </style>
+
+        <style name="MyShapeAppearance" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+            <item name="cornerFamily">rounded</item>
+            <item name="cornerSize">@dimen/_10sdp</item>
+            <item name="android:background">@color/colorSecundario</item>
+        </style>
+
+        <style name="MyRadioButtonStyle" parent="Widget.AppCompat.CompoundButton.RadioButton">
+            <item name="android:textColor">@drawable/option_button_color_selector</item>
+            <item name="buttonTint">@drawable/option_button_color_selector</item>
+        </style>
+
+
+
+        <style name="Dialog">
+            <item name="android:windowBackground">@color/colorBlanco</item>
+            <item name="android:windowNoTitle">true</item>
+            <item name="android:windowIsFloating">true</item>
+            <item name="android:windowIsTranslucent">true</item>
+            <item name="android:windowFullscreen">true</item>
+            <item name="android:backgroundDimEnabled">true</item>
+            <item name="android:textColorPrimary">@color/primaryColor</item>
+            <item name="android:textColor">@color/primaryColor</item>
+            <item name="android:textStyle">normal</item>
+            <item name="android:textSize">@dimen/_12sdp</item>
+            <item name="android:fontFamily">@font/opensans_regular</item>
+        </style>
+
+        <style name="Dialog2">
+            <item name="android:windowBackground">@color/colorBlanco</item>
+            <item name="android:windowNoTitle">true</item>
+            <item name="android:windowIsFloating">true</item>
+            <item name="android:windowIsTranslucent">true</item>
+            <item name="android:windowFullscreen">true</item>
+            <item name="android:backgroundDimEnabled">true</item>
+            <item name="android:textColorPrimary">@color/primaryColor</item>
+            <item name="android:textColor">@color/primaryColor</item>
+            <item name="android:textStyle">normal</item>
+            <item name="android:textSize">@dimen/_9sdp</item>
+            <item name="android:fontFamily">@font/opensans_regular</item>
+        </style>
+
+
+        <style name="ProgressDialog" parent="Theme.AppCompat.Dialog">
+            <item name="android:alertDialogStyle">@style/DialogStyle</item>
+            <item name="android:windowBackground">@color/colorBlanco</item>
+            <item name="android:windowIsFloating">false</item>
+            <item name="colorAccent">@color/colorPrimary</item>
+            <item name="android:textColorPrimary">#FFFFFF</item>
+            <item name="android:backgroundDimEnabled">true</item>
+            <item name="android:textColor">#FFFFFF</item>
+            <item name="android:textStyle">normal</item>
+            <item name="android:textSize">@dimen/_12sdp</item>
+            <item name="android:fontFamily">@font/opensans_regular</item>
+        </style>
+
+        <style name="DialogStyle" parent="@android:style/Theme.Light.NoTitleBar.Fullscreen">
+            <item name="android:bottomBright">@color/colorBlanco</item>
+            <item name="android:bottomDark">@color/colorBlanco</item>
+            <item name="android:bottomMedium">@color/colorBlanco</item>
+            <item name="android:centerBright">@color/colorBlanco</item>
+            <item name="android:centerDark">@color/colorBlanco</item>
+            <item name="android:centerMedium">@color/colorBlanco</item>
+            <item name="android:fullBright">@color/colorBlanco</item>
+            <item name="android:fullDark">@color/colorBlanco</item>
+            <item name="android:topBright">@color/colorBlanco</item>
+            <item name="android:topDark">@color/colorBlanco</item>
+            <item name="android:fontFamily">@font/opensans_regular</item>
+        </style>
+
+    <style name="AppTheme.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="hintTextAppearance">@style/AppTheme.FloatingLabel</item>
+        <item name="errorTextAppearance">@style/AppTheme.TextErrorAppearance</item>
+    </style>
+
+    <style name="AppTheme.FloatingLabel" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textColor">@color/colorTexto</item>
+        <item name="android:textSize">@dimen/_12sdp</item>
+        <item name="android:fontFamily">@font/opensans_regular</item>
+        <item name="android:textColorHint">@color/colorIconosOpcion</item>
+        <item name="colorControlActivated">@color/colorBlanco</item>
+        <!-- EditText line color when EditText on-focus-->
+        <item name="colorControlHighlight">@color/colorIconosOpcion</item>
+        <!-- EditText line color when EditText  in un-focus-->
+        <item name="colorControlNormal">@color/colorIconosOpcion</item>
+
+    </style>
+
+    <style name="AppTheme.TextErrorAppearance" parent="TextAppearance.Design.Error">
+        <item name="android:textColor">@color/colorRojo</item>
+        <item name="android:textSize">@dimen/_12sdp</item>
+        <item name="android:fontFamily">@font/opensans_regular</item>
+    </style>
+
+    <!-- TODO: Campo de texto-->
+    <style name="EditText" parent="AppTheme">
+        <!-- cursor y línea normal-->
+        <item name="colorControlNormal">@color/colorIconosOpcion</item>
+        <!-- cursor y línea con foco-->
+        <item name="colorControlActivated">@color/colorIconosOpcion</item>
+        <item name="android:textColorHint">@color/colorTexto</item>
+        <item name="android:fontFamily">@font/opensans_regular</item>
+        <item name="android:textSize">@dimen/_12sdp</item>
+        <item name="android:background">@color/transparent</item>
+
+    </style>
+
+
+    <style name="SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_background</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="MyCheckBox" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/colorTexto</item>
+        <item name="colorControlActivated">@color/colorRojo</item>
+    </style>
+
+    <style name="MyCheckBoxLin" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/colorTexto</item>
+        <item name="colorControlActivated">@color/colorIconosOpcion</item>
+    </style>
+
+</resources>
