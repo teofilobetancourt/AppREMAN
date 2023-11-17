@@ -13,6 +13,7 @@ import com.appreman.app.Models.Empresa;
 import com.appreman.app.Models.Grupo;
 import com.appreman.app.Models.Opcion;
 import com.appreman.app.Models.Pregunta;
+import com.appreman.app.Models.Seleccion;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import java.io.File;
@@ -457,5 +458,41 @@ public class DBHelper extends SQLiteAssetHelper {
         db.close();
         return empresas;
     }
+
+    @SuppressLint("Range")
+    public List<Seleccion> getSeleccionesPregunta(String numeroPregunta) {
+        List<Seleccion> selecciones = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        try {
+            String selection = "numero_pregunta=?";
+            String[] selectionArgs = { numeroPregunta };
+
+            cursor = db.query("seleccion", new String[]{"id", "numero_pregunta", "seleccion_usuario"},
+                    selection, selectionArgs, null, null, null);
+
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    Seleccion seleccion = new Seleccion();
+                    seleccion.setId(cursor.getString(cursor.getColumnIndex("id")));
+                    seleccion.setNumeroPregunta(String.valueOf(cursor.getInt(cursor.getColumnIndex("numero_pregunta"))));
+                    seleccion.setSeleccionUsuario(cursor.getString(cursor.getColumnIndex("seleccion_usuario")));
+                    selecciones.add(seleccion);
+                } while (cursor.moveToNext());
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, e.toString());
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+
+        return selecciones;
+    }
+
 }
 

@@ -1,57 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:animateLayoutChanges="true">
-
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:id="@+id/layoutView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_5sdp"
-        android:layout_marginEnd="@dimen/_5sdp"
-        android:orientation="horizontal"
-        android:padding="@dimen/_2sdp">
+        android:padding="8dp">
 
-
+        <!-- TextView para el nombre -->
         <TextView
             android:id="@+id/textNombre"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_2sdp"
-            android:layout_marginEnd="@dimen/_45sdp"
-            android:layout_marginBottom="@dimen/_2sdp"
-            android:fontFamily="@font/opensans_regular"
-            android:text="Opciones"
-            android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/_12sdp" />
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            android:text="Nombre de la opción" />
 
-
+        <!-- RadioButton -->
         <RadioButton
             android:id="@+id/radioButton"
-            android:layout_width="@dimen/_30sdp"
-            android:layout_height="@dimen/_30sdp"
-            android:layout_alignParentTop="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textNombre"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="@dimen/_3sdp"
-            android:layout_marginEnd="@dimen/_8sdp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
             android:buttonTint="@color/colorPrimaryDark" />
 
+        <!-- Vista de selección (incluida aquí) -->
+        <include
+            android:id="@+id/seleccionView"
+            layout="@layout/list_seleccion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/radioButton"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp" />
 
     </RelativeLayout>
 
-   <!-- <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@id/layoutView"
-        android:layout_marginTop="@dimen/_5sdp"
-        android:background="@color/colorPantoneGray" />-->
-
+    <!-- ...otros elementos... -->
 
 </RelativeLayout>
