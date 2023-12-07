@@ -15,14 +15,16 @@
         android:orientation="vertical"
         tools:ignore="UselessParent">
 
-        <TextView
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="128dp"
             android:layout_height="wrap_content"
-            android:text="AppREMAN"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:padding="16dp"
-            android:gravity="left" />
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:adjustViewBounds="true"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/eman2" />
 
 
 
