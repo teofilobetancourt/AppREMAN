@@ -24,19 +24,22 @@
             android:adjustViewBounds="true"
             android:padding="5dp"
             android:scaleType="centerInside"
-            android:src="@drawable/eman2" />
+            android:src="@drawable/eman2"
+            android:contentDescription="TODO" />
 
 
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-            app:boxCornerRadiusTopStart="4dp"
-            app:boxCornerRadiusTopEnd="4dp"
-            app:boxCornerRadiusBottomStart="4dp"
-            app:boxCornerRadiusBottomEnd="4dp">
+            android:layout_marginBottom="16dp"
+            style="@style/AppTheme.TextInputLayout"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:hintEnabled="true"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtNombre"
@@ -44,114 +47,128 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
                 android:hint="@string/hint_nombre"
-                android:textSize="15sp" />
+                android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
-
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-            app:boxCornerRadiusTopStart="4dp"
-            app:boxCornerRadiusTopEnd="4dp"
-            app:boxCornerRadiusBottomStart="4dp"
-            app:boxCornerRadiusBottomEnd="4dp">
+            android:layout_marginBottom="16dp"
+            style="@style/AppTheme.TextInputLayout"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:hintEnabled="true"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtPais"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
+                android:inputType="textPersonName"
                 android:hint="@string/hint_pais"
-                android:textSize="15sp" />
+                android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
+
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-            app:boxCornerRadiusTopStart="4dp"
-            app:boxCornerRadiusTopEnd="4dp"
-            app:boxCornerRadiusBottomStart="4dp"
-            app:boxCornerRadiusBottomEnd="4dp">
+            android:layout_marginBottom="16dp"
+            style="@style/AppTheme.TextInputLayout"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:hintEnabled="true"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtRegion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
+                android:inputType="textPersonName"
                 android:hint="@string/hint_region"
-                android:textSize="15sp" />
+                android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-            app:boxCornerRadiusTopStart="4dp"
-            app:boxCornerRadiusTopEnd="4dp"
-            app:boxCornerRadiusBottomStart="4dp"
-            app:boxCornerRadiusBottomEnd="4dp">
+            android:layout_marginBottom="16dp"
+            style="@style/AppTheme.TextInputLayout"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:hintEnabled="true"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtSitio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
+                android:inputType="textPersonName"
                 android:hint="@string/hint_sitio"
-                android:textSize="15sp" />
+                android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
+
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-            app:boxCornerRadiusTopStart="4dp"
-            app:boxCornerRadiusTopEnd="4dp"
-            app:boxCornerRadiusBottomStart="4dp"
-            app:boxCornerRadiusBottomEnd="4dp">
+            android:layout_marginBottom="16dp"
+            style="@style/AppTheme.TextInputLayout"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:hintEnabled="true"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtSector"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
+                android:inputType="textPersonName"
                 android:hint="@string/hint_sector_industrial"
-                android:textSize="15sp" />
+                android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
+
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-            app:boxCornerRadiusTopStart="4dp"
-            app:boxCornerRadiusTopEnd="4dp"
-            app:boxCornerRadiusBottomStart="4dp"
-            app:boxCornerRadiusBottomEnd="4dp">
+            android:layout_marginBottom="16dp"
+            style="@style/AppTheme.TextInputLayout"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:hintEnabled="true"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtPlanta"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
+                android:inputType="textPersonName"
                 android:hint="@string/hint_tipo_planta"
-                android:textSize="15sp" />
+                android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-            app:boxCornerRadiusTopStart="4dp"
-            app:boxCornerRadiusTopEnd="4dp"
-            app:boxCornerRadiusBottomStart="4dp"
-            app:boxCornerRadiusBottomEnd="4dp">
+            android:layout_marginBottom="16dp"
+            style="@style/AppTheme.TextInputLayout"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:hintEnabled="true"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtRepresentanteEmpresa"
@@ -159,104 +176,119 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
                 android:hint="@string/hint_representante_empresa"
-                android:textSize="15sp" />
+                android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
+
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-            app:boxCornerRadiusTopStart="4dp"
-            app:boxCornerRadiusTopEnd="4dp"
-            app:boxCornerRadiusBottomStart="4dp"
-            app:boxCornerRadiusBottomEnd="4dp">
+            android:layout_marginBottom="16dp"
+            style="@style/AppTheme.TextInputLayout"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:hintEnabled="true"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtTelefono"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"
+                android:inputType="textPersonName"
                 android:hint="@string/hint_telefono"
-                android:textSize="15sp" />
+                android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
+
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-            app:boxCornerRadiusTopStart="4dp"
-            app:boxCornerRadiusTopEnd="4dp"
-            app:boxCornerRadiusBottomStart="4dp"
-            app:boxCornerRadiusBottomEnd="4dp">
+            android:layout_marginBottom="16dp"
+            style="@style/AppTheme.TextInputLayout"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:hintEnabled="true"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
+                android:inputType="textPersonName"
                 android:hint="@string/hint_email"
-                android:textSize="15sp" />
+                android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
+
 
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-            app:boxCornerRadiusTopStart="4dp"
-            app:boxCornerRadiusTopEnd="4dp"
-            app:boxCornerRadiusBottomStart="4dp"
-            app:boxCornerRadiusBottomEnd="4dp">
+            android:layout_marginBottom="16dp"
+            style="@style/AppTheme.TextInputLayout"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:hintEnabled="true"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtClienteActual"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
+                android:inputType="textPersonName"
                 android:hint="@string/hint_cliente_actual"
-                android:textSize="15sp" />
+                android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-            app:boxCornerRadiusTopStart="4dp"
-            app:boxCornerRadiusTopEnd="4dp"
-            app:boxCornerRadiusBottomStart="4dp"
-            app:boxCornerRadiusBottomEnd="4dp">
+            android:layout_marginBottom="16dp"
+            style="@style/AppTheme.TextInputLayout"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:hintEnabled="true"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtNumeroPlantas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"
+                android:inputType="textPersonName"
                 android:hint="@string/hint_numero_plantas"
-                android:textSize="15sp" />
+                android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
+
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-            app:boxCornerRadiusTopStart="4dp"
-            app:boxCornerRadiusTopEnd="4dp"
-            app:boxCornerRadiusBottomStart="4dp"
-            app:boxCornerRadiusBottomEnd="4dp">
+            android:layout_marginBottom="16dp"
+            style="@style/AppTheme.TextInputLayout"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:hintEnabled="true"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtPlantasImplementar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"
+                android:inputType="textPersonName"
                 android:hint="@string/hint_plantas_implementar"
-                android:textSize="15sp" />
+                android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
+
 
         <Button
             android:id="@+id/btnGuarda"
