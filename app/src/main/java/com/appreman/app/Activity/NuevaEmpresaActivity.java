@@ -1,26 +1,32 @@
 package com.appreman.app.Activity;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.appcompat.widget.Toolbar;
 import com.appreman.app.Database.DBHelper;
 import com.appreman.appreman.R;
+
+import java.util.Objects;
 
 public class NuevaEmpresaActivity extends AppCompatActivity {
 
     EditText txtNombre, txtPais, txtRegion, txtSitio, txtSector, txtPlanta, txtRepresentante, txtTelefono, txtEmail, txtClienteAct, txtNumeroDePlant, txtNumeroDePlantIm;
     Button btnGuarda;
 
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nueva_empresa);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         txtNombre = findViewById(R.id.txtNombre);
         txtPais = findViewById(R.id.txtPais);
@@ -80,5 +86,14 @@ public class NuevaEmpresaActivity extends AppCompatActivity {
         txtClienteAct.setText("");
         txtNumeroDePlant.setText("");
         txtNumeroDePlantIm.setText("");
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
