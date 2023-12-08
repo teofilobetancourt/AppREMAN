@@ -17,25 +17,28 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             android:elevation="4dp"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
-            <ImageButton
-                android:id="@+id/btnBack"
+            <ImageView
+                android:id="@+id/imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:background="?android:attr/selectableItemBackground"
-                android:adjustViewBounds="true"
-                android:scaleType="centerInside"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
                 android:src="@drawable/eman2"
-                android:minWidth="36dp"
-                android:minHeight="36dp" />
+                android:contentDescription="logo"
+                android:scaleType="fitCenter" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </RelativeLayout>
 
         </androidx.appcompat.widget.Toolbar>
 

@@ -1,9 +1,11 @@
 package com.appreman.app.Activity;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -26,7 +28,9 @@ public class NuevaEmpresaActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) ImageView imageView = findViewById(R.id.imageView);
+        imageView.setOnClickListener(v -> onBackPressed());
 
         txtNombre = findViewById(R.id.txtNombre);
         txtPais = findViewById(R.id.txtPais);
