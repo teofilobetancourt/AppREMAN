@@ -17,27 +17,27 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            android:elevation="2dp"
+            android:elevation="4dp"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:contentInsetStart="0dp"
-            app:contentInsetStartWithNavigation="0dp" />
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:adjustViewBounds="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/eman2"
+                android:minWidth="36dp"
+                android:minHeight="36dp" />
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="128dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"
-            android:adjustViewBounds="true"
-            android:padding="5dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/eman2"
-            android:contentDescription="TODO" />
+        </androidx.appcompat.widget.Toolbar>
 
 
         <com.google.android.material.textfield.TextInputLayout
