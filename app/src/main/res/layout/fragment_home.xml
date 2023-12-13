@@ -4,10 +4,9 @@
     android:layout_height="match_parent"
     tools:context="com.appreman.app.Fragments.HomeFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <com.appreman.app.ViewModel.PieChartView
+        android:id="@+id/pie_chart_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Home" />
+        android:layout_height="match_parent" />
 
 </FrameLayout>
