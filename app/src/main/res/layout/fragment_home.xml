@@ -2,11 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.appreman.app.Fragments.HomeFragment">
+    android:padding="16dp">
 
     <com.appreman.app.ViewModel.PieChartView
         android:id="@+id/pie_chart_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_margin="20dp" />
 
 </FrameLayout>

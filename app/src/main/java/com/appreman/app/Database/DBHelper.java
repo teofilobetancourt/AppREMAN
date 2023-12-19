@@ -326,7 +326,7 @@ public class DBHelper extends SQLiteAssetHelper {
 
     /* -TODO .- Opciones ------------------------------------------------------------------------------------------- */
 
-    public List<Opcion> getAllOpcines(){
+    public List<Opcion> getAllOpciones(){
 
         List<Opcion> v_opciones = new ArrayList<>();
 
@@ -346,20 +346,14 @@ public class DBHelper extends SQLiteAssetHelper {
                     v_opcion.setPregunta(v_cursor.getString(2));
 
                     v_opciones.add(v_opcion);
-
-
                 }
                 v_cursor.close();
-
-
             }
 
-
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
             Log.e(TAG, e.toString());
             e.printStackTrace();
-        }finally {
+        } finally {
             v_db.close();
         }
 
@@ -387,20 +381,14 @@ public class DBHelper extends SQLiteAssetHelper {
                     v_opcion.setPregunta(v_cursor.getString(2));
 
                     v_opciones.add(v_opcion);
-
-
                 }
                 v_cursor.close();
-
-
             }
 
-
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
             Log.e(TAG, e.toString());
             e.printStackTrace();
-        }finally {
+        } finally {
             v_db.close();
         }
 

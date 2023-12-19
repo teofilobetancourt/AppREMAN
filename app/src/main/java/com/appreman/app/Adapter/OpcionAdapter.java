@@ -3,26 +3,28 @@ package com.appreman.app.Adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.appreman.app.Models.Opcion;
-import com.appreman.app.Models.Seleccion;
 import com.appreman.appreman.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosViewHolder> {
 
     private List<Opcion> items;
-    private List<Seleccion> selecciones;
+    private HashMap<String, Integer> selectedCountMap;
 
     public OpcionAdapter(List<Opcion> items) {
-        this.items = items;
-        this.selecciones = selecciones != null ? selecciones : new ArrayList<>();
+        this.items = items != null ? items : new ArrayList<>();
+        this.selectedCountMap = new HashMap<>();
     }
 
     @NonNull
@@ -31,31 +33,36 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_opcion, viewGroup, false);
         return new MotivosViewHolder(v);
     }
+
     @Override
-    public void onBindViewHolder(@NonNull MotivosViewHolder holder, int position) {
-        Opcion opcion = items.get(position);
+    public void onBindViewHolder(@NonNull final MotivosViewHolder holder, int position) {
+        final Opcion opcion = items.get(position);
         holder.txtOpcion.setText(opcion.getNumero().concat(".- ").concat(opcion.getNombre()));
 
-        // Obtener las selecciones asociadas a esta opción
-        List<Seleccion> seleccionesDeOpcion = getSeleccionesOpcion(opcion.getPregunta());
+        holder.txtOpcion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.checkBox.setChecked(!holder.checkBox.isChecked());
+            }
+        });
 
-        // Configurar las selecciones debajo de la opción
-        StringBuilder seleccionText = new StringBuilder("Selecciones:\n");
-        for (Seleccion seleccion : seleccionesDeOpcion) {
-            seleccionText.append(seleccion.getSeleccionUsuario()).append("\n");
-        }
-        holder.txtSeleccion.setText(seleccionText.toString());
-    }
+        holder.checkBox.setOnCheckedChangeListener(null);
+        holder.checkBox.setChecked(opcion.isSeleccionada());
 
+        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                int count = selectedCountMap.containsKey(opcion.getPregunta()) ? selectedCountMap.get(opcion.getPregunta()) : 0;
 
-    // Método para obtener selecciones según el número de pregunta (o número de opción, si aplica)
-    private List<Seleccion> getSeleccionesOpcion(String numeroPregunta) {
-        List<Seleccion> seleccionesByPregunta = new ArrayList<>();
-
-        // Llamada al método getSeleccionesPregunta para obtener las selecciones basadas en el número de pregunta
-        seleccionesByPregunta = getSeleccionesByOpcion(numeroPregunta);
-
-        return seleccionesByPregunta;
+                if (isChecked && count >= 2) {
+                    holder.checkBox.setChecked(false);
+                    // Mostrar mensaje informando que ya se han seleccionado dos opciones para esta pregunta
+                } else {
+                    opcion.setSeleccionada(isChecked);
+                    selectedCountMap.put(opcion.getPregunta(), isChecked ? count + 1 : count - 1);
+                }
+            }
+        });
     }
 
     @Override
@@ -63,24 +70,14 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
         return items == null ? 0 : items.size();
     }
 
-    private List<Seleccion> getSeleccionesByOpcion(String opcionId) {
-        List<Seleccion> seleccionesByOpcion = new ArrayList<>();
-        for (Seleccion seleccion : selecciones) {
-            if (seleccion.getId().equals(opcionId)) {
-                seleccionesByOpcion.add(seleccion);
-            }
-        }
-        return seleccionesByOpcion;
-    }
-
     protected static class MotivosViewHolder extends RecyclerView.ViewHolder {
         private final TextView txtOpcion;
-        private final TextView txtSeleccion;
+        private final CheckBox checkBox;
 
         public MotivosViewHolder(@NonNull View itemView) {
             super(itemView);
             txtOpcion = itemView.findViewById(R.id.textNombre);
-            txtSeleccion = itemView.findViewById(R.id.txtNombreSeleccion);
+            checkBox = itemView.findViewById(R.id.checkBox); // Reemplaza R.id.checkBox con tu ID real de CheckBox
         }
     }
 }

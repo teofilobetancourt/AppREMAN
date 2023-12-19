@@ -28,6 +28,7 @@ public class PieChartView extends View {
     private RectF rectF;
     private String[] descriptions = {"Grupos", "Elementos", "Preguntas", "Opciones", "Empresas"};
     private String currentDescription = "";
+    private List<List<String>> detailedData; // Lista de listas para almacenar los detalles de cada sección
 
     public PieChartView(Context context) {
         super(context);
@@ -50,7 +51,7 @@ public class PieChartView extends View {
         List<Grupo> grupos = dbHelper.getAllGrupos();
         List<Elemento> elementos = dbHelper.getAllElementos();
         List<Pregunta> preguntas = dbHelper.getAllPreguntas();
-        List<Opcion> opciones = dbHelper.getAllOpcines();
+        List<Opcion> opciones = dbHelper.getAllOpciones();
         List<Empresa> empresas = dbHelper.getAllEmpresas(); // Obtener las empresas
 
         // Calcular los valores para el gráfico
@@ -60,9 +61,25 @@ public class PieChartView extends View {
         data.add((float) opciones.size());
         data.add((float) empresas.size()); // Agregar el número de empresas
 
+        // Obtener detalles para cada sección y almacenarlos en la lista de detalles
+        detailedData = new ArrayList<>();
+        detailedData.add(getDetailedInfo(dbHelper.getAllGrupos())); // Detalles de Grupos
+        detailedData.add(getDetailedInfo(dbHelper.getAllElementos())); // Detalles de Elementos
+        detailedData.add(getDetailedInfo(dbHelper.getAllPreguntas())); // Detalles de Preguntas
+        detailedData.add(getDetailedInfo(dbHelper.getAllOpciones())); // Detalles de Opciones
+        detailedData.add(getDetailedInfo(dbHelper.getAllEmpresas())); // Detalles de Empresas
+
         paint = new Paint();
         paint.setAntiAlias(true);
         rectF = new RectF();
+    }
+
+    private List<String> getDetailedInfo(List<?> items) {
+        List<String> details = new ArrayList<>();
+        for (int i = 0; i < Math.min(items.size(), 5); i++) {
+            details.add(items.get(i).toString()); // Agregar detalles de los primeros 5 elementos (o menos)
+        }
+        return details;
     }
 
     @Override
@@ -85,10 +102,47 @@ public class PieChartView extends View {
             startAngle += sweepAngle;
         }
 
+        // Dibujar leyenda
+        float legendTextSize = 40;
+        float legendX = centerX + radius * 1.5f; // Posición X para la leyenda
+        float legendY = centerY - radius; // Posición Y inicial para la leyenda
+        float lineHeight = legendTextSize * 1.5f;
+
+        paint.setColor(Color.BLACK);
+        paint.setTextSize(legendTextSize);
+
+        for (int i = 0; i < descriptions.length; i++) {
+            // Dibujar el cuadro de color para cada sección junto con el texto
+            paint.setColor(colors[i % colors.length]);
+            canvas.drawRect(legendX, legendY, legendX + lineHeight, legendY + lineHeight, paint);
+            paint.setColor(Color.BLACK);
+            canvas.drawText(descriptions[i], legendX + lineHeight * 1.5f, legendY + legendTextSize, paint);
+            legendY += lineHeight * 1.5f; // Incrementar la posición Y para la próxima línea
+        }
+
+        // Resto del código para mostrar la información detallada según la selección, si es necesario
         if (!currentDescription.isEmpty()) {
             paint.setColor(Color.BLACK);
             paint.setTextSize(40);
             canvas.drawText(currentDescription, centerX - 150, centerY - radius - 40, paint);
+
+            int selectedIndex = -1;
+            for (int i = 0; i < descriptions.length; i++) {
+                if (descriptions[i].equals(currentDescription)) {
+                    selectedIndex = i;
+                    break;
+                }
+            }
+            if (selectedIndex != -1) {
+                paint.setColor(Color.DKGRAY);
+                paint.setTextSize(25);
+
+                float detailY = centerY - radius + 100; // Posición inicial Y para los detalles
+                for (String detail : detailedData.get(selectedIndex)) {
+                    canvas.drawText(detail, centerX - 150, detailY, paint);
+                    detailY += 30; // Incrementar la posición Y para la próxima línea
+                }
+            }
         }
     }
 

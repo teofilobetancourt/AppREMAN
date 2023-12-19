@@ -10,6 +10,15 @@
         android:layout_height="wrap_content"
         android:padding="8dp">
 
+        <!-- CheckBox -->
+        <CheckBox
+            android:id="@+id/checkBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:buttonTint="@color/colorPrimaryDark" />
+
         <!-- TextView para el nombre -->
         <TextView
             android:id="@+id/textNombre"
@@ -18,35 +27,10 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@android:color/black"
-            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@id/checkBox"
             android:layout_marginStart="8dp"
+            android:layout_centerVertical="true"
             android:text="Nombre de la opción" />
-
-        <!-- RadioButton -->
-        <RadioButton
-            android:id="@+id/radioButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textNombre"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="8dp"
-            android:buttonTint="@color/colorPrimaryDark" />
-
-        <!-- Vista de selección (incluida aquí) -->
-        <include
-            android:id="@+id/seleccionView"
-            layout="@layout/list_seleccion"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/radioButton"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp" />
-
     </RelativeLayout>
-
-    <!-- ...otros elementos... -->
 
 </RelativeLayout>
