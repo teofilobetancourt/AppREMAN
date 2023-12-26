@@ -13,7 +13,6 @@ import com.appreman.app.Models.Empresa;
 import com.appreman.app.Models.Grupo;
 import com.appreman.app.Models.Opcion;
 import com.appreman.app.Models.Pregunta;
-import com.appreman.app.Models.Seleccion;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import java.io.File;
@@ -395,7 +394,7 @@ public class DBHelper extends SQLiteAssetHelper {
         return v_opciones;
     }
 
-    public void insertEmpresa(String nombre, String pais, String region, String sitio, String sector, String planta, String representante, String telefono, String email, String clienteAct, String numeroDePlant, String numeroDePlantIm) {
+    public void insertEmpresa(String nombre, String pais, String region, String sitio, String sector, String planta, String representante, String telefono, String email, String clienteAct, String numeroDePlant, String numeroDePlantIm, String fecha, String hora) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("nombre", nombre);
@@ -410,9 +409,15 @@ public class DBHelper extends SQLiteAssetHelper {
         contentValues.put("cliente_actual", clienteAct);
         contentValues.put("numero_plantas", numeroDePlant);
         contentValues.put("plantas_implementar", numeroDePlantIm);
+        contentValues.put("fecha_registro", fecha);
+        contentValues.put("hora_registro", hora);
+
+        // Insertar la empresa con los valores pasados como parámetros
         db.insert("empresa", null, contentValues);
 
+        db.close();
     }
+
 
     @SuppressLint("Range")
     public List<Empresa> getAllEmpresas() {
@@ -438,6 +443,10 @@ public class DBHelper extends SQLiteAssetHelper {
                 empresa.setNumeroDePlant(cursor.getString(cursor.getColumnIndex("numero_plantas")));
                 empresa.setNumeroDePlantIm(cursor.getString(cursor.getColumnIndex("plantas_implementar")));
 
+                // Agregar recuperación de fecha y hora
+                empresa.setFechaRegistro(cursor.getString(cursor.getColumnIndex("fecha_registro")));
+                empresa.setHoraRegistro(cursor.getString(cursor.getColumnIndex("hora_registro")));
+
                 empresas.add(empresa);
             } while (cursor.moveToNext());
         }
@@ -447,40 +456,6 @@ public class DBHelper extends SQLiteAssetHelper {
         return empresas;
     }
 
-    @SuppressLint("Range")
-    public List<Seleccion> getSeleccionesPregunta(String numeroPregunta) {
-        List<Seleccion> selecciones = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = null;
-
-        try {
-            String selection = "numero_pregunta=?";
-            String[] selectionArgs = { numeroPregunta };
-
-            cursor = db.query("seleccion", new String[]{"id", "numero_pregunta", "seleccion_usuario"},
-                    selection, selectionArgs, null, null, null);
-
-            if (cursor != null && cursor.moveToFirst()) {
-                do {
-                    Seleccion seleccion = new Seleccion();
-                    seleccion.setId(cursor.getString(cursor.getColumnIndex("id")));
-                    seleccion.setNumeroPregunta(String.valueOf(cursor.getInt(cursor.getColumnIndex("numero_pregunta"))));
-                    seleccion.setSeleccionUsuario(cursor.getString(cursor.getColumnIndex("seleccion_usuario")));
-                    selecciones.add(seleccion);
-                } while (cursor.moveToNext());
-            }
-        } catch (SQLException e) {
-            Log.e(TAG, e.toString());
-            e.printStackTrace();
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            db.close();
-        }
-
-        return selecciones;
-    }
 
 }
 

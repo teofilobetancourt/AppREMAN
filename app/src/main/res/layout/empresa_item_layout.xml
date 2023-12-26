@@ -34,16 +34,15 @@
             android:id="@+id/textViewPais"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/colorPrimaryDark"
+            android:textSize="16sp"
+            android:textColor="@color/colorPrimary"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
-            android:paddingTop="12dp"
+            android:paddingTop="6dp"
             android:paddingBottom="6dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:text="Pais" />
 
@@ -210,6 +209,39 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:text="Plantas a Implementar" />
+
+        <TextView
+            android:id="@+id/textViewHoraRegistro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/colorPrimary"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:text="Hora de Registro" />
+
+        <TextView
+            android:id="@+id/textViewFechaRegistro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/colorPrimary"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:text="Fecha de Registro" />
+
 
 
     </LinearLayout>

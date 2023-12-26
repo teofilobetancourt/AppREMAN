@@ -40,7 +40,7 @@ public class EmpresaAdapter extends RecyclerView.Adapter<EmpresaAdapter.EmpresaV
 
     public static class EmpresaViewHolder extends RecyclerView.ViewHolder {
         TextView textViewNombre, textViewPais, textViewRegion, textViewSitio, textViewSector, textViewPlanta, textViewRepresentante, textViewTelefono, textViewEmail, textViewClienteAct, textViewNumeroDePlant, textViewNumeroDePlantIm;
-        // Declare other TextViews for the Empresa fields
+        TextView textViewFechaRegistro, textViewHoraRegistro; // Nuevos TextViews para la fecha y la hora
 
         public EmpresaViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -57,8 +57,9 @@ public class EmpresaAdapter extends RecyclerView.Adapter<EmpresaAdapter.EmpresaV
             textViewNumeroDePlant = itemView.findViewById(R.id.textViewNumeroDePlantas);
             textViewNumeroDePlantIm = itemView.findViewById(R.id.textViewPlantasImplementar);
 
-
-
+            // Inicializar los TextViews para fecha y hora
+            textViewFechaRegistro = itemView.findViewById(R.id.textViewFechaRegistro);
+            textViewHoraRegistro = itemView.findViewById(R.id.textViewHoraRegistro);
         }
 
         public void bindData(Empresa empresa) {
@@ -74,6 +75,10 @@ public class EmpresaAdapter extends RecyclerView.Adapter<EmpresaAdapter.EmpresaV
             textViewClienteAct.setText(empresa.getClienteAct());
             textViewNumeroDePlant.setText(empresa.getNumeroDePlant());
             textViewNumeroDePlantIm.setText(empresa.getNumeroDePlantIm());
+
+            // Establecer los valores de fecha y hora
+            textViewFechaRegistro.setText("Fecha: " + empresa.getFechaRegistro());
+            textViewHoraRegistro.setText("Hora: " + empresa.getHoraRegistro());
         }
     }
 }
