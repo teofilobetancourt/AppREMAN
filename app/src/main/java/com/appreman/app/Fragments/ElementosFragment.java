@@ -1,17 +1,13 @@
 package com.appreman.app.Fragments;
 
-import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.appreman.app.Adapter.ElementoAdapter;
 import com.appreman.app.Database.DBHelper;
@@ -27,28 +23,13 @@ import java.util.List;
  */
 public class ElementosFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
-
-
-    // TODO: Rename and change types of parameters
     private int mParam1;
-
 
     public ElementosFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-
-     * @return A new instance of fragment ElementosFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static ElementosFragment newInstance(int param1) {
         ElementosFragment fragment = new ElementosFragment();
         Bundle args = new Bundle();
@@ -62,38 +43,24 @@ public class ElementosFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getInt(ARG_PARAM1);
-
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View fragment = inflater.inflate(R.layout.fragment_elementos, container, false);
 
-        Context context = getContext();
-
-        RecyclerView recycler  = fragment.findViewById(R.id.recyclerview);
-
+        RecyclerView recycler = fragment.findViewById(R.id.recyclerview);
 
         DBHelper v_db_helper = new DBHelper(getActivity().getApplicationContext());
-
         List<Elemento> mElementos = v_db_helper.getElementosGrupo(mParam1);
 
-        recycler.setHasFixedSize(true);
         RecyclerView.LayoutManager lManager = new LinearLayoutManager(getContext());
         recycler.setLayoutManager(lManager);
 
-        ElementoAdapter adapter = new ElementoAdapter(mElementos);
-
+        ElementoAdapter adapter = new ElementoAdapter(mElementos, getContext()); // O con el contexto adecuado
         recycler.setAdapter(adapter);
-
-
-        /*for(Elemento e:mElementos){
-            Log.e("REMAN",e.getNombre() );
-
-        }*/
 
         return fragment;
     }
