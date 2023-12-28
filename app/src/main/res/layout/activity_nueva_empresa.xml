@@ -209,7 +209,7 @@
                 android:id="@+id/txtTelefono"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
+                android:inputType="number"
                 android:hint="@string/hint_telefono"
                 android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -231,7 +231,7 @@
                 android:id="@+id/txtEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
+                android:inputType="textEmailAddress"
                 android:hint="@string/hint_email"
                 android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -297,7 +297,7 @@
                 android:id="@+id/txtPlantasImplementar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
+                android:inputType="number"
                 android:hint="@string/hint_plantas_implementar"
                 android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
