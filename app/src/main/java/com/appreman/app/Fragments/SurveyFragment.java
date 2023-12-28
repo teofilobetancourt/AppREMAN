@@ -2,80 +2,55 @@ package com.appreman.app.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.appreman.app.Activity.EncuestasActivity;
-import com.appreman.appreman.R;
-import com.appreman.appreman.databinding.ActivityEncuestasBinding;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SurveyFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import com.appreman.app.Activity.EncuestasActivity;
+import com.appreman.app.Adapter.EmpresaAdapter;
+import com.appreman.app.Database.DBHelper;
+import com.appreman.app.Models.Empresa;
+import com.appreman.appreman.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.List;
+
 public class SurveyFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private RecyclerView recyclerViewEmpresas;
+    private DBHelper dbHelper;
 
     public SurveyFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SurveyFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SurveyFragment newInstance(String param1, String param2) {
-        SurveyFragment fragment = new SurveyFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_survey, container, false);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+        recyclerViewEmpresas = rootView.findViewById(R.id.recyclerViewEmpresas);
+        dbHelper = new DBHelper(requireActivity());
 
-        View frahment = inflater.inflate(R.layout.fragment_survey, container, false);
-
-        FloatingActionButton fab = frahment.findViewById(R.id.fab);
+        FloatingActionButton fab = rootView.findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
-            Intent intent = new Intent(frahment.getContext(), EncuestasActivity.class);
+            Intent intent = new Intent(requireContext(), EncuestasActivity.class);
             startActivity(intent);
         });
 
+        setupRecyclerView();
 
-        // Inflate the layout for this fragment
-        return frahment;
+        return rootView;
+    }
+
+    private void setupRecyclerView() {
+        List<Empresa> empresas = dbHelper.getAllEmpresas(); // Obtener la lista de empresas de la base de datos
+
+        EmpresaAdapter adapter = new EmpresaAdapter(empresas);
+        recyclerViewEmpresas.setLayoutManager(new LinearLayoutManager(requireActivity()));
+        recyclerViewEmpresas.setAdapter(adapter);
     }
 }

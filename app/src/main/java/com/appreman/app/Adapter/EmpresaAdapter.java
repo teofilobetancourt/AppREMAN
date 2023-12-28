@@ -38,9 +38,10 @@ public class EmpresaAdapter extends RecyclerView.Adapter<EmpresaAdapter.EmpresaV
         return empresas.size();
     }
 
-    public static class EmpresaViewHolder extends RecyclerView.ViewHolder {
+    public static class EmpresaViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView textViewNombre, textViewPais, textViewRegion, textViewSitio, textViewSector, textViewPlanta, textViewRepresentante, textViewTelefono, textViewEmail, textViewClienteAct, textViewNumeroDePlant, textViewNumeroDePlantIm;
-        TextView textViewFechaRegistro, textViewHoraRegistro; // Nuevos TextViews para la fecha y la hora
+        TextView textViewFechaRegistro, textViewHoraRegistro;
+        View buttonEncuesta;
 
         public EmpresaViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -56,13 +57,15 @@ public class EmpresaAdapter extends RecyclerView.Adapter<EmpresaAdapter.EmpresaV
             textViewClienteAct = itemView.findViewById(R.id.textViewClienteActual);
             textViewNumeroDePlant = itemView.findViewById(R.id.textViewNumeroDePlantas);
             textViewNumeroDePlantIm = itemView.findViewById(R.id.textViewPlantasImplementar);
-
-            // Inicializar los TextViews para fecha y hora
             textViewFechaRegistro = itemView.findViewById(R.id.textViewFechaRegistro);
             textViewHoraRegistro = itemView.findViewById(R.id.textViewHoraRegistro);
+
+            buttonEncuesta = itemView.findViewById(R.id.buttonEncuesta);
+            buttonEncuesta.setOnClickListener(this);
         }
 
         public void bindData(Empresa empresa) {
+            // Asignar valores a los TextView
             textViewNombre.setText(empresa.getNombre());
             textViewPais.setText(empresa.getPais());
             textViewRegion.setText(empresa.getRegion());
@@ -75,10 +78,19 @@ public class EmpresaAdapter extends RecyclerView.Adapter<EmpresaAdapter.EmpresaV
             textViewClienteAct.setText(empresa.getClienteAct());
             textViewNumeroDePlant.setText(empresa.getNumeroDePlant());
             textViewNumeroDePlantIm.setText(empresa.getNumeroDePlantIm());
-
-            // Establecer los valores de fecha y hora
             textViewFechaRegistro.setText("Fecha: " + empresa.getFechaRegistro());
             textViewHoraRegistro.setText("Hora: " + empresa.getHoraRegistro());
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (v.getId() == R.id.buttonEncuesta) {
+                // Lógica para el clic del botón "Encuestar"
+                // Obtener la posición del elemento clickeado usando getAdapterPosition()
+                int position = getAdapterPosition();
+                // Obtener la empresa asociada a esta posición usando 'empresas.get(position)'
+                // Realizar acciones para la encuesta aquí según sea necesario
+            }
         }
     }
 }

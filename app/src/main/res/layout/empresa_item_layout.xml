@@ -242,6 +242,14 @@
             android:layout_marginBottom="4dp"
             android:text="Fecha de Registro" />
 
+        <Button
+            android:id="@+id/buttonEncuesta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Encuestar"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"/>
+
 
 
     </LinearLayout>
