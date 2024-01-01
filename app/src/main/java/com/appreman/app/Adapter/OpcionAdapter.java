@@ -55,11 +55,16 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
                 int count = selectedCountMap.containsKey(opcion.getPregunta()) ? selectedCountMap.get(opcion.getPregunta()) : 0;
 
                 if (isChecked && count >= 2) {
-                    holder.checkBox.setChecked(false);
-                    // Mostrar mensaje informando que ya se han seleccionado dos opciones para esta pregunta
+                    uncheckOldestSelectedOption();
+                    opcion.setSeleccionada(true);
                 } else {
                     opcion.setSeleccionada(isChecked);
-                    selectedCountMap.put(opcion.getPregunta(), isChecked ? count + 1 : count - 1);
+                }
+
+                if (isChecked) {
+                    selectedCountMap.put(opcion.getPregunta(), count + 1);
+                } else {
+                    selectedCountMap.put(opcion.getPregunta(), count - 1);
                 }
             }
         });
@@ -78,6 +83,17 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
             super(itemView);
             txtOpcion = itemView.findViewById(R.id.textNombre);
             checkBox = itemView.findViewById(R.id.checkBox); // Reemplaza R.id.checkBox con tu ID real de CheckBox
+        }
+    }
+
+    private void uncheckOldestSelectedOption() {
+        for (int i = 0; i < items.size(); i++) {
+            Opcion opc = items.get(i);
+            if (opc.isSeleccionada()) {
+                opc.setSeleccionada(false);
+                notifyItemChanged(i);
+                return;
+            }
         }
     }
 }
