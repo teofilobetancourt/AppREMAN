@@ -82,7 +82,7 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
         public MotivosViewHolder(@NonNull View itemView) {
             super(itemView);
             txtOpcion = itemView.findViewById(R.id.textNombre);
-            checkBox = itemView.findViewById(R.id.checkBox); // Reemplaza R.id.checkBox con tu ID real de CheckBox
+            checkBox = itemView.findViewById(R.id.checkBox);
         }
     }
 
