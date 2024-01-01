@@ -14,7 +14,9 @@ import com.appreman.appreman.R;
 import java.util.List;
 
 public class EmpresaAdapter extends RecyclerView.Adapter<EmpresaAdapter.EmpresaViewHolder> {
+
     private List<Empresa> empresas;
+    private EncuestaClickListener encuestaClickListener;
 
     public EmpresaAdapter(List<Empresa> empresas) {
         this.empresas = empresas;
@@ -38,7 +40,7 @@ public class EmpresaAdapter extends RecyclerView.Adapter<EmpresaAdapter.EmpresaV
         return empresas.size();
     }
 
-    public static class EmpresaViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class EmpresaViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView textViewNombre, textViewPais, textViewRegion, textViewSitio, textViewSector, textViewPlanta, textViewRepresentante, textViewTelefono, textViewEmail, textViewClienteAct, textViewNumeroDePlant, textViewNumeroDePlantIm;
         TextView textViewFechaRegistro, textViewHoraRegistro;
         View buttonEncuesta;
@@ -84,13 +86,24 @@ public class EmpresaAdapter extends RecyclerView.Adapter<EmpresaAdapter.EmpresaV
 
         @Override
         public void onClick(View v) {
-            if (v.getId() == R.id.buttonEncuesta) {
-                // Lógica para el clic del botón "Encuestar"
-                // Obtener la posición del elemento clickeado usando getAdapterPosition()
+            // Maneja el clic del botón "Encuestar"
+            if (v.getId() == R.id.buttonEncuesta && encuestaClickListener != null) {
                 int position = getAdapterPosition();
-                // Obtener la empresa asociada a esta posición usando 'empresas.get(position)'
-                // Realizar acciones para la encuesta aquí según sea necesario
+                if (position != RecyclerView.NO_POSITION) {
+                    // Notifica al listener sobre el clic del botón "Encuestar"
+                    encuestaClickListener.onEncuestaClick(position);
+                }
             }
         }
+    }
+
+    // Interfaz para manejar el clic del botón "Encuestar"
+    public interface EncuestaClickListener {
+        void onEncuestaClick(int position);
+    }
+
+    // Método para configurar el listener desde fuera del adaptador
+    public void setEncuestaClickListener(EncuestaClickListener listener) {
+        this.encuestaClickListener = listener;
     }
 }

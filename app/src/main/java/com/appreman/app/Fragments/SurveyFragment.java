@@ -14,6 +14,7 @@ import com.appreman.app.Activity.EncuestasActivity;
 import com.appreman.app.Adapter.EmpresaAdapter;
 import com.appreman.app.Database.DBHelper;
 import com.appreman.app.Models.Empresa;
+import com.appreman.app.Adapter.EmpresaAdapter.EncuestaClickListener;
 import com.appreman.appreman.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -47,10 +48,23 @@ public class SurveyFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
-        List<Empresa> empresas = dbHelper.getAllEmpresas(); // Obtener la lista de empresas de la base de datos
+        List<Empresa> empresas = dbHelper.getAllEmpresas();
 
         EmpresaAdapter adapter = new EmpresaAdapter(empresas);
         recyclerViewEmpresas.setLayoutManager(new LinearLayoutManager(requireActivity()));
         recyclerViewEmpresas.setAdapter(adapter);
+
+        // Configura el clic para abrir EncuestasActivity al hacer clic en un elemento del RecyclerView
+        adapter.setEncuestaClickListener(new EncuestaClickListener() {
+            @Override
+            public void onEncuestaClick(int position) {
+                // Obtiene la empresa seleccionada en la posición 'position' y abre EncuestasActivity
+                Empresa empresa = empresas.get(position);
+                Intent intent = new Intent(requireContext(), EncuestasActivity.class);
+                // Agrego datos adicionales al intent si es necesario
+                intent.putExtra("empresa_id", empresa.getId()); // Por ejemplo, envía el ID de la empresa
+                startActivity(intent);
+            }
+        });
     }
 }
