@@ -52,7 +52,7 @@ public class PieChartView extends View {
         List<Elemento> elementos = dbHelper.getAllElementos();
         List<Pregunta> preguntas = dbHelper.getAllPreguntas();
         List<Opcion> opciones = dbHelper.getAllOpciones();
-        List<Empresa> empresas = dbHelper.getAllEmpresas(); // Obtener las empresas
+        List<Empresa> empresas = dbHelper.getAllEmpresas();
 
         // Calcular los valores para el gráfico
         data.add((float) grupos.size());
@@ -78,7 +78,7 @@ public class PieChartView extends View {
         List<String> details = new ArrayList<>();
         int count = 0;
         for (Object item : items) {
-            if (count >= 5) {
+            if (count >= 10) {
                 break;
             }
 
