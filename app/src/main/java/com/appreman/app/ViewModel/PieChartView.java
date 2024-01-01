@@ -11,10 +11,10 @@ import android.view.View;
 
 import com.appreman.app.Database.DBHelper;
 import com.appreman.app.Models.Elemento;
+import com.appreman.app.Models.Empresa;
 import com.appreman.app.Models.Grupo;
 import com.appreman.app.Models.Opcion;
 import com.appreman.app.Models.Pregunta;
-import com.appreman.app.Models.Empresa;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,11 +76,39 @@ public class PieChartView extends View {
 
     private List<String> getDetailedInfo(List<?> items) {
         List<String> details = new ArrayList<>();
-        for (int i = 0; i < Math.min(items.size(), 5); i++) {
-            details.add(items.get(i).toString()); // Agregar detalles de los primeros 5 elementos (o menos)
+        int count = 0;
+        for (Object item : items) {
+            if (count >= 5) {
+                break;
+            }
+
+            if (item instanceof Grupo) {
+                Grupo grupo = (Grupo) item;
+                details.add("Grupo: " + grupo.getNombre());
+            } else if (item instanceof Elemento) {
+                Elemento elemento = (Elemento) item;
+                details.add("Elemento: " + elemento.getNombre());
+                // Agrega aquí los campos relevantes de la clase Elemento
+            } else if (item instanceof Pregunta) {
+                Pregunta pregunta = (Pregunta) item;
+                details.add("Pregunta: " + pregunta.getDescripcion());
+                // Agrega aquí los campos relevantes de la clase Pregunta
+            } else if (item instanceof Opcion) {
+                Opcion opcion = (Opcion) item;
+                details.add("Opción: " + opcion.getNombre());
+                // Agrega aquí los campos relevantes de la clase Opcion
+            } else if (item instanceof Empresa) {
+                Empresa empresa = (Empresa) item;
+                details.add("Empresa: " + empresa.getNombre());
+                // Agrega aquí los campos relevantes de la clase Empresa
+            }
+
+            count++;
         }
         return details;
     }
+
+
 
     @Override
     protected void onDraw(Canvas canvas) {

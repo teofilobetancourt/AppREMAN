@@ -1,41 +1,21 @@
 package com.appreman.app.Activity;
 
-import static androidx.fragment.app.FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
-
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 
-import com.appreman.app.Adapter.ElementoListAdapter;
-import com.appreman.app.Adapter.GrupoListAdapter;
-import com.appreman.app.Adapter.ViewPagerAdapter;
-import com.appreman.app.Adapter.ViewStateAdapter;
-import com.appreman.app.Database.DBHelper;
-import com.appreman.app.Fragments.ElementosFragment;
-import com.appreman.app.Models.Elemento;
-import com.appreman.app.Models.Grupo;
-import com.appreman.app.ViewModel.GrupoViewModel;
-import com.appreman.appreman.R;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager2.widget.ViewPager2;
 
-import android.util.Log;
-import android.view.View;
-
+import com.appreman.app.Adapter.ElementoListAdapter;
+import com.appreman.app.Adapter.ViewPagerAdapter;
+import com.appreman.app.Database.DBHelper;
+import com.appreman.app.Fragments.ElementosFragment;
+import com.appreman.app.Models.Grupo;
 import com.appreman.appreman.databinding.ActivityEncuestasBinding;
 import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class EncuestasActivity extends AppCompatActivity {
