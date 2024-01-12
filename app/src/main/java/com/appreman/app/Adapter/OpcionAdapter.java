@@ -14,17 +14,14 @@ import com.appreman.app.Models.Opcion;
 import com.appreman.appreman.R;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosViewHolder> {
 
     private List<Opcion> items;
-    private HashMap<String, Integer> selectedCountMap;
 
     public OpcionAdapter(List<Opcion> items) {
         this.items = items != null ? items : new ArrayList<>();
-        this.selectedCountMap = new HashMap<>();
     }
 
     @NonNull
@@ -37,12 +34,20 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
     @Override
     public void onBindViewHolder(@NonNull final MotivosViewHolder holder, int position) {
         final Opcion opcion = items.get(position);
-        holder.txtOpcion.setText(opcion.getNumero().concat(".- ").concat(opcion.getNombre()));
+
+        // Modificar el texto para indicar la opción seleccionada
+        if (opcion.getTipo() == 1) {
+            holder.txtOpcion.setText("Opción 1: " + opcion.getNumero().concat(".- ").concat(opcion.getNombre()));
+        } else if (opcion.getTipo() == 2) {
+            holder.txtOpcion.setText("Opción 2: " + opcion.getNumero().concat(".- ").concat(opcion.getNombre()));
+        } else {
+            holder.txtOpcion.setText(opcion.getNumero().concat(".- ").concat(opcion.getNombre()));
+        }
 
         holder.txtOpcion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.checkBox.setChecked(!holder.checkBox.isChecked());
+                handleOptionSelection(opcion);
             }
         });
 
@@ -52,22 +57,25 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                int count = selectedCountMap.containsKey(opcion.getPregunta()) ? selectedCountMap.get(opcion.getPregunta()) : 0;
-
-                if (isChecked && count >= 2) {
-                    uncheckOldestSelectedOption();
-                    opcion.setSeleccionada(true);
-                } else {
-                    opcion.setSeleccionada(isChecked);
-                }
-
-                if (isChecked) {
-                    selectedCountMap.put(opcion.getPregunta(), count + 1);
-                } else {
-                    selectedCountMap.put(opcion.getPregunta(), count - 1);
-                }
+                handleOptionSelection(opcion);
             }
         });
+    }
+
+    private void handleOptionSelection(Opcion selectedOption) {
+        int selectedCount = getSelectedCount();
+
+        if (selectedCount == 2) {
+            uncheckOldestSelectedOptions();
+        }
+
+        if (!selectedOption.isSeleccionada() && selectedCount < 2) {
+            selectedOption.setTipo(selectedCount + 1);
+        }
+
+        selectedOption.setSeleccionada(!selectedOption.isSeleccionada());
+
+        notifyDataSetChanged();
     }
 
     @Override
@@ -86,12 +94,31 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
         }
     }
 
-    private void uncheckOldestSelectedOption() {
-        for (int i = 0; i < items.size(); i++) {
-            Opcion opc = items.get(i);
-            if (opc.isSeleccionada()) {
-                opc.setSeleccionada(false);
-                notifyItemChanged(i);
+    private int getSelectedCount() {
+        int count = 0;
+        for (Opcion opcion : items) {
+            if (opcion.isSeleccionada()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private void uncheckOldestSelectedOptions() {
+        int oldestType = 0;
+
+        for (Opcion option : items) {
+            if (option.isSeleccionada() && option.getTipo() == 1) {
+                oldestType = 1;
+                break;
+            }
+        }
+
+        for (Opcion option : items) {
+            if (option.isSeleccionada() && option.getTipo() == oldestType) {
+                option.setSeleccionada(false);
+                option.setTipo(0);
+                notifyItemChanged(items.indexOf(option));
                 return;
             }
         }

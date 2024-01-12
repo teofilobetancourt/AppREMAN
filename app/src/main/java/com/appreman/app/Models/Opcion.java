@@ -5,12 +5,16 @@ public class Opcion {
     private String nombre;
     private String pregunta;
     private boolean seleccionada; // Nuevo atributo para controlar la selección
+    private int tipo; // Nuevo atributo para indicar el tipo de opción
+    private String nombreOpcion; // Nuevo atributo para indicar el nombre de la opción
 
     public Opcion() {
-        this.numero = numero;
-        this.nombre = nombre;
-        this.pregunta = pregunta;
-        this.seleccionada = false; // Por defecto, la opción no está seleccionada al inicio
+        this.numero = "";
+        this.nombre = "";
+        this.pregunta = "";
+        this.seleccionada = false;
+        this.tipo = 0; // Inicializamos el tipo como 0 (ningún tipo)
+        this.nombreOpcion = ""; // Inicializamos el nombre de la opción como cadena vacía
     }
 
     public String getNumero() {
@@ -43,5 +47,21 @@ public class Opcion {
 
     public void setSeleccionada(boolean seleccionada) {
         this.seleccionada = seleccionada;
+    }
+
+    public int getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(int tipo) {
+        this.tipo = tipo;
+    }
+
+    public String getNombreOpcion() {
+        return nombreOpcion;
+    }
+
+    public void setNombreOpcion(String nombreOpcion) {
+        this.nombreOpcion = nombreOpcion;
     }
 }
