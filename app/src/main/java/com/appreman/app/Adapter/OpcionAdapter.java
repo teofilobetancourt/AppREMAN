@@ -37,9 +37,9 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
 
         // Modificar el texto para indicar la opción seleccionada
         if (opcion.getTipo() == 1) {
-            holder.txtOpcion.setText("Opción 1: " + opcion.getNumero().concat(".- ").concat(opcion.getNombre()));
+            holder.txtOpcion.setText("Actual : " + opcion.getNumero().concat(".- ").concat(opcion.getNombre()));
         } else if (opcion.getTipo() == 2) {
-            holder.txtOpcion.setText("Opción 2: " + opcion.getNumero().concat(".- ").concat(opcion.getNombre()));
+            holder.txtOpcion.setText("Potencial : " + opcion.getNumero().concat(".- ").concat(opcion.getNombre()));
         } else {
             holder.txtOpcion.setText(opcion.getNumero().concat(".- ").concat(opcion.getNombre()));
         }
