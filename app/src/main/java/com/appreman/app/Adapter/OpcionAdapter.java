@@ -36,10 +36,8 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
         final Opcion opcion = items.get(position);
 
         // Modificar el texto para indicar la opción seleccionada
-        if (opcion.getTipo() == 1) {
-            holder.txtOpcion.setText("Actual : " + opcion.getNumero().concat(".- ").concat(opcion.getNombre()));
-        } else if (opcion.getTipo() == 2) {
-            holder.txtOpcion.setText("Potencial : " + opcion.getNumero().concat(".- ").concat(opcion.getNombre()));
+        if (opcion.isSeleccionada()) {
+            holder.txtOpcion.setText(opcion.getNombreOpcion() + " : " + opcion.getNumero().concat(".- ").concat(opcion.getNombre()));
         } else {
             holder.txtOpcion.setText(opcion.getNumero().concat(".- ").concat(opcion.getNombre()));
         }
@@ -69,11 +67,17 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
             uncheckOldestSelectedOptions();
         }
 
-        if (!selectedOption.isSeleccionada() && selectedCount < 2) {
-            selectedOption.setTipo(selectedCount + 1);
-        }
-
         selectedOption.setSeleccionada(!selectedOption.isSeleccionada());
+
+        if (selectedOption.isSeleccionada()) {
+            if (selectedCount == 0) {
+                selectedOption.setNombreOpcion("Actual");
+            } else if (selectedCount == 1) {
+                selectedOption.setNombreOpcion("Potencial");
+            }
+        } else {
+            selectedOption.setNombreOpcion("");
+        }
 
         notifyDataSetChanged();
     }
@@ -105,19 +109,10 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
     }
 
     private void uncheckOldestSelectedOptions() {
-        int oldestType = 0;
-
         for (Opcion option : items) {
-            if (option.isSeleccionada() && option.getTipo() == 1) {
-                oldestType = 1;
-                break;
-            }
-        }
-
-        for (Opcion option : items) {
-            if (option.isSeleccionada() && option.getTipo() == oldestType) {
+            if (option.isSeleccionada()) {
                 option.setSeleccionada(false);
-                option.setTipo(0);
+                option.setNombreOpcion("");
                 notifyItemChanged(items.indexOf(option));
                 return;
             }
