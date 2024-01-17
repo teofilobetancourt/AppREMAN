@@ -12,11 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.appreman.app.Activity.EncuestasActivity;
 import com.appreman.app.Adapter.EmpresaAdapter;
+import com.appreman.app.Adapter.EmpresaAdapter.EncuestaClickListener;
 import com.appreman.app.Database.DBHelper;
 import com.appreman.app.Models.Empresa;
-import com.appreman.app.Adapter.EmpresaAdapter.EncuestaClickListener;
 import com.appreman.appreman.R;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
@@ -35,12 +34,6 @@ public class SurveyFragment extends Fragment {
 
         recyclerViewEmpresas = rootView.findViewById(R.id.recyclerViewEmpresas);
         dbHelper = new DBHelper(requireActivity());
-
-        FloatingActionButton fab = rootView.findViewById(R.id.fab);
-        fab.setOnClickListener(view -> {
-            Intent intent = new Intent(requireContext(), EncuestasActivity.class);
-            startActivity(intent);
-        });
 
         setupRecyclerView();
 
