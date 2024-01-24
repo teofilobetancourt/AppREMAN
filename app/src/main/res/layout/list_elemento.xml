@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true">
-
 
     <RelativeLayout
         android:id="@+id/layoutView"
@@ -14,7 +14,6 @@
         android:layout_marginEnd="@dimen/_5sdp"
         android:orientation="horizontal"
         android:padding="@dimen/_2sdp">
-
 
         <TextView
             android:id="@+id/textNombre"
@@ -28,7 +27,8 @@
             android:fontFamily="@font/opensans_semibold"
             android:text="Elementos"
             android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/_12sdp" />
+            android:textSize="@dimen/_12sdp"
+            tools:ignore="TextSizeCheck" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview"
@@ -40,15 +40,20 @@
             android:layout_marginTop="@dimen/_10sdp" />
 
 
-    </RelativeLayout>
+        <!-- Botón flotante -->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnGuardar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="@dimen/_16sdp"
+            android:layout_marginBottom="@dimen/_16sdp"
+            android:src="@drawable/ic_plus"
+            tools:ignore="SpeakableTextPresentCheck" />
 
-   <!-- <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@id/layoutView"
-        android:layout_marginTop="@dimen/_5sdp"
-        android:background="@color/colorPantoneGray" />-->
+    </RelativeLayout>
 
 
 </RelativeLayout>
+
