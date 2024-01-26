@@ -40,18 +40,6 @@
             android:layout_marginTop="@dimen/_10sdp" />
 
 
-        <!-- Botón flotante -->
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/ftnGuardar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="@dimen/_16sdp"
-            android:layout_marginBottom="@dimen/_16sdp"
-            android:src="@drawable/ic_plus"
-            tools:ignore="SpeakableTextPresentCheck" />
-
     </RelativeLayout>
 
 

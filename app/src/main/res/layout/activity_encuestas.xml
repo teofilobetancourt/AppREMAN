@@ -7,54 +7,57 @@
     android:fitsSystemWindows="true"
     tools:context="com.appreman.app.Activity.EncuestasActivity">
 
-
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorAccent">
 
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    style="@style/ToolbarTheme"
+                <com.google.android.material.appbar.CollapsingToolbarLayout
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:layout_gravity="top"
-                    android:background="@color/colorAccent"
-                    android:gravity="center"
-                    android:theme="@style/AppTheme.AppBarOverlay"
-                    app:popupTheme="@style/AppTheme.PopupOverlay"
-                    app:titleTextAppearance="@style/ToolbarTheme"
-                    app:titleTextColor="@color/colorBlanco" />
+                    android:layout_height="wrap_content"
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
+                        <androidx.appcompat.widget.Toolbar
+                            android:id="@+id/toolbar"
+                            style="@style/ToolbarTheme"
+                            android:layout_width="match_parent"
+                            android:layout_height="?attr/actionBarSize"
+                            android:layout_gravity="top"
+                            android:background="@color/colorAccent"
+                            android:gravity="center"
+                            android:theme="@style/AppTheme.AppBarOverlay"
+                            app:popupTheme="@style/AppTheme.PopupOverlay"
+                            app:titleTextAppearance="@style/ToolbarTheme"
+                            app:titleTextColor="@color/colorBlanco" />
 
-                <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/tabLayoutGrupos"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_30sdp"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginStart="@dimen/_15sdp"
-                    android:layout_marginTop="@dimen/_8sdp"
-                    android:layout_marginEnd="@dimen/_15sdp"
-                    android:background="@color/colorAccent"
-                    app:tabIndicatorColor="@color/colorFondo"
-                    app:tabMode="scrollable"
-                    app:tabTextAppearance="@style/TextAppearance.AppCompat.Small"
-                    app:tabTextColor="@color/tab_item_selector_text" />
-
-
-
-
+                        <com.google.android.material.tabs.TabLayout
+                            android:id="@+id/tabLayoutGrupos"
+                            android:layout_width="match_parent"
+                            android:layout_height="?attr/actionBarSize"
+                            android:layout_gravity="bottom"
+                            android:background="@color/colorAccent"
+                            app:tabIndicatorColor="@color/colorFondo"
+                            app:tabMode="scrollable"
+                            app:tabTextAppearance="@style/TextAppearance.AppCompat.Small"
+                            app:tabTextColor="@color/tab_item_selector_text"
+                            tools:ignore="SpeakableTextPresentCheck" />
+                </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
-
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/view_pager"
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floatingActionButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
-
-
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            android:src="@drawable/ic_plus"
+            tools:ignore="SpeakableTextPresentCheck" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

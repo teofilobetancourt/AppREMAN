@@ -51,11 +51,15 @@ public class SurveyFragment extends Fragment {
         adapter.setEncuestaClickListener(new EncuestaClickListener() {
             @Override
             public void onEncuestaClick(int position) {
-                // Obtiene la empresa seleccionada en la posición 'position' y abre EncuestasActivity
+                // Obtiene la empresa seleccionada en la posición 'position'
                 Empresa empresa = empresas.get(position);
+
+                // Ahora puedes obtener el ID de la empresa
+                int idEmpresaSeleccionada = empresa.getId();
+
+                // Abre EncuestasActivity y pasa el ID de la empresa
                 Intent intent = new Intent(requireContext(), EncuestasActivity.class);
-                // Agrego datos adicionales al intent si es necesario
-                intent.putExtra("empresa_id", empresa.getId()); // Por ejemplo, envía el ID de la empresa
+                intent.putExtra("empresa_id", idEmpresaSeleccionada);
                 startActivity(intent);
             }
         });

@@ -456,6 +456,21 @@ public class DBHelper extends SQLiteAssetHelper {
         return empresas;
     }
 
+    public void insertRespuesta(int idEmpresa, String numeroPregunta, String numeroOpcionAct, String numeroOpcionPot) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put("empresa", idEmpresa);
+        values.put("pregunta", numeroPregunta);
+        values.put("opcionAct", numeroOpcionAct);
+        values.put("opcionPot", numeroOpcionPot);
+
+        // Insertar la respuesta en la tabla respuestas
+        db.insert("respuestas", null, values);
+
+        db.close();
+    }
+
 
 }
 
