@@ -394,7 +394,7 @@ public class DBHelper extends SQLiteAssetHelper {
         return v_opciones;
     }
 
-    public void insertEmpresa(String nombre, String pais, String region, String sitio, String sector, String planta, String representante, String telefono, String email, String clienteAct, String numeroDePlant, String numeroDePlantIm, String fecha, String hora) {
+    public long insertEmpresa(String nombre, String pais, String region, String sitio, String sector, String planta, String representante, String telefono, String email, String clienteAct, String numeroDePlant, String numeroDePlantIm, String fecha, String hora) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("nombre", nombre);
@@ -413,11 +413,11 @@ public class DBHelper extends SQLiteAssetHelper {
         contentValues.put("hora_registro", hora);
 
         // Insertar la empresa con los valores pasados como parámetros
-        db.insert("empresa", null, contentValues);
+        long empresaId = db.insert("empresa", null, contentValues);
 
         db.close();
+        return empresaId;
     }
-
 
     @SuppressLint("Range")
     public List<Empresa> getAllEmpresas() {
@@ -430,6 +430,7 @@ public class DBHelper extends SQLiteAssetHelper {
         if (cursor.moveToFirst()) {
             do {
                 Empresa empresa = new Empresa();
+                empresa.setId((int) cursor.getLong(cursor.getColumnIndex("id"))); // Asegúrate de tener una columna "id" en tu tabla "empresa"
                 empresa.setNombre(cursor.getString(cursor.getColumnIndex("nombre")));
                 empresa.setPais(cursor.getString(cursor.getColumnIndex("pais")));
                 empresa.setRegion(cursor.getString(cursor.getColumnIndex("region")));
@@ -456,20 +457,22 @@ public class DBHelper extends SQLiteAssetHelper {
         return empresas;
     }
 
-    public void insertRespuesta(int idEmpresa, String numeroPregunta, String numeroOpcionAct, String numeroOpcionPot) {
+    public void insertarNombreEmpresaEnRespuestas(String nombreEmpresa) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put("empresa", nombreEmpresa);
 
-        values.put("empresa", idEmpresa);
-        values.put("pregunta", numeroPregunta);
-        values.put("opcionAct", numeroOpcionAct);
-        values.put("opcionPot", numeroOpcionPot);
+        long result = db.insert("respuestas", null, values);
 
-        // Insertar la respuesta en la tabla respuestas
-        db.insert("respuestas", null, values);
+        if (result != -1) {
+            Log.d("DBHelper", "Nombre de Empresa insertado en respuestas: " + nombreEmpresa);
+        } else {
+            Log.e("DBHelper", "Error al almacenar Nombre de Empresa en respuestas");
+        }
 
         db.close();
     }
+
 
 
 }

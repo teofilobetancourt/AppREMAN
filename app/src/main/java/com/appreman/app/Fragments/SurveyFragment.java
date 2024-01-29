@@ -1,7 +1,7 @@
 package com.appreman.app.Fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.appreman.app.Activity.EncuestasActivity;
 import com.appreman.app.Adapter.EmpresaAdapter;
-import com.appreman.app.Adapter.EmpresaAdapter.EncuestaClickListener;
 import com.appreman.app.Database.DBHelper;
 import com.appreman.app.Models.Empresa;
 import com.appreman.appreman.R;
@@ -43,24 +42,24 @@ public class SurveyFragment extends Fragment {
     private void setupRecyclerView() {
         List<Empresa> empresas = dbHelper.getAllEmpresas();
 
+        // Agregar registros de depuración para verificar las empresas
+        for (Empresa empresa : empresas) {
+            Log.d("SurveyFragment", "Empresa: " + empresa.getNombre() + ", ID: " + empresa.getId());
+        }
+
         EmpresaAdapter adapter = new EmpresaAdapter(empresas);
         recyclerViewEmpresas.setLayoutManager(new LinearLayoutManager(requireActivity()));
         recyclerViewEmpresas.setAdapter(adapter);
 
         // Configura el clic para abrir EncuestasActivity al hacer clic en un elemento del RecyclerView
-        adapter.setEncuestaClickListener(new EncuestaClickListener() {
-            @Override
-            public void onEncuestaClick(int position) {
-                // Obtiene la empresa seleccionada en la posición 'position'
+        adapter.setEncuestaClickListener(position -> {
+            if (position != RecyclerView.NO_POSITION) {
                 Empresa empresa = empresas.get(position);
-
-                // Ahora puedes obtener el ID de la empresa
-                int idEmpresaSeleccionada = empresa.getId();
-
-                // Abre EncuestasActivity y pasa el ID de la empresa
-                Intent intent = new Intent(requireContext(), EncuestasActivity.class);
-                intent.putExtra("empresa_id", idEmpresaSeleccionada);
-                startActivity(intent);
+                String nombreEmpresaSeleccionada = empresa.getNombre(); // Obtén el nombre de la empresa
+                Log.d("SurveyFragment", "Nombre de empresa seleccionada: " + nombreEmpresaSeleccionada);
+                EncuestasActivity.start(requireActivity(), nombreEmpresaSeleccionada);
+            } else {
+                Log.d("SurveyFragment", "Posición no válida seleccionada en RecyclerView");
             }
         });
     }
