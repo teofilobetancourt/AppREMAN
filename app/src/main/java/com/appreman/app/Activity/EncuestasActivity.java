@@ -15,6 +15,7 @@ import com.appreman.app.Adapter.ViewPagerAdapter;
 import com.appreman.app.Database.DBHelper;
 import com.appreman.app.Fragments.ElementosFragment;
 import com.appreman.app.Models.Grupo;
+import com.appreman.app.Models.Pregunta;
 import com.appreman.appreman.databinding.ActivityEncuestasBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
@@ -51,9 +52,6 @@ public class EncuestasActivity extends AppCompatActivity {
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), 0);
         dbHelper = new DBHelper(getApplicationContext());
 
-        // Agregado: Log para verificar que la base de datos se abrió correctamente
-        Log.d("EncuestasActivity", "Base de datos abierta correctamente");
-
         List<Grupo> grupos = dbHelper.getAllGrupos();
 
         for (Grupo grupo : grupos) {
@@ -81,7 +79,7 @@ public class EncuestasActivity extends AppCompatActivity {
             }
         });
 
-        // Cambiado: Obtener el nombre de la empresa desde el Intent
+        // Obtener el nombre de la empresa desde el Intent
         obtenerNombreEmpresaDesdeIntent();
 
         // Configurar el OnClickListener del botón flotante
@@ -89,11 +87,14 @@ public class EncuestasActivity extends AppCompatActivity {
         fabEncuestar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Cambiado: Insertar el nombre de la empresa en la base de datos
+                // Insertar el nombre de la empresa en la base de datos
                 insertarNombreEmpresaEnBD();
 
+                // Obtener la lista de preguntas de la base de datos y guardarlas para la empresa actual
+                guardarPreguntasParaEmpresa();
+
                 // Mostrar un Toast indicando que los datos se han guardado correctamente
-                mostrarToast("Nombre de empresa guardado correctamente");
+                mostrarToast("Nombre de empresa y preguntas guardados correctamente");
             }
         });
     }
@@ -110,19 +111,18 @@ public class EncuestasActivity extends AppCompatActivity {
     }
 
     private void insertarNombreEmpresaEnBD() {
-        // Agregado: Log para verificar el valor de nombreEmpresa antes de la inserción
-        Log.d("EncuestasActivity", "Nombre de empresa antes de la inserción: " + nombreEmpresa);
-
-        // Cambiado: Verificar si el nombre de la empresa es válido antes de la inserción
         if (nombreEmpresa != null) {
-            // Insertar el nombre de la empresa en la base de datos en la tabla "respuestas" y columna "empresa"
             dbHelper.insertarNombreEmpresaEnRespuestas(nombreEmpresa);
-
-            // Agregado: Log después de la inserción
             Log.d("EncuestasActivity", "Nombre de Empresa almacenado en respuestas: " + nombreEmpresa);
         } else {
-            // Manejar el caso de nombre de empresa no válido
             Log.d("EncuestasActivity", "No se pudo almacenar el nombre de empresa en respuestas. Nombre no válido.");
+        }
+    }
+
+    private void guardarPreguntasParaEmpresa() {
+        List<Pregunta> preguntas = dbHelper.getAllPreguntas();
+        for (Pregunta pregunta : preguntas) {
+            dbHelper.insertarPreguntaEnRespuestas(nombreEmpresa, pregunta.getNumero());
         }
     }
 

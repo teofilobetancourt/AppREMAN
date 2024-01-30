@@ -239,46 +239,34 @@ public class DBHelper extends SQLiteAssetHelper {
 
     /* -TODO .- Preguntas ------------------------------------------------------------------------------------------- */
 
-    public List<Pregunta> getAllPreguntas(){
-
+    public List<Pregunta> getAllPreguntas() {
         List<Pregunta> v_preguntas = new ArrayList<>();
-
         SQLiteDatabase v_db = this.getReadableDatabase();
 
         try {
+            Cursor v_cursor = v_db.rawQuery("SELECT numero, descripcion, elemento FROM pregunta ORDER BY numero ASC", null);
 
-            Cursor v_cursor = v_db.rawQuery("select numero, descripcion, elemento from pregunta order by numero desc" , null);
-
-            if (null != v_cursor) {
-                while (v_cursor.moveToNext()) {
-
+            if (v_cursor != null && v_cursor.moveToFirst()) {
+                do {
                     Pregunta v_pregunta = new Pregunta();
-
                     v_pregunta.setNumero(v_cursor.getString(0));
                     v_pregunta.setDescripcion(v_cursor.getString(1));
                     v_pregunta.setElemento(v_cursor.getString(2));
 
                     v_preguntas.add(v_pregunta);
+                } while (v_cursor.moveToNext());
 
-
-                }
                 v_cursor.close();
-
-
             }
-
-
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
             Log.e(TAG, e.toString());
             e.printStackTrace();
-        }finally {
+        } finally {
             v_db.close();
         }
 
         return v_preguntas;
     }
-
 
     public List<Pregunta> getPreguntasElemento(String elemento){
 
@@ -473,7 +461,14 @@ public class DBHelper extends SQLiteAssetHelper {
         db.close();
     }
 
+    public void insertarPreguntaEnRespuestas(String nombreEmpresa, String numeroPregunta) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("empresa", nombreEmpresa);
+        values.put("pregunta", numeroPregunta);
+        db.insert("respuestas", null, values);
+        db.close();
+    }
 
 
 }
-
