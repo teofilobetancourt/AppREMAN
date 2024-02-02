@@ -6,7 +6,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import com.appreman.app.Models.Elemento;
 import com.appreman.app.Models.Empresa;
@@ -16,10 +19,11 @@ import com.appreman.app.Models.Pregunta;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,6 +77,7 @@ public class DBHelper extends SQLiteAssetHelper {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void copyDatabase()
     {
         Log.e(TAG,"New database is being copied to device!");
@@ -86,7 +91,7 @@ public class DBHelper extends SQLiteAssetHelper {
             myInput =mContext.getAssets().open("databases/"+DATABASE_NAME);
             // transfer bytes from the inputfile to the
             // outputfile
-            myOutput =new FileOutputStream(DB_PATH + DATABASE_NAME);
+            myOutput = Files.newOutputStream(Paths.get(DB_PATH + DATABASE_NAME));
             while((length = myInput.read(buffer)) > 0)
             {
                 myOutput.write(buffer, 0, length);
@@ -112,11 +117,9 @@ public class DBHelper extends SQLiteAssetHelper {
 
         List<Grupo> v_grupos = new ArrayList<>();
 
-        SQLiteDatabase v_db = this.getReadableDatabase();
+        try (SQLiteDatabase v_db = this.getReadableDatabase()) {
 
-        try {
-
-            Cursor v_cursor = v_db.rawQuery("select numero, nombre from grupo order by numero" , null);
+            Cursor v_cursor = v_db.rawQuery("select numero, nombre from grupo order by numero", null);
 
             if (null != v_cursor) {
                 while (v_cursor.moveToNext()) {
@@ -137,12 +140,9 @@ public class DBHelper extends SQLiteAssetHelper {
             }
 
 
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
             Log.e(TAG, e.toString());
             e.printStackTrace();
-        }finally {
-            v_db.close();
         }
 
         return v_grupos;
@@ -156,11 +156,9 @@ public class DBHelper extends SQLiteAssetHelper {
 
         List<Elemento> v_elementos = new ArrayList<>();
 
-        SQLiteDatabase v_db = this.getReadableDatabase();
+        try (SQLiteDatabase v_db = this.getReadableDatabase()) {
 
-        try {
-
-            Cursor v_cursor = v_db.rawQuery("select numero, nombre, grupo from elemento order by numero desc" , null);
+            Cursor v_cursor = v_db.rawQuery("select numero, nombre, grupo from elemento order by numero desc", null);
 
             if (null != v_cursor) {
                 while (v_cursor.moveToNext()) {
@@ -181,12 +179,9 @@ public class DBHelper extends SQLiteAssetHelper {
             }
 
 
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
             Log.e(TAG, e.toString());
             e.printStackTrace();
-        }finally {
-            v_db.close();
         }
 
         return v_elementos;
@@ -197,11 +192,9 @@ public class DBHelper extends SQLiteAssetHelper {
 
         List<Elemento> v_elementos = new ArrayList<>();
 
-        SQLiteDatabase v_db = this.getReadableDatabase();
+        try (SQLiteDatabase v_db = this.getReadableDatabase()) {
 
-        try {
-
-            Cursor v_cursor = v_db.rawQuery("select numero, nombre, grupo from elemento where grupo="+ grupo +" order by numero" , null);
+            Cursor v_cursor = v_db.rawQuery("select numero, nombre, grupo from elemento where grupo=" + grupo + " order by numero", null);
 
             if (null != v_cursor) {
                 while (v_cursor.moveToNext()) {
@@ -222,12 +215,9 @@ public class DBHelper extends SQLiteAssetHelper {
             }
 
 
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
             Log.e(TAG, e.toString());
             e.printStackTrace();
-        }finally {
-            v_db.close();
         }
 
         return v_elementos;
@@ -241,9 +231,8 @@ public class DBHelper extends SQLiteAssetHelper {
 
     public List<Pregunta> getAllPreguntas() {
         List<Pregunta> v_preguntas = new ArrayList<>();
-        SQLiteDatabase v_db = this.getReadableDatabase();
 
-        try {
+        try (SQLiteDatabase v_db = this.getReadableDatabase()) {
             Cursor v_cursor = v_db.rawQuery("SELECT numero, descripcion, elemento FROM pregunta ORDER BY numero ASC", null);
 
             if (v_cursor != null && v_cursor.moveToFirst()) {
@@ -261,8 +250,6 @@ public class DBHelper extends SQLiteAssetHelper {
         } catch (SQLException e) {
             Log.e(TAG, e.toString());
             e.printStackTrace();
-        } finally {
-            v_db.close();
         }
 
         return v_preguntas;
@@ -272,11 +259,9 @@ public class DBHelper extends SQLiteAssetHelper {
 
         List<Pregunta> v_preguntas = new ArrayList<>();
 
-        SQLiteDatabase v_db = this.getReadableDatabase();
+        try (SQLiteDatabase v_db = this.getReadableDatabase()) {
 
-        try {
-
-            Cursor v_cursor = v_db.rawQuery("select numero, descripcion, elemento from pregunta where elemento='"+ elemento +"' order by numero" , null);
+            Cursor v_cursor = v_db.rawQuery("select numero, descripcion, elemento from pregunta where elemento='" + elemento + "' order by numero", null);
 
             if (null != v_cursor) {
                 while (v_cursor.moveToNext()) {
@@ -297,12 +282,9 @@ public class DBHelper extends SQLiteAssetHelper {
             }
 
 
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
             Log.e(TAG, e.toString());
             e.printStackTrace();
-        }finally {
-            v_db.close();
         }
 
         return v_preguntas;
@@ -317,11 +299,9 @@ public class DBHelper extends SQLiteAssetHelper {
 
         List<Opcion> v_opciones = new ArrayList<>();
 
-        SQLiteDatabase v_db = this.getReadableDatabase();
+        try (SQLiteDatabase v_db = this.getReadableDatabase()) {
 
-        try {
-
-            Cursor v_cursor = v_db.rawQuery("select numero, nombre, pregunta from opcion order by numero desc" , null);
+            Cursor v_cursor = v_db.rawQuery("select numero, nombre, pregunta from opcion order by numero desc", null);
 
             if (null != v_cursor) {
                 while (v_cursor.moveToNext()) {
@@ -340,8 +320,6 @@ public class DBHelper extends SQLiteAssetHelper {
         } catch (SQLException e) {
             Log.e(TAG, e.toString());
             e.printStackTrace();
-        } finally {
-            v_db.close();
         }
 
         return v_opciones;
@@ -352,11 +330,9 @@ public class DBHelper extends SQLiteAssetHelper {
 
         List<Opcion> v_opciones = new ArrayList<>();
 
-        SQLiteDatabase v_db = this.getReadableDatabase();
+        try (SQLiteDatabase v_db = this.getReadableDatabase()) {
 
-        try {
-
-            Cursor v_cursor = v_db.rawQuery("select numero, nombre, pregunta from opcion where pregunta='"+ pregunta +"' order by numero" , null);
+            Cursor v_cursor = v_db.rawQuery("select numero, nombre, pregunta from opcion where pregunta='" + pregunta + "' order by numero", null);
 
             if (null != v_cursor) {
                 while (v_cursor.moveToNext()) {
@@ -375,14 +351,12 @@ public class DBHelper extends SQLiteAssetHelper {
         } catch (SQLException e) {
             Log.e(TAG, e.toString());
             e.printStackTrace();
-        } finally {
-            v_db.close();
         }
 
         return v_opciones;
     }
 
-    public long insertEmpresa(String nombre, String pais, String region, String sitio, String sector, String planta, String representante, String telefono, String email, String clienteAct, String numeroDePlant, String numeroDePlantIm, String fecha, String hora) {
+    public void insertEmpresa(String nombre, String pais, String region, String sitio, String sector, String planta, String representante, String telefono, String email, String clienteAct, String numeroDePlant, String numeroDePlantIm, String fecha, String hora) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("nombre", nombre);
@@ -404,7 +378,6 @@ public class DBHelper extends SQLiteAssetHelper {
         long empresaId = db.insert("empresa", null, contentValues);
 
         db.close();
-        return empresaId;
     }
 
     @SuppressLint("Range")
@@ -470,28 +443,20 @@ public class DBHelper extends SQLiteAssetHelper {
         db.close();
     }
 
-    public void insertarOpcionEnRespuestas(String nombreEmpresa, String pregunta, String numeroOpcion1, String nombreOpcion1, String numeroOpcion2, String nombreOpcion2) {
+    public void insertarOpcionesEnRespuestas(String nombreEmpresa, Opcion opcionActual, Opcion opcionPotencial) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put("empresa", nombreEmpresa);
-        values.put("pregunta", pregunta);
+        values.put("pregunta", opcionActual.getNumero()); // Asumo que el número de la pregunta se guarda en la columna "pregunta"
+        values.put("opcionAct", opcionActual.getNombreOpcion());
+        values.put("opcionPot", opcionPotencial.getNombreOpcion());
 
-        if ("Actual".equals(nombreOpcion1)) {
-            values.put("opcionAct", numeroOpcion1);
-        } else if ("Potencial".equals(nombreOpcion1)) {
-            values.put("opcionPot", numeroOpcion1);
-        }
-
-        if ("Actual".equals(nombreOpcion2)) {
-            values.put("opcionAct", numeroOpcion2);
-        } else if ("Potencial".equals(nombreOpcion2)) {
-            values.put("opcionPot", numeroOpcion2);
-        }
-
-        db.insert("tabla_respuestas", null, values);
+        // Insertar fila
+        db.insert("respuestas", null, values);
         db.close();
     }
+
 
 
 }

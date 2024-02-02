@@ -4,10 +4,11 @@ public class Opcion {
     private String numero;
     private String nombre;
     private String pregunta;
-    private boolean seleccionada; // Nuevo atributo para controlar la selección
-    private String nombreOpcion; // Nuevo atributo para indicar el nombre de la opción
-    private String opcionAct; // Nuevo atributo para opcionAct
-    private String opcionPot; // Nuevo atributo para opcionPot
+    private boolean seleccionada;
+    private String nombreOpcion;
+    private String opcionAct;
+    private String opcionPot;
+    private String tipo; // Nuevo atributo para el tipo de opción
 
     public Opcion() {
         this.numero = "";
@@ -17,6 +18,7 @@ public class Opcion {
         this.nombreOpcion = "";
         this.opcionAct = "";
         this.opcionPot = "";
+        this.tipo = "";
     }
 
     public String getNumero() {
@@ -73,5 +75,13 @@ public class Opcion {
 
     public void setOpcionPot(String opcionPot) {
         this.opcionPot = opcionPot;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 }
