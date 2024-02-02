@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.appreman.app.Adapter.ElementoAdapter;
+import com.appreman.app.Adapter.OpcionAdapter;
 import com.appreman.app.Database.DBHelper;
 import com.appreman.app.Models.Elemento;
 import com.appreman.appreman.R;
@@ -63,5 +64,16 @@ public class ElementosFragment extends Fragment {
         recycler.setAdapter(adapter);
 
         return fragment;
+    }
+
+    public OpcionAdapter obtenerOpcionAdapter() {
+        RecyclerView recyclerView = getView().findViewById(R.id.recyclerview);
+
+        if (recyclerView != null && recyclerView.getAdapter() instanceof OpcionAdapter) {
+            OpcionAdapter opcionAdapter = (OpcionAdapter) recyclerView.getAdapter();
+            return opcionAdapter;
+        }
+
+        return null;
     }
 }

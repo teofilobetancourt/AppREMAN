@@ -470,6 +470,29 @@ public class DBHelper extends SQLiteAssetHelper {
         db.close();
     }
 
+    public void insertarOpcionEnRespuestas(String nombreEmpresa, String pregunta, String numeroOpcion1, String nombreOpcion1, String numeroOpcion2, String nombreOpcion2) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("empresa", nombreEmpresa);
+        values.put("pregunta", pregunta);
+
+        if ("Actual".equals(nombreOpcion1)) {
+            values.put("opcionAct", numeroOpcion1);
+        } else if ("Potencial".equals(nombreOpcion1)) {
+            values.put("opcionPot", numeroOpcion1);
+        }
+
+        if ("Actual".equals(nombreOpcion2)) {
+            values.put("opcionAct", numeroOpcion2);
+        } else if ("Potencial".equals(nombreOpcion2)) {
+            values.put("opcionPot", numeroOpcion2);
+        }
+
+        db.insert("tabla_respuestas", null, values);
+        db.close();
+    }
+
 
 }
 
