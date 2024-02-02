@@ -129,4 +129,7 @@ public class EncuestasActivity extends AppCompatActivity {
     private void mostrarToast(String mensaje) {
         Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
     }
+
+
+
 }

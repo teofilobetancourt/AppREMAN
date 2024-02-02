@@ -64,7 +64,7 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
         int selectedCount = getSelectedCount();
 
         if (selectedCount == 2) {
-            uncheckOldestSelectedOptions();
+            uncheckOldestSelectedOptions(selectedOption.getPregunta());
         }
 
         selectedOption.setSeleccionada(!selectedOption.isSeleccionada());
@@ -80,6 +80,17 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
         }
 
         notifyDataSetChanged();
+    }
+
+    private void uncheckOldestSelectedOptions(String pregunta) {
+        for (Opcion option : items) {
+            if (option.isSeleccionada() && option.getPregunta().equals(pregunta) && !option.getNombreOpcion().equals("Actual")) {
+                option.setSeleccionada(false);
+                option.setNombreOpcion("");
+                notifyItemChanged(items.indexOf(option));
+                return;
+            }
+        }
     }
 
     @Override
@@ -108,14 +119,15 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
         return count;
     }
 
-    private void uncheckOldestSelectedOptions() {
-        for (Opcion option : items) {
-            if (option.isSeleccionada()) {
-                option.setSeleccionada(false);
-                option.setNombreOpcion("");
-                notifyItemChanged(items.indexOf(option));
-                return;
+    public List<Opcion> obtenerOpcionesSeleccionadas() {
+        List<Opcion> opcionesSeleccionadas = new ArrayList<>();
+
+        for (Opcion opcion : items) {
+            if (opcion.isSeleccionada()) {
+                opcionesSeleccionadas.add(opcion);
             }
         }
+
+        return opcionesSeleccionadas;
     }
 }
