@@ -420,19 +420,37 @@ public class DBHelper extends SQLiteAssetHelper {
 
     public void insertarNombreEmpresaEnRespuestas(String nombreEmpresa) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("empresa", nombreEmpresa);
 
-        long result = db.insert("respuestas", null, values);
+        if (!existeNombreEmpresaEnRespuestas(db, nombreEmpresa)) {
+            ContentValues values = new ContentValues();
+            values.put("empresa", nombreEmpresa);
 
-        if (result != -1) {
-            Log.d("DBHelper", "Nombre de Empresa insertado en respuestas: " + nombreEmpresa);
+            long result = db.insert("respuestas", null, values);
+
+            if (result != -1) {
+                Log.d("DBHelper", "Nombre de Empresa insertado en respuestas: " + nombreEmpresa);
+            } else {
+                Log.e("DBHelper", "Error al almacenar Nombre de Empresa en respuestas");
+            }
         } else {
-            Log.e("DBHelper", "Error al almacenar Nombre de Empresa en respuestas");
+            Log.d("DBHelper", "Nombre de Empresa ya existe en respuestas: " + nombreEmpresa);
         }
 
         db.close();
     }
+
+    private boolean existeNombreEmpresaEnRespuestas(SQLiteDatabase db, String nombreEmpresa) {
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM respuestas WHERE empresa = ?", new String[]{nombreEmpresa});
+        boolean existe = false;
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                existe = cursor.getInt(0) > 0;
+            }
+            cursor.close();
+        }
+        return existe;
+    }
+
 
     public void insertarPreguntaEnRespuestas(String nombreEmpresa, String numeroPregunta) {
         SQLiteDatabase db = this.getWritableDatabase();
