@@ -44,8 +44,8 @@ public class ElementoAdapter extends RecyclerView.Adapter<ElementoAdapter.Motivo
         RecyclerView.LayoutManager lManager = new LinearLayoutManager(context);
         holder.recycler.setLayoutManager(lManager);
 
-        // Aquí está la corrección
-        PreguntaAdapter adapter = new PreguntaAdapter(context, mPreguntas);
+        // Utiliza el adaptador de PreguntaAdapter corregido
+        PreguntaAdapter adapter = new PreguntaAdapter(context, mPreguntas, "NombreDeLaEmpresa"); // Cambia "NombreDeLaEmpresa" por la variable que tiene el nombre de la empresa
         holder.recycler.setAdapter(adapter);
     }
 

@@ -391,21 +391,22 @@ public class DBHelper extends SQLiteAssetHelper {
         db.close();
     }
 
-    public void insertarOpcionesEnRespuestas(String numeroPregunta, String opcionActual, String opcionPotencial) {
+    public void insertarOpcionesEnRespuestas(String nombreEmpresa, String numeroPregunta, String opcionActual, String opcionPotencial) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
+        values.put("Empresa", nombreEmpresa);
         values.put("pregunta", numeroPregunta);
         values.put("opcionActual", opcionActual);
         values.put("opcionPotencial", opcionPotencial);
 
-
         Log.d(TAG, "Opcion Actual: " + opcionActual);
         Log.d(TAG, "Opcion Potencial: " + opcionPotencial);
 
-
         // Insertar fila
         long insertResult = db.insert("respuestas", null, values);
+
+
 
         if (insertResult != -1) {
             Log.d("DBHelper", "Inserción exitosa en la tabla respuestas");
@@ -415,6 +416,9 @@ public class DBHelper extends SQLiteAssetHelper {
 
         db.close();
     }
+
+
+
 
 
 
