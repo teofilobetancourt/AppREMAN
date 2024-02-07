@@ -1,10 +1,10 @@
 package com.appreman.app.Adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,7 +18,7 @@ import java.util.List;
 
 public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosViewHolder> {
 
-    private List<Opcion> items;
+    private final List<Opcion> items;
 
     public OpcionAdapter(List<Opcion> items) {
         this.items = items != null ? items : new ArrayList<>();
@@ -31,6 +31,7 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
         return new MotivosViewHolder(v);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull final MotivosViewHolder holder, int position) {
         final Opcion opcion = items.get(position);
@@ -42,24 +43,15 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
             holder.txtOpcion.setText(opcion.getNumero().concat(".- ").concat(opcion.getNombre()));
         }
 
-        holder.txtOpcion.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                handleOptionSelection(opcion);
-            }
-        });
+        holder.txtOpcion.setOnClickListener(v -> handleOptionSelection(opcion));
 
         holder.checkBox.setOnCheckedChangeListener(null);
         holder.checkBox.setChecked(opcion.isSeleccionada());
 
-        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                handleOptionSelection(opcion);
-            }
-        });
+        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> handleOptionSelection(opcion));
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void handleOptionSelection(Opcion selectedOption) {
         int selectedCount = getSelectedCount();
 
@@ -95,7 +87,7 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
 
     @Override
     public int getItemCount() {
-        return items == null ? 0 : items.size();
+        return items.size();
     }
 
     protected static class MotivosViewHolder extends RecyclerView.ViewHolder {

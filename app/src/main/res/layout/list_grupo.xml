@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true">
@@ -13,7 +14,8 @@
         android:layout_marginStart="@dimen/_5sdp"
         android:layout_marginEnd="@dimen/_5sdp"
         android:orientation="horizontal"
-        android:padding="@dimen/_2sdp">
+        android:padding="@dimen/_2sdp"
+        tools:ignore="UselessParent">
 
 
         <TextView
@@ -28,7 +30,8 @@
             android:fontFamily="@font/opensans_regular"
             android:text="Grupo"
             android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/_12sdp" />
+            android:textSize="@dimen/_12sdp"
+            tools:ignore="HardcodedText,TextSizeCheck" />
 
 
     </RelativeLayout>

@@ -16,8 +16,6 @@ package com.appreman.app.Repository;
  * limitations under the License.
  */
 
-import android.app.Application;
-
 import androidx.lifecycle.LiveData;
 
 import com.appreman.app.Dao.GrupoDao;
@@ -28,7 +26,7 @@ import java.util.List;
 
 /**
  * Abstracted Repository as promoted by the Architecture Guide.
- * https://developer.android.com/topic/libraries/architecture/guide.html
+ * <a href="https://developer.android.com/topic/libraries/architecture/guide.html">...</a>
  */
 
 public class GrupoRepository {
@@ -40,9 +38,9 @@ public class GrupoRepository {
     // dependency. This adds complexity and much more code, and this sample is not about testing.
     // See the BasicSample in the android-architecture-components repository at
     // https://github.com/googlesamples
-    public GrupoRepository(Application application) {
-        RemanRoomDatabase db = RemanRoomDatabase.getDatabase(application);
-        mGrupoDao = db.grupoDao();
+    public GrupoRepository() {
+        mGrupoDao = RemanRoomDatabase.grupoDao();
+        assert mGrupoDao != null;
         mAllGrupos = mGrupoDao.getGrupos();
     }
 
@@ -55,8 +53,6 @@ public class GrupoRepository {
     // You must call this on a non-UI thread or your app will throw an exception. Room ensures
     // that you're not doing any long running operations on the main thread, blocking the UI.
    public void insert(Grupo grupo) {
-        RemanRoomDatabase.databaseWriteExecutor.execute(() -> {
-            mGrupoDao.insert(grupo);
-        });
+        RemanRoomDatabase.databaseWriteExecutor.execute(() -> mGrupoDao.insert(grupo));
     }
 }

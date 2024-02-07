@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.appreman.app.Activity.NuevaEmpresaActivity;
 import com.appreman.app.Adapter.EmpresaAdapter;
-import com.appreman.app.Models.Empresa;
 import com.appreman.app.Database.DBHelper;
+import com.appreman.app.Models.Empresa;
 import com.appreman.appreman.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 

@@ -32,13 +32,8 @@
                 android:layout_centerVertical="true"
                 android:src="@drawable/eman2"
                 android:contentDescription="logo"
-                android:scaleType="fitCenter" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-            </RelativeLayout>
+                android:scaleType="fitCenter"
+                tools:ignore="HardcodedText" />
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -58,9 +53,11 @@
                 android:id="@+id/txtNombre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
                 android:hint="@string/hint_nombre"
-                android:textSize="16sp" />
+                android:inputType="textPersonName"
+                android:textColorHint="#757575"
+                android:textSize="16sp"
+                tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -79,9 +76,11 @@
                 android:id="@+id/txtPais"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
                 android:hint="@string/hint_pais"
-                android:textSize="16sp" />
+                android:inputType="textPersonName"
+                android:textColorHint="#757575"
+                android:textSize="16sp"
+                tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
         </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -101,9 +100,11 @@
                 android:id="@+id/txtRegion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
                 android:hint="@string/hint_region"
-                android:textSize="16sp" />
+                android:inputType="textPersonName"
+                android:textColorHint="#757575"
+                android:textSize="16sp"
+                tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -122,9 +123,11 @@
                 android:id="@+id/txtSitio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
                 android:hint="@string/hint_sitio"
-                android:textSize="16sp" />
+                android:inputType="textPersonName"
+                android:textColorHint="#757575"
+                android:textSize="16sp"
+                tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
         </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -144,9 +147,11 @@
                 android:id="@+id/txtSector"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
                 android:hint="@string/hint_sector_industrial"
-                android:textSize="16sp" />
+                android:inputType="textPersonName"
+                android:textColorHint="#757575"
+                android:textSize="16sp"
+                tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
         </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -166,9 +171,11 @@
                 android:id="@+id/txtPlanta"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
                 android:hint="@string/hint_tipo_planta"
-                android:textSize="16sp" />
+                android:inputType="textPersonName"
+                android:textColorHint="#757575"
+                android:textSize="16sp"
+                tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -187,9 +194,11 @@
                 android:id="@+id/txtRepresentanteEmpresa"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
                 android:hint="@string/hint_representante_empresa"
-                android:textSize="16sp" />
+                android:inputType="textPersonName"
+                android:textColorHint="#757575"
+                android:textSize="16sp"
+                tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
         </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -209,9 +218,11 @@
                 android:id="@+id/txtTelefono"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"
                 android:hint="@string/hint_telefono"
-                android:textSize="16sp" />
+                android:inputType="number"
+                android:textColorHint="#757575"
+                android:textSize="16sp"
+                tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
         </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -231,9 +242,11 @@
                 android:id="@+id/txtEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
                 android:hint="@string/hint_email"
-                android:textSize="16sp" />
+                android:inputType="textEmailAddress"
+                android:textColorHint="#757575"
+                android:textSize="16sp"
+                tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
         </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -254,9 +267,11 @@
                 android:id="@+id/txtClienteActual"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
                 android:hint="@string/hint_cliente_actual"
-                android:textSize="16sp" />
+                android:inputType="textPersonName"
+                android:textColorHint="#757575"
+                android:textSize="16sp"
+                tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -277,7 +292,8 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
                 android:hint="@string/hint_numero_plantas"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                tools:ignore="VisualLintTextFieldSize" />
         </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -299,7 +315,8 @@
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:hint="@string/hint_plantas_implementar"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                tools:ignore="VisualLintTextFieldSize" />
         </com.google.android.material.textfield.TextInputLayout>
 
 

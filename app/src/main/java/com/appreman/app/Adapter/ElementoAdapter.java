@@ -19,20 +19,12 @@ import java.util.List;
 
 public class ElementoAdapter extends RecyclerView.Adapter<ElementoAdapter.MotivosViewHolder> {
 
-    private List<Elemento> items;
-    private Context context;
+    private final List<Elemento> items;
+    private final Context context;
 
     public ElementoAdapter(List<Elemento> items, Context context) {
         this.items = items;
         this.context = context;
-    }
-
-    public List<Elemento> getElementos() {
-        return items;
-    }
-
-    public void setElementos(List<Elemento> elemento) {
-        this.items = elemento;
     }
 
     @NonNull

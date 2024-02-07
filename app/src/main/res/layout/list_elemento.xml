@@ -13,7 +13,8 @@
         android:layout_marginStart="@dimen/_5sdp"
         android:layout_marginEnd="@dimen/_5sdp"
         android:orientation="horizontal"
-        android:padding="@dimen/_2sdp">
+        android:padding="@dimen/_2sdp"
+        tools:ignore="UselessParent">
 
         <TextView
             android:id="@+id/textNombre"
@@ -28,7 +29,7 @@
             android:text="Elementos"
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/_12sdp"
-            tools:ignore="TextSizeCheck" />
+            tools:ignore="HardcodedText,TextSizeCheck" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview"

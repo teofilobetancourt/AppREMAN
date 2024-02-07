@@ -54,7 +54,7 @@ public class ElementosFragment extends Fragment {
 
         RecyclerView recycler = fragment.findViewById(R.id.recyclerview);
 
-        DBHelper v_db_helper = new DBHelper(getActivity().getApplicationContext());
+        DBHelper v_db_helper = new DBHelper(requireActivity().getApplicationContext());
         List<Elemento> mElementos = v_db_helper.getElementosGrupo(mParam1);
 
         RecyclerView.LayoutManager lManager = new LinearLayoutManager(getContext());
@@ -67,11 +67,10 @@ public class ElementosFragment extends Fragment {
     }
 
     public OpcionAdapter obtenerOpcionAdapter() {
-        RecyclerView recyclerView = getView().findViewById(R.id.recyclerview);
+        RecyclerView recyclerView = requireView().findViewById(R.id.recyclerview);
 
         if (recyclerView != null && recyclerView.getAdapter() instanceof OpcionAdapter) {
-            OpcionAdapter opcionAdapter = (OpcionAdapter) recyclerView.getAdapter();
-            return opcionAdapter;
+            return (OpcionAdapter) recyclerView.getAdapter();
         }
 
         return null;

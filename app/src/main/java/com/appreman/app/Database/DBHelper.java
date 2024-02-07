@@ -6,10 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
 import android.util.Log;
-
-import androidx.annotation.RequiresApi;
 
 import com.appreman.app.Models.Elemento;
 import com.appreman.app.Models.Empresa;
@@ -18,12 +15,6 @@ import com.appreman.app.Models.Opcion;
 import com.appreman.app.Models.Pregunta;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,26 +24,10 @@ public class DBHelper extends SQLiteAssetHelper {
     private static final String DATABASE_NAME = "reman.db";
     private static final int DATABASE_VERSION = 1;
 
-    private Context mContext;
-    private String DB_PATH;
-
-    public static final String APPLICATION_ID = "com.appreman.app";
-
-
-    public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
-    }
-
-
 
     @SuppressLint("SdCardPath")
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        this.mContext = context;
-
-        //ContextWrapper cw =new ContextWrapper(context);
-        DB_PATH = "/data/data/" + APPLICATION_ID + "/databases/"; //cw.getFilesDir().getAbsolutePath()+ "/databases/";
-
 
 
     }
@@ -64,50 +39,6 @@ public class DBHelper extends SQLiteAssetHelper {
                 "BD actualizándose. Se perderán los datos antiguos");
 
         onCreate(db);
-    }
-
-    public void deleteDatabase(){
-        //File data = Environment.getDataDirectory();
-        String currentDBPath = DB_PATH + DATABASE_NAME;
-        Log.e(TAG,"RUTA:"+currentDBPath);
-        File currentDB = new File(currentDBPath);
-
-        SQLiteDatabase.deleteDatabase(currentDB);
-
-    }
-
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void copyDatabase()
-    {
-        Log.e(TAG,"New database is being copied to device!");
-        byte[] buffer = new byte[1024];
-        OutputStream myOutput;
-        int length;
-        // Open your local db as the input stream
-        InputStream myInput;
-        try
-        {
-            myInput =mContext.getAssets().open("databases/"+DATABASE_NAME);
-            // transfer bytes from the inputfile to the
-            // outputfile
-            myOutput = Files.newOutputStream(Paths.get(DB_PATH + DATABASE_NAME));
-            while((length = myInput.read(buffer)) > 0)
-            {
-                myOutput.write(buffer, 0, length);
-            }
-            myOutput.close();
-            myOutput.flush();
-            myInput.close();
-            Log.e(TAG,
-                    "New database has been copied to device!");
-
-
-        }
-        catch(IOException e)
-        {
-            e.printStackTrace();
-        }
     }
 
 
@@ -375,7 +306,6 @@ public class DBHelper extends SQLiteAssetHelper {
         contentValues.put("hora_registro", hora);
 
         // Insertar la empresa con los valores pasados como parámetros
-        long empresaId = db.insert("empresa", null, contentValues);
 
         db.close();
     }
@@ -476,6 +406,4 @@ public class DBHelper extends SQLiteAssetHelper {
     }
 
 
-
 }
-

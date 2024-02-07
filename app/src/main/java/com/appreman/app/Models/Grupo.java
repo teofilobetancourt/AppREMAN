@@ -14,11 +14,6 @@ public class Grupo {
     @ColumnInfo(name = "nombre")
     private String mNombre;
 
-    public Grupo(Integer numero, String nombre) {
-        this.mNumero = numero;
-        this.mNombre = nombre;
-    }
-
     public Grupo() {
 
     }

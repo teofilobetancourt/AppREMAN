@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -87,21 +86,18 @@ public class EncuestasActivity extends AppCompatActivity {
 
         // Configurar el OnClickListener del botón flotante
         FloatingActionButton fabEncuestar = binding.fabEncuestar;
-        fabEncuestar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Insertar el nombre de la empresa en la base de datos
-                insertarNombreEmpresaEnBD();
+        fabEncuestar.setOnClickListener(view -> {
+            // Insertar el nombre de la empresa en la base de datos
+            insertarNombreEmpresaEnBD();
 
-                // Obtener la lista de preguntas de la base de datos y guardarlas para la empresa actual
-                guardarPreguntasParaEmpresa();
+            // Obtener la lista de preguntas de la base de datos y guardarlas para la empresa actual
+            guardarPreguntasParaEmpresa();
 
-                // Guardar las opciones seleccionadas
-                guardarOpcionesSeleccionadas();
+            // Guardar las opciones seleccionadas
+            guardarOpcionesSeleccionadas();
 
-                // Mostrar un Toast indicando que los datos se han guardado correctamente
-                mostrarToast("Nombre de empresa, preguntas y opciones guardados correctamente");
-            }
+            // Mostrar un Toast indicando que los datos se han guardado correctamente
+            mostrarToast();
         });
     }
 
@@ -199,7 +195,7 @@ public class EncuestasActivity extends AppCompatActivity {
         return null;
     }
 
-    private void mostrarToast(String mensaje) {
-        Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
+    private void mostrarToast() {
+        Toast.makeText(this, "Nombre de empresa, preguntas y opciones guardados correctamente", Toast.LENGTH_SHORT).show();
     }
 }

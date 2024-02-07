@@ -18,14 +18,11 @@ package com.appreman.app.Database;
 
 import android.content.Context;
 
-import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.appreman.app.Dao.GrupoDao;
-import com.appreman.app.Models.Elemento;
 import com.appreman.app.Models.Grupo;
 
 import java.util.concurrent.ExecutorService;
@@ -59,28 +56,10 @@ public abstract class RemanRoomDatabase extends RoomDatabase {
                             .createFromAsset("/databases/reman.db")
                             .build();
 
-                  /*  INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                                    RemanRoomDatabase.class, "database_reman")
-                            .addCallback(sRoomDatabaseCallback)
-                            .build();*/
                 }
             }
         }
         return INSTANCE;
     }
 
-    /**
-     * Override the onCreate method to populate the database.
-     * For this sample, we clear the database every time it is created.
-     */
-    private static RoomDatabase.Callback sRoomDatabaseCallback = new RoomDatabase.Callback() {
-        @Override
-        public void onCreate(@NonNull SupportSQLiteDatabase db) {
-            super.onCreate(db);
-
-            databaseWriteExecutor.execute(() -> {
-
-            });
-        }
-    };
 }

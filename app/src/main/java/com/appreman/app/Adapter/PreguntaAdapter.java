@@ -16,32 +16,15 @@ import com.appreman.app.Models.Opcion;
 import com.appreman.app.Models.Pregunta;
 import com.appreman.appreman.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.MotivosViewHolder> {
 
-    private List<Pregunta> items;
+    private final List<Pregunta> items;
     private Context context;
 
     public PreguntaAdapter(List<Pregunta> items) {
         this.items = items;
-    }
-
-    public List<Pregunta> getPreguntas() {
-        return items;
-    }
-
-    public void setPreguntas(ArrayList<Pregunta> pregunta) {
-        this.items = pregunta;
-    }
-
-    public boolean isEmpty() {
-        return getItemCount() == 0;
-    }
-
-    public Pregunta getItem(int position) {
-        return items.get(position);
     }
 
     @NonNull

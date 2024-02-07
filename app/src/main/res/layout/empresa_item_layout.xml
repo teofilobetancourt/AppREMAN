@@ -6,7 +6,6 @@
 
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -28,7 +27,8 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="4dp"
-            android:text="Nombre Empresa" />
+            android:text="Nombre Empresa"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/textViewPais"
@@ -44,7 +44,8 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
-            android:text="Pais" />
+            android:text="Pais"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/textViewRegion"
@@ -60,7 +61,8 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
-            android:text="Región" />
+            android:text="Región"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/textViewSitio"
@@ -76,7 +78,8 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
-            android:text="Sitio" />
+            android:text="Sitio"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/textViewSector"
@@ -92,7 +95,8 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
-            android:text="Sector Industrial" />
+            android:text="Sector Industrial"
+            tools:ignore="HardcodedText" />
 
 
         <TextView
@@ -109,7 +113,8 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
-            android:text="Tipo de Planta" />
+            android:text="Tipo de Planta"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/textViewRepresentante"
@@ -125,7 +130,8 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
-            android:text="Representante de la Empresa" />
+            android:text="Representante de la Empresa"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/textViewTelefono"
@@ -141,7 +147,8 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
-            android:text="Teléfono" />
+            android:text="Teléfono"
+            tools:ignore="HardcodedText" />
 
 
         <TextView
@@ -158,7 +165,8 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
-            android:text="Correo Electrónico" />
+            android:text="Correo Electrónico"
+            tools:ignore="HardcodedText" />
 
 
         <TextView
@@ -175,7 +183,8 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
-            android:text="Cliente Actual" />
+            android:text="Cliente Actual"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/textViewNumeroDePlantas"
@@ -191,7 +200,8 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
-            android:text="Número de Plantas" />
+            android:text="Número de Plantas"
+            tools:ignore="HardcodedText" />
 
 
         <TextView
@@ -208,7 +218,8 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
-            android:text="Plantas a Implementar" />
+            android:text="Plantas a Implementar"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/textViewHoraRegistro"
@@ -224,7 +235,8 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
-            android:text="Hora de Registro" />
+            android:text="Hora de Registro"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/textViewFechaRegistro"
@@ -240,7 +252,8 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
-            android:text="Fecha de Registro" />
+            android:text="Fecha de Registro"
+            tools:ignore="HardcodedText" />
 
         <Button
             android:id="@+id/buttonEncuesta"
@@ -248,7 +261,8 @@
             android:layout_height="wrap_content"
             android:text="Encuestar"
             android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"/>
+            android:layout_marginStart="16dp"
+            tools:ignore="HardcodedText" />
 
 
 

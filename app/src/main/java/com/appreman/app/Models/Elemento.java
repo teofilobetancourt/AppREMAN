@@ -20,15 +20,9 @@ public class Elemento {
     private Integer mGrupo;
 
 
-
-    public Elemento(String numero, String nombre, Integer grupo) {
-        this.mNumero = numero;
-        this.mNombre = nombre;
-        this.mGrupo = grupo;
-    }
-
     public Elemento() {
 
+        mNumero = null;
     }
 
 

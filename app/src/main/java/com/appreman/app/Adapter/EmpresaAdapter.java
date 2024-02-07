@@ -1,5 +1,6 @@
 package com.appreman.app.Adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,7 @@ import java.util.List;
 
 public class EmpresaAdapter extends RecyclerView.Adapter<EmpresaAdapter.EmpresaViewHolder> {
 
-    private List<Empresa> empresas;
+    private final List<Empresa> empresas;
     private EncuestaClickListener encuestaClickListener;
 
     public EmpresaAdapter(List<Empresa> empresas) {
@@ -66,6 +67,7 @@ public class EmpresaAdapter extends RecyclerView.Adapter<EmpresaAdapter.EmpresaV
             buttonEncuesta.setOnClickListener(this);
         }
 
+        @SuppressLint("SetTextI18n")
         public void bindData(Empresa empresa) {
             // Asignar valores a los TextView
             textViewNombre.setText(empresa.getNombre());

@@ -42,7 +42,7 @@ public class GrupoViewModel extends AndroidViewModel {
 
     public GrupoViewModel(Application application) {
         super(application);
-        mRepository = new GrupoRepository(application);
+        mRepository = new GrupoRepository();
         mAllGrupos = mRepository.getAllGrupos();
     }
 
