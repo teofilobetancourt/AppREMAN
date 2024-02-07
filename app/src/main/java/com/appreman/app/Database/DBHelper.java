@@ -391,19 +391,35 @@ public class DBHelper extends SQLiteAssetHelper {
         db.close();
     }
 
-    public void insertarOpcionesEnRespuestas(String nombreEmpresa, Opcion opcionActual, Opcion opcionPotencial) {
+    public void insertarOpcionesEnRespuestas(String numeroPregunta, String opcionActual, String opcionPotencial) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put("empresa", nombreEmpresa);
-        values.put("pregunta", opcionActual.getNumero()); // Asumo que el número de la pregunta se guarda en la columna "pregunta"
-        values.put("opcionAct", opcionActual.getNombreOpcion());
-        values.put("opcionPot", opcionPotencial.getNombreOpcion());
+        values.put("pregunta", numeroPregunta);
+        values.put("opcionActual", opcionActual);
+        values.put("opcionPotencial", opcionPotencial);
+
+
+        Log.d(TAG, "Opcion Actual: " + opcionActual);
+        Log.d(TAG, "Opcion Potencial: " + opcionPotencial);
+
 
         // Insertar fila
-        db.insert("respuestas", null, values);
+        long insertResult = db.insert("respuestas", null, values);
+
+        if (insertResult != -1) {
+            Log.d("DBHelper", "Inserción exitosa en la tabla respuestas");
+        } else {
+            Log.e("DBHelper", "Error al insertar en la tabla respuestas");
+        }
+
         db.close();
     }
+
+
+
+
+
 
 
 }

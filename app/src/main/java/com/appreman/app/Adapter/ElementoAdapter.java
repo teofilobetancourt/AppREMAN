@@ -44,7 +44,8 @@ public class ElementoAdapter extends RecyclerView.Adapter<ElementoAdapter.Motivo
         RecyclerView.LayoutManager lManager = new LinearLayoutManager(context);
         holder.recycler.setLayoutManager(lManager);
 
-        PreguntaAdapter adapter = new PreguntaAdapter(mPreguntas);
+        // Aquí está la corrección
+        PreguntaAdapter adapter = new PreguntaAdapter(context, mPreguntas);
         holder.recycler.setAdapter(adapter);
     }
 

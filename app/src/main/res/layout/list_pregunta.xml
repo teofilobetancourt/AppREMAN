@@ -45,7 +45,7 @@
             tools:ignore="MissingClass" />
 
         <Button
-            android:id="@+id/fabEncuestar"
+            android:id="@+id/btnPregunta"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/recyclerview"

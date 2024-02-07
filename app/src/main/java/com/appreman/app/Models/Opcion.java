@@ -6,7 +6,6 @@ public class Opcion {
     private String pregunta;
     private boolean seleccionada;
     private String nombreOpcion;
-    private final String tipo; // Nuevo atributo para el tipo de opción
 
     public Opcion() {
         this.numero = "";
@@ -14,7 +13,6 @@ public class Opcion {
         this.pregunta = "";
         this.seleccionada = false;
         this.nombreOpcion = "";
-        this.tipo = "";
     }
 
     public String getNumero() {
@@ -55,10 +53,6 @@ public class Opcion {
 
     public void setNombreOpcion(String nombreOpcion) {
         this.nombreOpcion = nombreOpcion;
-    }
-
-    public String getTipo() {
-        return tipo;
     }
 
 }

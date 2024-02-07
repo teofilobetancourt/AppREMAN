@@ -7,22 +7,17 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
-import com.appreman.app.Adapter.OpcionAdapter;
 import com.appreman.app.Adapter.ViewPagerAdapter;
 import com.appreman.app.Database.DBHelper;
 import com.appreman.app.Fragments.ElementosFragment;
 import com.appreman.app.Models.Grupo;
-import com.appreman.app.Models.Opcion;
 import com.appreman.app.Models.Pregunta;
-import com.appreman.appreman.R;
 import com.appreman.appreman.databinding.ActivityEncuestasBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class EncuestasActivity extends AppCompatActivity {
@@ -93,9 +88,6 @@ public class EncuestasActivity extends AppCompatActivity {
             // Obtener la lista de preguntas de la base de datos y guardarlas para la empresa actual
             guardarPreguntasParaEmpresa();
 
-            // Guardar las opciones seleccionadas
-            guardarOpcionesSeleccionadas();
-
             // Mostrar un Toast indicando que los datos se han guardado correctamente
             mostrarToast();
         });
@@ -128,74 +120,7 @@ public class EncuestasActivity extends AppCompatActivity {
         }
     }
 
-    private void guardarOpcionesSeleccionadas() {
-        OpcionAdapter opcionAdapter = obtenerOpcionAdapter();
-
-        if (opcionAdapter != null) {
-            List<Opcion> opcionesSeleccionadas = opcionAdapter.obtenerOpcionesSeleccionadas();
-
-            // Log para verificar las opciones seleccionadas
-            Log.d("EncuestasActivity", "Opciones seleccionadas:");
-
-            for (Opcion opcion : opcionesSeleccionadas) {
-                Log.d("EncuestasActivity", "  - Nombre: " + opcion.getNombreOpcion() + ", Tipo: " + opcion.getTipo());
-            }
-
-            // Filtrar las opciones seleccionadas por tipo (Actual o Potencial)
-            List<Opcion> opcionesActual = filterByTipo(opcionesSeleccionadas, "Actual");
-            List<Opcion> opcionesPotencial = filterByTipo(opcionesSeleccionadas, "Potencial");
-
-            // Log para verificar las opciones filtradas
-            Log.d("EncuestasActivity", "Opciones Actual:");
-            for (Opcion opcion : opcionesActual) {
-                Log.d("EncuestasActivity", "  - " + opcion);
-            }
-
-            Log.d("EncuestasActivity", "Opciones Potencial:");
-            for (Opcion opcion : opcionesPotencial) {
-                Log.d("EncuestasActivity", "  - " + opcion);
-            }
-
-            // Asegúrate de que tengas al menos una opción actual y una potencial seleccionadas
-            if (!opcionesActual.isEmpty() && !opcionesPotencial.isEmpty()) {
-                // Tomar la primera opción de cada tipo (puedes ajustar esto según tu lógica)
-                Opcion opcionActual = opcionesActual.get(0);
-                Opcion opcionPotencial = opcionesPotencial.get(0);
-
-                // Log para verificar las opciones que se insertarán
-                Log.d("EncuestasActivity", "Opción Actual a insertar: " + opcionActual);
-                Log.d("EncuestasActivity", "Opción Potencial a insertar: " + opcionPotencial);
-
-                // Insertar en la base de datos
-                dbHelper.insertarOpcionesEnRespuestas(nombreEmpresa, opcionActual, opcionPotencial);
-            } else {
-                Log.d("EncuestasActivity", "No hay suficientes opciones seleccionadas.");
-            }
-        }
-    }
-
-    private List<Opcion> filterByTipo(List<Opcion> opciones, String tipo) {
-        List<Opcion> opcionesFiltradas = new ArrayList<>();
-        for (Opcion opcion : opciones) {
-            if (tipo.equals(opcion.getTipo())) {
-                opcionesFiltradas.add(opcion);
-            }
-        }
-        return opcionesFiltradas;
-    }
-
-    private OpcionAdapter obtenerOpcionAdapter() {
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.view_pager + ":" + viewPager.getCurrentItem());
-
-        if (fragment instanceof ElementosFragment) {
-            ElementosFragment elementosFragment = (ElementosFragment) fragment;
-            return elementosFragment.obtenerOpcionAdapter();
-        }
-
-        return null;
-    }
-
     private void mostrarToast() {
-        Toast.makeText(this, "Nombre de empresa, preguntas y opciones guardados correctamente", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Nombre de empresa y preguntas guardados correctamente", Toast.LENGTH_SHORT).show();
     }
 }

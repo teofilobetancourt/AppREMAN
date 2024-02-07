@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.appreman.app.Activity.OpcionSelectionListener;
 import com.appreman.app.Models.Opcion;
 import com.appreman.appreman.R;
 
@@ -19,9 +20,11 @@ import java.util.List;
 public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosViewHolder> {
 
     private final List<Opcion> items;
+    private OpcionSelectionListener opcionSelectionListener;
 
-    public OpcionAdapter(List<Opcion> items) {
+    public OpcionAdapter(List<Opcion> items, OpcionSelectionListener opcionSelectionListener) {
         this.items = items != null ? items : new ArrayList<>();
+        this.opcionSelectionListener = opcionSelectionListener;
     }
 
     @NonNull
@@ -43,16 +46,16 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
             holder.txtOpcion.setText(opcion.getNumero().concat(".- ").concat(opcion.getNombre()));
         }
 
-        holder.txtOpcion.setOnClickListener(v -> handleOptionSelection(opcion));
+        holder.txtOpcion.setOnClickListener(v -> handleOptionSelection(opcion, holder));
 
         holder.checkBox.setOnCheckedChangeListener(null);
         holder.checkBox.setChecked(opcion.isSeleccionada());
 
-        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> handleOptionSelection(opcion));
+        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> handleOptionSelection(opcion, holder));
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private void handleOptionSelection(Opcion selectedOption) {
+    private void handleOptionSelection(Opcion selectedOption, MotivosViewHolder holder) {
         int selectedCount = getSelectedCount();
 
         if (selectedCount == 2) {
@@ -72,6 +75,13 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
         }
 
         notifyDataSetChanged();
+
+        // Notificar al listener sobre la selección de opción
+        if (opcionSelectionListener != null) {
+            opcionSelectionListener.onOpcionSelected(
+                    obtenerOpcionActualSeleccionada(),
+                    obtenerOpcionPotencialSeleccionada());
+        }
     }
 
     private void uncheckOldestSelectedOptions(String pregunta) {
@@ -109,6 +119,24 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
             }
         }
         return count;
+    }
+
+    public Opcion obtenerOpcionActualSeleccionada() {
+        for (Opcion opcion : items) {
+            if (opcion.isSeleccionada() && opcion.getNombreOpcion().equals("Actual")) {
+                return opcion;
+            }
+        }
+        return null;
+    }
+
+    public Opcion obtenerOpcionPotencialSeleccionada() {
+        for (Opcion opcion : items) {
+            if (opcion.isSeleccionada() && opcion.getNombreOpcion().equals("Potencial")) {
+                return opcion;
+            }
+        }
+        return null;
     }
 
     public List<Opcion> obtenerOpcionesSeleccionadas() {
