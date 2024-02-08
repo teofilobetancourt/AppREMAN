@@ -9,7 +9,8 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="16dp"
         android:adjustViewBounds="true"
         android:padding="10dp"
         android:scaleType="centerInside"
@@ -22,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/imageView"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:text="Agregar Empresa para Encuestar"
         android:onClick="nuevaEmpresaOnClick" />
 
