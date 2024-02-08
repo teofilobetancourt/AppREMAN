@@ -108,8 +108,6 @@ public class PieChartView extends View {
         return details;
     }
 
-
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -131,9 +129,9 @@ public class PieChartView extends View {
         }
 
         // Dibujar leyenda
-        float legendTextSize = 40;
-        float legendX = centerX + radius * 1.5f; // Posición X para la leyenda
-        float legendY = centerY - radius; // Posición Y inicial para la leyenda
+        float legendTextSize = 44; // Ajustar el tamaño del texto de la leyenda
+        float legendX = 50; // Ajustar la posición X para la leyenda (menor valor para mover a la izquierda)
+        float legendY = 100; // Ajustar la posición Y inicial para la leyenda
         float lineHeight = legendTextSize * 1.5f;
 
         paint.setColor(Color.BLACK);
@@ -152,7 +150,7 @@ public class PieChartView extends View {
         if (!currentDescription.isEmpty()) {
             paint.setColor(Color.BLACK);
             paint.setTextSize(40);
-            canvas.drawText(currentDescription, centerX - 150, centerY - radius - 40, paint);
+            canvas.drawText(currentDescription, centerX - 150, centerY + radius + 40, paint);
 
             int selectedIndex = -1;
             for (int i = 0; i < descriptions.length; i++) {
@@ -165,7 +163,7 @@ public class PieChartView extends View {
                 paint.setColor(Color.DKGRAY);
                 paint.setTextSize(25);
 
-                float detailY = centerY - radius + 100; // Posición inicial Y para los detalles
+                float detailY = centerY + radius + 80; // Posición inicial Y para los detalles (mover hacia abajo)
                 for (String detail : detailedData.get(selectedIndex)) {
                     canvas.drawText(detail, centerX - 150, detailY, paint);
                     detailY += 30; // Incrementar la posición Y para la próxima línea
