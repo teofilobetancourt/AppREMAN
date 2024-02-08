@@ -306,9 +306,17 @@ public class DBHelper extends SQLiteAssetHelper {
         contentValues.put("hora_registro", hora);
 
         // Insertar la empresa con los valores pasados como parámetros
+        long result = db.insert("empresa", null, contentValues);
+
+        if (result != -1) {
+            Log.d("DBHelper", "Empresa insertada correctamente: " + nombre);
+        } else {
+            Log.e("DBHelper", "Error al insertar la empresa: " + nombre);
+        }
 
         db.close();
     }
+
 
     @SuppressLint("Range")
     public List<Empresa> getAllEmpresas() {
