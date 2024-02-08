@@ -69,7 +69,6 @@ public class EmpresaAdapter extends RecyclerView.Adapter<EmpresaAdapter.EmpresaV
 
         @SuppressLint("SetTextI18n")
         public void bindData(Empresa empresa) {
-            // Asignar valores a los TextView
             textViewNombre.setText(empresa.getNombre());
             textViewPais.setText(empresa.getPais());
             textViewRegion.setText(empresa.getRegion());
@@ -88,23 +87,19 @@ public class EmpresaAdapter extends RecyclerView.Adapter<EmpresaAdapter.EmpresaV
 
         @Override
         public void onClick(View v) {
-            // Maneja el clic del botón "Encuestar"
             if (v.getId() == R.id.buttonEncuesta && encuestaClickListener != null) {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    // Notifica al listener sobre el clic del botón "Encuestar"
                     encuestaClickListener.onEncuestaClick(position);
                 }
             }
         }
     }
 
-    // Interfaz para manejar el clic del botón "Encuestar"
     public interface EncuestaClickListener {
         void onEncuestaClick(int position);
     }
 
-    // Método para configurar el listener desde fuera del adaptador
     public void setEncuestaClickListener(EncuestaClickListener listener) {
         this.encuestaClickListener = listener;
     }

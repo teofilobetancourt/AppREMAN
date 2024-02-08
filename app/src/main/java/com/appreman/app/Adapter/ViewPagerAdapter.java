@@ -15,7 +15,6 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     public ViewPagerAdapter(@NonNull FragmentManager fm, int behavior) {
         super(fm, behavior);
     }
-    //add fragment to the viewpager
     public void addFragment(Fragment fragment, String title){
         fragments.add(fragment);
         fragmentTitles.add(title);
@@ -30,7 +29,6 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     public int getCount() {
         return fragments.size();
     }
-    //to setup title of the tab layout
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {

@@ -48,10 +48,8 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.Motivo
     public void onBindViewHolder(@NonNull MotivosViewHolder holder, final int i) {
         Pregunta pregunta = items.get(i);
 
-        // Configuración del texto de la pregunta
         holder.txtPregunta.setText(pregunta.getNumero().concat(".- ").concat(pregunta.getDescripcion()));
 
-        // Configuración del RecyclerView para las opciones de la pregunta
         List<Opcion> opciones = dbHelper.getOpcionesPregunta(pregunta.getNumero());
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
@@ -61,26 +59,20 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.Motivo
         holder.recycler.setAdapter(opcionAdapter);
 
         holder.btnPreguntas.setOnClickListener(v -> {
-            // Obtén las opciones seleccionadas directamente desde el adaptador de opciones
             OpcionAdapter preguntaOpcionAdapter = (OpcionAdapter) holder.recycler.getAdapter();
             assert preguntaOpcionAdapter != null;
             List<Opcion> opcionesSeleccionadas = preguntaOpcionAdapter.obtenerOpcionesSeleccionadas();
 
-            // Asegúrate de que haya al menos una opción seleccionada
             if (!opcionesSeleccionadas.isEmpty()) {
                 Opcion opcionActual = opcionesSeleccionadas.get(0);
                 Opcion opcionPotencial = opcionesSeleccionadas.size() > 1 ? opcionesSeleccionadas.get(1) : opcionActual;
 
-                // Llama al método para guardar las opciones seleccionadas junto con el nombre de la empresa
                 dbHelper.insertarOpcionesEnRespuestas(nombreEmpresa, pregunta.getNumero(), opcionActual.getNumero(), opcionPotencial.getNumero());
 
-                // Notifica al adaptador que los datos han cambiado si es necesario
                 preguntaOpcionAdapter.notifyDataSetChanged();
 
-                // Muestra un Toast indicando que las opciones se han guardado correctamente
                 mostrarToast("Opciones guardadas correctamente");
 
-                // Log para mostrar la pregunta que se está manejando
                 Log.d(TAG, "Pregunta seleccionada: " + pregunta.getNumero());
             } else {
                 Log.e(TAG, "No se pudieron obtener opciones seleccionadas.");
@@ -95,20 +87,16 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.Motivo
 
     @Override
     public void onOpcionSelected(String preguntaNumero, List<Opcion> opcionesSeleccionadas) {
-        // Implementación según tus necesidades
     }
 
     @Override
     public void onOpcionesSelected(String preguntaNumero, List<Opcion> opcionesSeleccionadas) {
-        // Implementación según tus necesidades
     }
 
     @Override
     public void onOpcionSelected(Opcion opcionActual, Opcion opcionPotencial) {
-        // Implementación según tus necesidades
     }
 
-    // Método para mostrar un Toast
     private void mostrarToast(String mensaje) {
         Toast.makeText(context, mensaje, Toast.LENGTH_SHORT).show();
     }

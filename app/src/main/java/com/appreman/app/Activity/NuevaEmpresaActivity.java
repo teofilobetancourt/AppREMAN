@@ -63,13 +63,10 @@ public class NuevaEmpresaActivity extends AppCompatActivity {
         String pais = txtPais.getText().toString();
 
         if (!nombre.isEmpty() && !pais.isEmpty()) {
-            // Obtener la fecha actual del sistema
             String fechaActual = obtenerFechaActual();
 
-            // Obtener la hora actual del sistema
             String horaActual = obtenerHoraActual();
 
-            // Insertar la empresa en la base de datos con la fecha y hora actuales
             dbHelper.insertEmpresa(
                     txtNombre.getText().toString(),
                     txtPais.getText().toString(),
@@ -95,7 +92,6 @@ public class NuevaEmpresaActivity extends AppCompatActivity {
     }
 
     private void limpiar() {
-        // Limpiar los EditText después de guardar
         txtNombre.setText("");
         txtPais.setText("");
         txtRegion.setText("");
@@ -118,10 +114,10 @@ public class NuevaEmpresaActivity extends AppCompatActivity {
 
     private String obtenerHoraActual() {
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.HOUR_OF_DAY, -4); // Restar 4 horas a la hora actual
+        calendar.add(Calendar.HOUR_OF_DAY, -4);
 
         SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
-        timeFormat.setTimeZone(TimeZone.getDefault()); // Establecer la zona horaria del dispositivo
+        timeFormat.setTimeZone(TimeZone.getDefault());
         return timeFormat.format(calendar.getTime());
     }
     @Override

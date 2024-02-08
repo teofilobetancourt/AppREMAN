@@ -24,7 +24,6 @@ public class SurveyFragment extends Fragment {
     private DBHelper dbHelper;
 
     public SurveyFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -42,7 +41,6 @@ public class SurveyFragment extends Fragment {
     private void setupRecyclerView() {
         List<Empresa> empresas = dbHelper.getAllEmpresas();
 
-        // Agregar registros de depuración para verificar las empresas
         for (Empresa empresa : empresas) {
             Log.d("SurveyFragment", "Empresa: " + empresa.getNombre() + ", ID: " + empresa.getId());
         }
@@ -51,11 +49,10 @@ public class SurveyFragment extends Fragment {
         recyclerViewEmpresas.setLayoutManager(new LinearLayoutManager(requireActivity()));
         recyclerViewEmpresas.setAdapter(adapter);
 
-        // Configura el clic para abrir EncuestasActivity al hacer clic en un elemento del RecyclerView
         adapter.setEncuestaClickListener(position -> {
             if (position != RecyclerView.NO_POSITION) {
                 Empresa empresa = empresas.get(position);
-                String nombreEmpresaSeleccionada = empresa.getNombre(); // Obtén el nombre de la empresa
+                String nombreEmpresaSeleccionada = empresa.getNombre();
                 Log.d("SurveyFragment", "Nombre de empresa seleccionada: " + nombreEmpresaSeleccionada);
                 EncuestasActivity.start(requireActivity(), nombreEmpresaSeleccionada);
             } else {

@@ -1,4 +1,3 @@
-// OpcionSelectionListener.java
 package com.appreman.app.Activity;
 
 import com.appreman.app.Models.Opcion;

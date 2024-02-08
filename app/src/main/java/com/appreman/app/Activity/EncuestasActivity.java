@@ -36,15 +36,12 @@ public class EncuestasActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Utiliza View Binding para inflar el diseño de la actividad
         ActivityEncuestasBinding binding = ActivityEncuestasBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Configurar la barra de herramientas
         setSupportActionBar(binding.toolbar);
         binding.toolbar.setTitle(getTitle());
 
-        // Configurar el ViewPager y el TabLayout
         viewPager = binding.viewPager;
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), 0);
         dbHelper = new DBHelper(getApplicationContext());
@@ -76,19 +73,14 @@ public class EncuestasActivity extends AppCompatActivity {
             }
         });
 
-        // Obtener el nombre de la empresa desde el Intent
         obtenerNombreEmpresaDesdeIntent();
 
-        // Configurar el OnClickListener del botón flotante
         FloatingActionButton fabEncuestar = binding.fabEncuestar;
         fabEncuestar.setOnClickListener(view -> {
-            // Insertar el nombre de la empresa en la base de datos
             insertarNombreEmpresaEnBD();
 
-            // Obtener la lista de preguntas de la base de datos y guardarlas para la empresa actual
             guardarPreguntasParaEmpresa();
 
-            // Mostrar un Toast indicando que los datos se han guardado correctamente
             mostrarToast();
         });
     }

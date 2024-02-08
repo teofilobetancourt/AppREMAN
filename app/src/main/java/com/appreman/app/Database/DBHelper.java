@@ -305,7 +305,6 @@ public class DBHelper extends SQLiteAssetHelper {
         contentValues.put("fecha_registro", fecha);
         contentValues.put("hora_registro", hora);
 
-        // Insertar la empresa con los valores pasados como parámetros
         long result = db.insert("empresa", null, contentValues);
 
         if (result != -1) {
@@ -329,7 +328,7 @@ public class DBHelper extends SQLiteAssetHelper {
         if (cursor.moveToFirst()) {
             do {
                 Empresa empresa = new Empresa();
-                empresa.setId((int) cursor.getLong(cursor.getColumnIndex("id"))); // Asegúrate de tener una columna "id" en tu tabla "empresa"
+                empresa.setId((int) cursor.getLong(cursor.getColumnIndex("id")));
                 empresa.setNombre(cursor.getString(cursor.getColumnIndex("nombre")));
                 empresa.setPais(cursor.getString(cursor.getColumnIndex("pais")));
                 empresa.setRegion(cursor.getString(cursor.getColumnIndex("region")));
@@ -343,7 +342,6 @@ public class DBHelper extends SQLiteAssetHelper {
                 empresa.setNumeroDePlant(cursor.getString(cursor.getColumnIndex("numero_plantas")));
                 empresa.setNumeroDePlantIm(cursor.getString(cursor.getColumnIndex("plantas_implementar")));
 
-                // Agregar recuperación de fecha y hora
                 empresa.setFechaRegistro(cursor.getString(cursor.getColumnIndex("fecha_registro")));
                 empresa.setHoraRegistro(cursor.getString(cursor.getColumnIndex("hora_registro")));
 
@@ -411,7 +409,6 @@ public class DBHelper extends SQLiteAssetHelper {
         Log.d(TAG, "Opcion Actual: " + opcionActual);
         Log.d(TAG, "Opcion Potencial: " + opcionPotencial);
 
-        // Insertar fila
         long insertResult = db.insert("respuestas", null, values);
 
 

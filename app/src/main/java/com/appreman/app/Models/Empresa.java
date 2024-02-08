@@ -22,11 +22,9 @@ public class Empresa {
     public String fechaRegistro;
     public String horaRegistro;
 
-    // Constructor vacío
     public Empresa() {
     }
 
-    // Métodos getter y setter para el ID
     public int getId() {
         return id;
     }
@@ -35,7 +33,6 @@ public class Empresa {
         this.id = id;
     }
 
-    // Métodos getter y setter para el nombre
     public String getNombre() {
         return nombre;
     }
@@ -44,7 +41,6 @@ public class Empresa {
         this.nombre = nombre;
     }
 
-    // Métodos getter y setter para los otros campos de la empresa
     public String getPais() {
         return pais;
     }
@@ -133,7 +129,6 @@ public class Empresa {
         this.numeroDePlantIm = numeroDePlantIm;
     }
 
-    // Métodos getter y setter para los nuevos campos de fecha y hora de registro
     public String getFechaRegistro() {
         return fechaRegistro;
     }

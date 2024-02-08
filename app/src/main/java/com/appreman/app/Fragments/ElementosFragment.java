@@ -27,7 +27,6 @@ public class ElementosFragment extends Fragment {
     private int mParam1;
 
     public ElementosFragment() {
-        // Required empty public constructor
     }
 
     public static ElementosFragment newInstance(int param1) {
@@ -59,7 +58,7 @@ public class ElementosFragment extends Fragment {
         RecyclerView.LayoutManager lManager = new LinearLayoutManager(getContext());
         recycler.setLayoutManager(lManager);
 
-        ElementoAdapter adapter = new ElementoAdapter(mElementos, getContext()); // O con el contexto adecuado
+        ElementoAdapter adapter = new ElementoAdapter(mElementos, getContext());
         recycler.setAdapter(adapter);
 
         return fragment;

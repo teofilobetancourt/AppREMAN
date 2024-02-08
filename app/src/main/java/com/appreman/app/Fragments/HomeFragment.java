@@ -12,7 +12,6 @@ import com.appreman.appreman.R;
 public class HomeFragment extends Fragment {
 
     public HomeFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -24,10 +23,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // Encuentra la referencia al PieChartView en tu layout
 
-        // Configura los datos para la gráfica de torta
-        // Asume que la clase PieChartView ya maneja la lógica de la gráfica
 
         return inflater.inflate(R.layout.fragment_home, container, false);
     }

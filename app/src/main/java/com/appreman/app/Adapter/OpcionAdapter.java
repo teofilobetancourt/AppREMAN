@@ -39,7 +39,6 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
     public void onBindViewHolder(@NonNull final MotivosViewHolder holder, int position) {
         final Opcion opcion = items.get(position);
 
-        // Modificar el texto para indicar la opción seleccionada
         if (opcion.isSeleccionada()) {
             holder.txtOpcion.setText(opcion.getNombreOpcion() + " : " + opcion.getNumero().concat(".- ").concat(opcion.getNombre()));
         } else {
@@ -76,7 +75,6 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
 
         notifyDataSetChanged();
 
-        // Notificar al listener sobre la selección de opción
         if (opcionSelectionListener != null) {
             opcionSelectionListener.onOpcionSelected(
                     obtenerOpcionActualSeleccionada(),

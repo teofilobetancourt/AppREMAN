@@ -18,7 +18,6 @@ public class EmpresasFragment extends Fragment {
     private DBHelper dbHelper;
 
     public EmpresasFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -29,7 +28,6 @@ public class EmpresasFragment extends Fragment {
 
         Button btnNuevaEmpresa = view.findViewById(R.id.btnNuevaEmpresa);
         btnNuevaEmpresa.setOnClickListener(v -> {
-            // Abre la actividad para agregar una nueva empresa
             Intent intent = new Intent(getActivity(), NuevaEmpresaActivity.class);
             startActivity(intent);
         });
