@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -65,18 +66,24 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.Motivo
             assert preguntaOpcionAdapter != null;
             List<Opcion> opcionesSeleccionadas = preguntaOpcionAdapter.obtenerOpcionesSeleccionadas();
 
-            // Asegúrate de que haya al menos dos opciones seleccionadas
-            if (opcionesSeleccionadas.size() >= 2) {
+            // Asegúrate de que haya al menos una opción seleccionada
+            if (!opcionesSeleccionadas.isEmpty()) {
                 Opcion opcionActual = opcionesSeleccionadas.get(0);
-                Opcion opcionPotencial = opcionesSeleccionadas.get(1);
+                Opcion opcionPotencial = opcionesSeleccionadas.size() > 1 ? opcionesSeleccionadas.get(1) : opcionActual;
 
                 // Llama al método para guardar las opciones seleccionadas junto con el nombre de la empresa
                 dbHelper.insertarOpcionesEnRespuestas(nombreEmpresa, pregunta.getNumero(), opcionActual.getNumero(), opcionPotencial.getNumero());
 
-                // Luego, puedes notificar al adaptador que los datos han cambiado si es necesario
+                // Notifica al adaptador que los datos han cambiado si es necesario
                 preguntaOpcionAdapter.notifyDataSetChanged();
+
+                // Muestra un Toast indicando que las opciones se han guardado correctamente
+                mostrarToast("Opciones guardadas correctamente");
+
+                // Log para mostrar la pregunta que se está manejando
+                Log.d(TAG, "Pregunta seleccionada: " + pregunta.getNumero());
             } else {
-                Log.e(TAG, "No se pudieron obtener al menos dos opciones seleccionadas.");
+                Log.e(TAG, "No se pudieron obtener opciones seleccionadas.");
             }
         });
     }
@@ -99,6 +106,11 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.Motivo
     @Override
     public void onOpcionSelected(Opcion opcionActual, Opcion opcionPotencial) {
         // Implementación según tus necesidades
+    }
+
+    // Método para mostrar un Toast
+    private void mostrarToast(String mensaje) {
+        Toast.makeText(context, mensaje, Toast.LENGTH_SHORT).show();
     }
 
     protected static class MotivosViewHolder extends RecyclerView.ViewHolder {
