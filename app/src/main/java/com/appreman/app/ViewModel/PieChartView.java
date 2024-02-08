@@ -23,7 +23,8 @@ public class PieChartView extends View {
 
     private DBHelper dbHelper;
     private ArrayList<Float> data = new ArrayList<>();
-    private int[] colors = {Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.CYAN}; // Colores para cada porción
+    private int[] colors = {Color.rgb(55, 166, 237), Color.rgb(255, 185, 104),
+            Color.rgb(67, 184, 106), Color.rgb(255, 87, 34), Color.rgb(156, 39, 176)}; // Colores para cada porción
     private Paint paint;
     private RectF rectF;
     private String[] descriptions = {"Grupos", "Elementos", "Preguntas", "Opciones", "Empresas"};
@@ -120,17 +121,23 @@ public class PieChartView extends View {
 
         float startAngle = 0;
         for (int i = 0; i < data.size(); i++) {
+            // Utilizar gradientes para colorear las porciones del pastel
+            paint.setShader(null);  // Limpiar el shader anterior
             paint.setColor(colors[i % colors.length]);
+
             float sweepAngle = 360 * (data.get(i) / getTotal(data));
 
+            // Agregar sombreado para dar profundidad
+            paint.setShadowLayer(10, 0, 0, Color.BLACK);
             canvas.drawArc(rectF, startAngle, sweepAngle, true, paint);
+            paint.setShadowLayer(0, 0, 0, 0);  // Restablecer la sombra
 
             startAngle += sweepAngle;
         }
 
         // Dibujar leyenda
-        float legendTextSize = 44; // Ajustar el tamaño del texto de la leyenda
-        float legendX = 50; // Ajustar la posición X para la leyenda (menor valor para mover a la izquierda)
+        float legendTextSize = 40; // Ajustar el tamaño del texto de la leyenda
+        float legendX = getWidth() - 900; // Ajustar la posición X para la leyenda
         float legendY = 100; // Ajustar la posición Y inicial para la leyenda
         float lineHeight = legendTextSize * 1.5f;
 
@@ -149,7 +156,7 @@ public class PieChartView extends View {
         // Resto del código para mostrar la información detallada según la selección, si es necesario
         if (!currentDescription.isEmpty()) {
             paint.setColor(Color.BLACK);
-            paint.setTextSize(40);
+            paint.setTextSize(30);
             canvas.drawText(currentDescription, centerX - 150, centerY + radius + 40, paint);
 
             int selectedIndex = -1;
@@ -161,7 +168,7 @@ public class PieChartView extends View {
             }
             if (selectedIndex != -1) {
                 paint.setColor(Color.DKGRAY);
-                paint.setTextSize(25);
+                paint.setTextSize(20);
 
                 float detailY = centerY + radius + 80; // Posición inicial Y para los detalles (mover hacia abajo)
                 for (String detail : detailedData.get(selectedIndex)) {
