@@ -42,7 +42,6 @@ public class ElementoAdapter extends RecyclerView.Adapter<ElementoAdapter.Motivo
     public void onBindViewHolder(@NonNull MotivosViewHolder holder, final int i) {
         holder.txtElemento.setText(items.get(i).getNumero().concat(".- ").concat(items.get(i).getNombre()));
 
-        // Obtén el nombre de la empresa desde SharedPreferences
         String nombreEmpresa = obtenerNombreEmpresaDesdePreferencias();
 
         DBHelper v_db_helper = new DBHelper(context);
@@ -51,7 +50,6 @@ public class ElementoAdapter extends RecyclerView.Adapter<ElementoAdapter.Motivo
         RecyclerView.LayoutManager lManager = new LinearLayoutManager(context);
         holder.recycler.setLayoutManager(lManager);
 
-        // Utiliza el adaptador de PreguntaAdapter corregido
         PreguntaAdapter adapter = new PreguntaAdapter(context, mPreguntas, nombreEmpresa);
         holder.recycler.setAdapter(adapter);
     }

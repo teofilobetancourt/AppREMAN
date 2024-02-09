@@ -26,7 +26,6 @@ public class SurveyFragment extends Fragment {
     private AppPreferences appPreferences;
 
     public SurveyFragment() {
-        // Constructor
     }
 
     @Override
@@ -59,10 +58,8 @@ public class SurveyFragment extends Fragment {
                 String nombreEmpresaSeleccionada = empresa.getNombre();
                 Log.d("SurveyFragment", "Nombre de empresa seleccionada: " + nombreEmpresaSeleccionada);
 
-                // Guarda el nombre de la empresa en las preferencias
                 appPreferences.setNombreEmpresa(nombreEmpresaSeleccionada);
 
-                // Inicia EncuestasActivity con el nombre de la empresa
                 EncuestasActivity.start(requireActivity());
             } else {
                 Log.d("SurveyFragment", "Posición no válida seleccionada en RecyclerView");

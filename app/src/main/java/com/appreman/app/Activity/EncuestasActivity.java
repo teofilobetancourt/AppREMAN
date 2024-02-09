@@ -72,7 +72,6 @@ public class EncuestasActivity extends AppCompatActivity {
             }
         });
 
-        // Obtener el nombre de la empresa desde las preferencias
         String nombreEmpresa = obtenerNombreEmpresaDesdePreferencias();
 
         FloatingActionButton fabEncuestar = binding.fabEncuestar;

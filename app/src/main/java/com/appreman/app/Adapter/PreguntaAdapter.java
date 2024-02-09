@@ -64,7 +64,6 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.Motivo
             assert preguntaOpcionAdapter != null;
             List<Opcion> opcionesSeleccionadas = preguntaOpcionAdapter.obtenerOpcionesSeleccionadas();
 
-            // Obtener el nombre de la empresa desde las preferencias
             String nombreEmpresa = obtenerNombreEmpresaDesdePreferencias();
 
             if (!opcionesSeleccionadas.isEmpty()) {
@@ -78,6 +77,8 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.Motivo
                 mostrarToast("Opciones guardadas correctamente");
 
                 Log.d(TAG, "Pregunta seleccionada: " + pregunta.getNumero());
+                Log.d(TAG, "Nombre de la empresa seleccionada: " + nombreEmpresa);
+
             } else {
                 Log.e(TAG, "No se pudieron obtener opciones seleccionadas.");
             }
