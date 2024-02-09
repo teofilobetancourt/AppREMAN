@@ -17,6 +17,7 @@ import com.appreman.app.Activity.OpcionSelectionListener;
 import com.appreman.app.Database.DBHelper;
 import com.appreman.app.Models.Opcion;
 import com.appreman.app.Models.Pregunta;
+import com.appreman.app.Repository.AppPreferences;
 import com.appreman.appreman.R;
 
 import java.util.List;
@@ -63,6 +64,9 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.Motivo
             assert preguntaOpcionAdapter != null;
             List<Opcion> opcionesSeleccionadas = preguntaOpcionAdapter.obtenerOpcionesSeleccionadas();
 
+            // Obtener el nombre de la empresa desde las preferencias
+            String nombreEmpresa = obtenerNombreEmpresaDesdePreferencias();
+
             if (!opcionesSeleccionadas.isEmpty()) {
                 Opcion opcionActual = opcionesSeleccionadas.get(0);
                 Opcion opcionPotencial = opcionesSeleccionadas.size() > 1 ? opcionesSeleccionadas.get(1) : opcionActual;
@@ -95,6 +99,11 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.Motivo
 
     @Override
     public void onOpcionSelected(Opcion opcionActual, Opcion opcionPotencial) {
+    }
+
+    private String obtenerNombreEmpresaDesdePreferencias() {
+        AppPreferences appPreferences = new AppPreferences(context);
+        return appPreferences.getNombreEmpresa();
     }
 
     private void mostrarToast(String mensaje) {

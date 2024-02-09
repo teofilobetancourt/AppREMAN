@@ -14,6 +14,7 @@ import com.appreman.app.Activity.EncuestasActivity;
 import com.appreman.app.Adapter.EmpresaAdapter;
 import com.appreman.app.Database.DBHelper;
 import com.appreman.app.Models.Empresa;
+import com.appreman.app.Repository.AppPreferences;
 import com.appreman.appreman.R;
 
 import java.util.List;
@@ -22,8 +23,10 @@ public class SurveyFragment extends Fragment {
 
     private RecyclerView recyclerViewEmpresas;
     private DBHelper dbHelper;
+    private AppPreferences appPreferences;
 
     public SurveyFragment() {
+        // Constructor
     }
 
     @Override
@@ -32,6 +35,7 @@ public class SurveyFragment extends Fragment {
 
         recyclerViewEmpresas = rootView.findViewById(R.id.recyclerViewEmpresas);
         dbHelper = new DBHelper(requireActivity());
+        appPreferences = new AppPreferences(requireActivity());
 
         setupRecyclerView();
 
@@ -54,7 +58,12 @@ public class SurveyFragment extends Fragment {
                 Empresa empresa = empresas.get(position);
                 String nombreEmpresaSeleccionada = empresa.getNombre();
                 Log.d("SurveyFragment", "Nombre de empresa seleccionada: " + nombreEmpresaSeleccionada);
-                EncuestasActivity.start(requireActivity(), nombreEmpresaSeleccionada);
+
+                // Guarda el nombre de la empresa en las preferencias
+                appPreferences.setNombreEmpresa(nombreEmpresaSeleccionada);
+
+                // Inicia EncuestasActivity con el nombre de la empresa
+                EncuestasActivity.start(requireActivity());
             } else {
                 Log.d("SurveyFragment", "Posición no válida seleccionada en RecyclerView");
             }

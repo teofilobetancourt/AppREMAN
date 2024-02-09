@@ -14,6 +14,7 @@ import com.appreman.app.Database.DBHelper;
 import com.appreman.app.Fragments.ElementosFragment;
 import com.appreman.app.Models.Grupo;
 import com.appreman.app.Models.Pregunta;
+import com.appreman.app.Repository.AppPreferences;
 import com.appreman.appreman.databinding.ActivityEncuestasBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
@@ -24,11 +25,9 @@ public class EncuestasActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
     private DBHelper dbHelper;
-    private String nombreEmpresa;
 
-    public static void start(Context context, String nombreEmpresa) {
+    public static void start(Context context) {
         Intent intent = new Intent(context, EncuestasActivity.class);
-        intent.putExtra("nombre_empresa", nombreEmpresa);
         context.startActivity(intent);
     }
 
@@ -73,30 +72,25 @@ public class EncuestasActivity extends AppCompatActivity {
             }
         });
 
-        obtenerNombreEmpresaDesdeIntent();
+        // Obtener el nombre de la empresa desde las preferencias
+        String nombreEmpresa = obtenerNombreEmpresaDesdePreferencias();
 
         FloatingActionButton fabEncuestar = binding.fabEncuestar;
         fabEncuestar.setOnClickListener(view -> {
-            insertarNombreEmpresaEnBD();
+            insertarNombreEmpresaEnBD(nombreEmpresa);
 
-            guardarPreguntasParaEmpresa();
+            guardarPreguntasParaEmpresa(nombreEmpresa);
 
             mostrarToast();
         });
     }
 
-    private void obtenerNombreEmpresaDesdeIntent() {
-        Intent intent = getIntent();
-        if (intent != null && intent.hasExtra("nombre_empresa")) {
-            nombreEmpresa = intent.getStringExtra("nombre_empresa");
-            Log.d("EncuestasActivity", "Nombre de empresa obtenido: " + nombreEmpresa);
-        } else {
-            nombreEmpresa = null;
-            Log.d("EncuestasActivity", "No se pudo obtener el nombre de empresa desde el Intent");
-        }
+    private String obtenerNombreEmpresaDesdePreferencias() {
+        AppPreferences appPreferences = new AppPreferences(this);
+        return appPreferences.getNombreEmpresa();
     }
 
-    private void insertarNombreEmpresaEnBD() {
+    private void insertarNombreEmpresaEnBD(String nombreEmpresa) {
         if (nombreEmpresa != null) {
             dbHelper.insertarNombreEmpresaEnRespuestas(nombreEmpresa);
             Log.d("EncuestasActivity", "Nombre de Empresa almacenado en respuestas: " + nombreEmpresa);
@@ -105,7 +99,7 @@ public class EncuestasActivity extends AppCompatActivity {
         }
     }
 
-    private void guardarPreguntasParaEmpresa() {
+    private void guardarPreguntasParaEmpresa(String nombreEmpresa) {
         List<Pregunta> preguntas = dbHelper.getAllPreguntas();
         for (Pregunta pregunta : preguntas) {
             dbHelper.insertarPreguntaEnRespuestas(nombreEmpresa, pregunta.getNumero());
