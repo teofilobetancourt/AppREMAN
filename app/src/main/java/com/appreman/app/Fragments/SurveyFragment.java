@@ -17,6 +17,7 @@ import com.appreman.app.Models.Empresa;
 import com.appreman.app.Repository.AppPreferences;
 import com.appreman.appreman.R;
 
+import java.util.Collections;
 import java.util.List;
 
 public class SurveyFragment extends Fragment {
@@ -44,9 +45,7 @@ public class SurveyFragment extends Fragment {
     private void setupRecyclerView() {
         List<Empresa> empresas = dbHelper.getAllEmpresas();
 
-        for (Empresa empresa : empresas) {
-            Log.d("SurveyFragment", "Empresa: " + empresa.getNombre() + ", ID: " + empresa.getId());
-        }
+        Collections.reverse(empresas);
 
         EmpresaAdapter adapter = new EmpresaAdapter(empresas);
         recyclerViewEmpresas.setLayoutManager(new LinearLayoutManager(requireActivity()));
@@ -66,4 +65,5 @@ public class SurveyFragment extends Fragment {
             }
         });
     }
+
 }
