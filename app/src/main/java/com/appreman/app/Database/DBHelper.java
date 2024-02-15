@@ -226,66 +226,6 @@ public class DBHelper extends SQLiteAssetHelper {
 
     /* -TODO .- Opciones ------------------------------------------------------------------------------------------- */
 
-    public List<Opcion> getAllOpciones(){
-
-        List<Opcion> v_opciones = new ArrayList<>();
-
-        try (SQLiteDatabase v_db = this.getReadableDatabase()) {
-
-            Cursor v_cursor = v_db.rawQuery("select numero, nombre, pregunta from opcion order by numero desc", null);
-
-            if (null != v_cursor) {
-                while (v_cursor.moveToNext()) {
-
-                    Opcion v_opcion = new Opcion();
-
-                    v_opcion.setNumero(v_cursor.getString(0));
-                    v_opcion.setNombre(v_cursor.getString(1));
-                    v_opcion.setPregunta(v_cursor.getString(2));
-
-                    v_opciones.add(v_opcion);
-                }
-                v_cursor.close();
-            }
-
-        } catch (SQLException e) {
-            Log.e(TAG, e.toString());
-            e.printStackTrace();
-        }
-
-        return v_opciones;
-    }
-
-
-    public List<Opcion> getOpcionesPregunta(String pregunta){
-
-        List<Opcion> v_opciones = new ArrayList<>();
-
-        try (SQLiteDatabase v_db = this.getReadableDatabase()) {
-
-            Cursor v_cursor = v_db.rawQuery("select numero, nombre, pregunta from opcion where pregunta='" + pregunta + "' order by numero", null);
-
-            if (null != v_cursor) {
-                while (v_cursor.moveToNext()) {
-
-                    Opcion v_opcion = new Opcion();
-
-                    v_opcion.setNumero(v_cursor.getString(0));
-                    v_opcion.setNombre(v_cursor.getString(1));
-                    v_opcion.setPregunta(v_cursor.getString(2));
-
-                    v_opciones.add(v_opcion);
-                }
-                v_cursor.close();
-            }
-
-        } catch (SQLException e) {
-            Log.e(TAG, e.toString());
-            e.printStackTrace();
-        }
-
-        return v_opciones;
-    }
 
     public void insertEmpresa(String nombre, String pais, String region, String sitio, String sector, String planta, String representante, String telefono, String email, String clienteAct, String numeroDePlant, String numeroDePlantIm, String fecha, String hora) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -354,6 +294,36 @@ public class DBHelper extends SQLiteAssetHelper {
         return empresas;
     }
 
+    public List<Opcion> getAllOpciones(){
+
+        List<Opcion> v_opciones = new ArrayList<>();
+
+        try (SQLiteDatabase v_db = this.getReadableDatabase()) {
+
+            Cursor v_cursor = v_db.rawQuery("select numero, nombre, pregunta from opcion order by numero desc", null);
+
+            if (null != v_cursor) {
+                while (v_cursor.moveToNext()) {
+
+                    Opcion v_opcion = new Opcion();
+
+                    v_opcion.setNumero(v_cursor.getString(0));
+                    v_opcion.setNombre(v_cursor.getString(1));
+                    v_opcion.setPregunta(v_cursor.getString(2));
+
+                    v_opciones.add(v_opcion);
+                }
+                v_cursor.close();
+            }
+
+        } catch (SQLException e) {
+            Log.e(TAG, e.toString());
+            e.printStackTrace();
+        }
+
+        return v_opciones;
+    }
+
     public void insertarOpcionesEnRespuestas(String nombreEmpresa, String numeroPregunta, String opcionActual, String opcionPotencial) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -378,5 +348,49 @@ public class DBHelper extends SQLiteAssetHelper {
 
         db.close();
     }
+
+    public List<Opcion> getOpcionesPregunta(String pregunta) {
+        List<Opcion> v_opciones = new ArrayList<>();
+
+        try (SQLiteDatabase v_db = this.getReadableDatabase()) {
+
+            Cursor v_cursor = v_db.rawQuery("select numero, nombre, pregunta from opcion where pregunta='" + pregunta + "' order by numero", null);
+
+            if (null != v_cursor) {
+                while (v_cursor.moveToNext()) {
+
+                    Opcion v_opcion = new Opcion();
+
+                    v_opcion.setNumero(v_cursor.getString(0));
+                    v_opcion.setNombre(v_cursor.getString(1));
+                    v_opcion.setPregunta(v_cursor.getString(2));
+
+                    v_opcion.setRespondida(isOpcionRespondida(v_db, v_opcion.getNumero(), pregunta));
+
+                    v_opciones.add(v_opcion);
+                }
+                v_cursor.close();
+            }
+
+        } catch (SQLException e) {
+            Log.e(TAG, e.toString());
+            e.printStackTrace();
+        }
+
+        return v_opciones;
+    }
+
+
+    private boolean isOpcionRespondida(SQLiteDatabase db, String opcionNumero, String preguntaNumero) {
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM respuestas WHERE (opcionActual='" + opcionNumero + "' OR opcionPotencial='" + opcionNumero + "') AND pregunta='" + preguntaNumero + "'",
+                null
+        );
+        boolean respondida = cursor.getCount() > 0;
+        cursor.close();
+        return respondida;
+    }
+
+
 
 }

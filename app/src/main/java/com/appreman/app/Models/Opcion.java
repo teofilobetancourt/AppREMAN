@@ -6,6 +6,7 @@ public class Opcion {
     private String pregunta;
     private boolean seleccionada;
     private String nombreOpcion;
+    private boolean respondida;
 
     public Opcion() {
         this.numero = "";
@@ -13,6 +14,7 @@ public class Opcion {
         this.pregunta = "";
         this.seleccionada = false;
         this.nombreOpcion = "";
+        this.respondida = false;
     }
 
     public String getNumero() {
@@ -55,4 +57,11 @@ public class Opcion {
         this.nombreOpcion = nombreOpcion;
     }
 
+    public boolean isRespondida() {
+        return respondida;
+    }
+
+    public void setRespondida(boolean respondida) {
+        this.respondida = respondida;
+    }
 }
