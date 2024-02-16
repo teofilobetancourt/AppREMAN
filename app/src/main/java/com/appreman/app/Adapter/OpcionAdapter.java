@@ -21,7 +21,7 @@ import java.util.List;
 public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosViewHolder> {
 
     private final List<Opcion> items;
-    private OpcionSelectionListener opcionSelectionListener;
+    private final OpcionSelectionListener opcionSelectionListener;
 
     public OpcionAdapter(List<Opcion> items, OpcionSelectionListener opcionSelectionListener) {
         this.items = items != null ? items : new ArrayList<>();
@@ -52,16 +52,16 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
             holder.itemView.setBackgroundColor(Color.TRANSPARENT);
         }
 
-        holder.txtOpcion.setOnClickListener(v -> handleOptionSelection(opcion, holder));
+        holder.txtOpcion.setOnClickListener(v -> handleOptionSelection(opcion));
 
         holder.checkBox.setOnCheckedChangeListener(null);
         holder.checkBox.setChecked(opcion.isSeleccionada());
 
-        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> handleOptionSelection(opcion, holder));
+        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> handleOptionSelection(opcion));
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private void handleOptionSelection(Opcion selectedOption, MotivosViewHolder holder) {
+    private void handleOptionSelection(Opcion selectedOption) {
         int selectedCount = getSelectedCount();
 
         if (selectedCount == 2) {
@@ -77,21 +77,20 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
                 } else if (selectedCount == 1) {
                     selectedOption.setNombreOpcion("Potencial");
                 } else {
-                    // Si hay tres opciones seleccionadas, cambiar entre actual y potencial
                     Opcion actualAnterior = obtenerOpcionActualSeleccionada();
                     Opcion potencialAnterior = obtenerOpcionPotencialSeleccionada();
 
                     if (actualAnterior != null && actualAnterior.isSeleccionada()) {
                         actualAnterior.setSeleccionada(false);
                         actualAnterior.setNombreOpcion("");
+                    }
 
-                        selectedOption.setNombreOpcion("Actual");
-                    } else if (potencialAnterior != null && potencialAnterior.isSeleccionada()) {
+                    if (potencialAnterior != null && potencialAnterior.isSeleccionada()) {
                         potencialAnterior.setSeleccionada(false);
                         potencialAnterior.setNombreOpcion("");
-
-                        selectedOption.setNombreOpcion("Potencial");
                     }
+
+                    selectedOption.setNombreOpcion("Actual");
                 }
             } else {
                 selectedOption.setNombreOpcion("");
