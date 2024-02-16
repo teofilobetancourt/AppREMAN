@@ -391,6 +391,4 @@ public class DBHelper extends SQLiteAssetHelper {
         return respondida;
     }
 
-
-
 }

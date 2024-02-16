@@ -68,26 +68,46 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
             uncheckOldestSelectedOptions(selectedOption.getPregunta());
         }
 
-        selectedOption.setSeleccionada(!selectedOption.isSeleccionada());
+        if (!selectedOption.isSeleccionada() || selectedOption.getNombreOpcion().isEmpty()) {
+            selectedOption.setSeleccionada(!selectedOption.isSeleccionada());
 
-        if (selectedOption.isSeleccionada()) {
-            if (selectedCount == 0) {
-                selectedOption.setNombreOpcion("Actual");
-            } else if (selectedCount == 1) {
-                selectedOption.setNombreOpcion("Potencial");
+            if (selectedOption.isSeleccionada()) {
+                if (selectedCount == 0) {
+                    selectedOption.setNombreOpcion("Actual");
+                } else if (selectedCount == 1) {
+                    selectedOption.setNombreOpcion("Potencial");
+                } else {
+                    // Si hay tres opciones seleccionadas, cambiar entre actual y potencial
+                    Opcion actualAnterior = obtenerOpcionActualSeleccionada();
+                    Opcion potencialAnterior = obtenerOpcionPotencialSeleccionada();
+
+                    if (actualAnterior != null && actualAnterior.isSeleccionada()) {
+                        actualAnterior.setSeleccionada(false);
+                        actualAnterior.setNombreOpcion("");
+
+                        selectedOption.setNombreOpcion("Actual");
+                    } else if (potencialAnterior != null && potencialAnterior.isSeleccionada()) {
+                        potencialAnterior.setSeleccionada(false);
+                        potencialAnterior.setNombreOpcion("");
+
+                        selectedOption.setNombreOpcion("Potencial");
+                    }
+                }
+            } else {
+                selectedOption.setNombreOpcion("");
             }
-        } else {
-            selectedOption.setNombreOpcion("");
-        }
 
-        notifyDataSetChanged();
+            notifyDataSetChanged();
 
-        if (opcionSelectionListener != null) {
-            opcionSelectionListener.onOpcionSelected(
-                    obtenerOpcionActualSeleccionada(),
-                    obtenerOpcionPotencialSeleccionada());
+            if (opcionSelectionListener != null) {
+                opcionSelectionListener.onOpcionSelected(
+                        obtenerOpcionActualSeleccionada(),
+                        obtenerOpcionPotencialSeleccionada());
+            }
         }
     }
+
+
 
     private void uncheckOldestSelectedOptions(String pregunta) {
         for (Opcion option : items) {
