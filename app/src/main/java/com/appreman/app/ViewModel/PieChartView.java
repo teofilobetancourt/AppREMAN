@@ -124,19 +124,29 @@ public class PieChartView extends View {
             paint.setTextSize(20);
             float porcentaje = porcentajes.get(selectedEmpresa);
             String porcentajeFormateado = String.format("%.2f", porcentaje);
-            canvas.drawText("Porcentaje Respondido: " + porcentajeFormateado + "%", centerX - 150, centerY + radius + 70, paint);
 
-            // Mostrar cantidad de preguntas respondidas y las que faltan
+            // Calcular la posición ajustada para centrar el texto
+            float textWidth = paint.measureText(porcentajeFormateado + "%");
+            float adjustedX = centerX - textWidth / 2;
+
+            canvas.drawText(porcentajeFormateado + "%", adjustedX, centerY + radius + 70, paint);
+
+            // Mostrar cantidad de preguntas respondidas y las que faltan en líneas separadas
             int preguntasRespondidas = dbHelper.getRespuestasCount(selectedEmpresa);
             int totalPreguntas = dbHelper.getAllPreguntas().size();
             int preguntasRestantes = totalPreguntas - preguntasRespondidas;
 
-            String mensaje = "Respondidas: " + preguntasRespondidas +
-                    "\nFaltan: " + preguntasRestantes;
+            // Mensaje para total respondidas
+            String totalRespondidas = "Total respondidas: " + preguntasRespondidas;
+            float totalRespondidasWidth = paint.measureText(totalRespondidas);
+            float adjustedTotalX = centerX - totalRespondidasWidth / 2;
+            canvas.drawText(totalRespondidas, adjustedTotalX, centerY + radius + 100, paint);
 
-            // Ajusta la posición X para centrar el mensaje
-            float textWidth = paint.measureText(mensaje);
-            canvas.drawText(mensaje, centerX - textWidth / 2, centerY + radius + 100, paint);
+            // Mensaje para por responder
+            String porResponder = "Faltando por responder: " + preguntasRestantes;
+            float porResponderWidth = paint.measureText(porResponder);
+            float adjustedPorResponderX = centerX - porResponderWidth / 2;
+            canvas.drawText(porResponder, adjustedPorResponderX, centerY + radius + 130, paint);
         }
     }
 
@@ -151,14 +161,14 @@ public class PieChartView extends View {
         canvas.drawRect(legendX, top, legendX + legendSize, top + legendSize, paint);
         paint.setTextSize(20);
         paint.setColor(Color.DKGRAY);
-        canvas.drawText("Sin Responder", legendX + legendSize + legendSpacing, top + legendSize, paint);
+        canvas.drawText("Preguntas", legendX + legendSize + legendSpacing, top + legendSize, paint);
 
         // Dibujar cuadrado para respuestas respondidas
         paint.setColor(colors[1]);
         canvas.drawRect(legendX, top + legendSize + legendSpacing, legendX + legendSize, top + 2 * legendSize + legendSpacing, paint);
         paint.setTextSize(20);
         paint.setColor(Color.DKGRAY);
-        canvas.drawText("Respondido", legendX + legendSize + legendSpacing, top + 2 * legendSize + legendSpacing, paint);
+        canvas.drawText("Respuestas", legendX + legendSize + legendSpacing, top + 2 * legendSize + legendSpacing, paint);
     }
 
     @Override
