@@ -333,12 +333,11 @@ public class DBHelper extends SQLiteAssetHelper {
         values.put("opcionActual", opcionActual);
         values.put("opcionPotencial", opcionPotencial);
 
+        Log.d(TAG, "Número de Pregunta: " + numeroPregunta);
         Log.d(TAG, "Opcion Actual: " + opcionActual);
         Log.d(TAG, "Opcion Potencial: " + opcionPotencial);
 
         long insertResult = db.insert("respuestas", null, values);
-
-
 
         if (insertResult != -1) {
             Log.d("DBHelper", "Inserción exitosa en la tabla respuestas");
@@ -348,6 +347,7 @@ public class DBHelper extends SQLiteAssetHelper {
 
         db.close();
     }
+
 
     public List<Opcion> getOpcionesPregunta(String pregunta) {
         List<Opcion> v_opciones = new ArrayList<>();
