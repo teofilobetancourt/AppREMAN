@@ -18,10 +18,21 @@
         tools:ignore="ContentDescription,HardcodedText,ImageContrastCheck"
         android:contentDescription="TODO" />
 
+    <!-- Agregado el Spinner -->
+    <Spinner
+        android:id="@+id/spinner_empresas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/imageView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:padding="8dp"/>
+
     <com.appreman.app.ViewModel.PieChartView
         android:id="@+id/pie_chart_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/spinner_empresas"
         android:layout_gravity="center"
         android:layout_margin="20dp" />
 

@@ -391,4 +391,64 @@ public class DBHelper extends SQLiteAssetHelper {
         return respondida;
     }
 
+    @SuppressLint("Range")
+    public List<String> getAllEmpresaNames() {
+        List<String> empresaNames = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT nombre FROM empresa";
+        Cursor cursor = db.rawQuery(query, null);
+
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+                    String empresaName = cursor.getString(cursor.getColumnIndex("nombre"));
+                    empresaNames.add(empresaName);
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
+            e.printStackTrace();
+        } finally {
+            cursor.close();
+            db.close();
+        }
+
+        return empresaNames;
+    }
+
+
+    public int getRespuestasCount(String nombreEmpresa) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        int totalPreguntas = 0;
+        int preguntasRespondidas = 0;
+
+        try {
+            // Obtener la cantidad total de preguntas para la empresa
+            Cursor cursorTotal = db.rawQuery("SELECT COUNT(*) FROM pregunta", null);
+            if (cursorTotal.moveToFirst()) {
+                totalPreguntas = cursorTotal.getInt(0);
+            }
+            cursorTotal.close();
+
+            // Obtener la cantidad de preguntas respondidas para la empresa
+            Cursor cursorRespondidas = db.rawQuery("SELECT COUNT(DISTINCT pregunta) FROM respuestas WHERE empresa='" + nombreEmpresa + "'", null);
+            if (cursorRespondidas.moveToFirst()) {
+                preguntasRespondidas = cursorRespondidas.getInt(0);
+            }
+            cursorRespondidas.close();
+
+        } catch (SQLException e) {
+            Log.e(TAG, e.toString());
+            e.printStackTrace();
+        }
+
+        db.close();
+
+        // Devolver el porcentaje de preguntas respondidas
+        return (totalPreguntas == 0) ? 0 : (preguntasRespondidas * 100) / totalPreguntas;
+    }
+
+
 }
+
