@@ -475,6 +475,46 @@ public class DBHelper extends SQLiteAssetHelper {
 
         return empresas;
     }
+    public void updateAnswerInDatabase(String nombreEmpresa, String numeroPregunta, String opcionActual, String opcionPotencial) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("opcionActual", opcionActual);
+        values.put("opcionPotencial", opcionPotencial);
+
+        // Actualizar la respuesta en la base de datos
+        int rowsAffected = db.update(
+                "respuestas",
+                values,
+                "empresa=? AND pregunta=?",
+                new String[]{nombreEmpresa, numeroPregunta});
+
+        if (rowsAffected > 0) {
+            Log.d("DBHelper", "Respuesta actualizada correctamente en la tabla respuestas");
+        } else {
+            Log.e("DBHelper", "Error al actualizar la respuesta en la tabla respuestas");
+        }
+
+        db.close();
+    }
+
+    public boolean isQuestionInDatabase(String nombreEmpresa, String numeroPregunta) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        try {
+            String query = "SELECT * FROM respuestas WHERE empresa = ? AND pregunta = ?";
+            cursor = db.rawQuery(query, new String[]{nombreEmpresa, numeroPregunta});
+
+            // Si hay al menos una fila en el cursor, significa que la pregunta ya está en la base de datos
+            return cursor != null && cursor.getCount() > 0;
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+    }
+
 
 
 }

@@ -105,9 +105,6 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
             }
         }
     }
-
-
-
     private void uncheckOldestSelectedOptions(String pregunta) {
         for (Opcion option : items) {
             if (option.isSeleccionada() && option.getPregunta().equals(pregunta) && !option.getNombreOpcion().equals("Actual")) {
