@@ -349,7 +349,7 @@ public class DBHelper extends SQLiteAssetHelper {
     }
 
 
-    public List<Opcion> getOpcionesPregunta(String pregunta) {
+    public List<Opcion> getOpcionesPregunta(String pregunta, String nombreEmpresa) {
         List<Opcion> v_opciones = new ArrayList<>();
 
         try (SQLiteDatabase v_db = this.getReadableDatabase()) {
@@ -365,7 +365,7 @@ public class DBHelper extends SQLiteAssetHelper {
                     v_opcion.setNombre(v_cursor.getString(1));
                     v_opcion.setPregunta(v_cursor.getString(2));
 
-                    v_opcion.setRespondida(isOpcionRespondida(v_db, v_opcion.getNumero(), pregunta));
+                    v_opcion.setRespondida(isOpcionRespondida(v_db, v_opcion.getNumero(), pregunta, nombreEmpresa));
 
                     v_opciones.add(v_opcion);
                 }
@@ -380,10 +380,10 @@ public class DBHelper extends SQLiteAssetHelper {
         return v_opciones;
     }
 
-
-    private boolean isOpcionRespondida(SQLiteDatabase db, String opcionNumero, String preguntaNumero) {
+    private boolean isOpcionRespondida(SQLiteDatabase db, String opcionNumero, String preguntaNumero, String nombreEmpresa) {
         Cursor cursor = db.rawQuery(
-                "SELECT * FROM respuestas WHERE (opcionActual='" + opcionNumero + "' OR opcionPotencial='" + opcionNumero + "') AND pregunta='" + preguntaNumero + "'",
+                "SELECT * FROM respuestas WHERE empresa='" + nombreEmpresa + "' AND pregunta='" + preguntaNumero +
+                        "' AND (opcionActual='" + opcionNumero + "' OR opcionPotencial='" + opcionNumero + "')",
                 null
         );
         boolean respondida = cursor.getCount() > 0;

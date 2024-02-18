@@ -51,7 +51,7 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.Motivo
 
         holder.txtPregunta.setText(pregunta.getNumero().concat(".- ").concat(pregunta.getDescripcion()));
 
-        List<Opcion> opciones = dbHelper.getOpcionesPregunta(pregunta.getNumero());
+        List<Opcion> opciones = dbHelper.getOpcionesPregunta(pregunta.getNumero(), nombreEmpresa);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
         holder.recycler.setLayoutManager(layoutManager);
