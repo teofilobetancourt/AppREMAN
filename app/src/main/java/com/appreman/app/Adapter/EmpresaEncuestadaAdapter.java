@@ -34,7 +34,6 @@ public class EmpresaEncuestadaAdapter extends RecyclerView.Adapter<EmpresaEncues
         Empresa empresa = empresasEncuestadas.get(position);
         holder.bindData(empresa);
 
-        // Puedes eliminar esta parte ya que no necesitas manejar el clic del botón aquí
     }
 
     @Override

@@ -71,12 +71,9 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.Motivo
                 Opcion opcionActual = opcionesSeleccionadas.get(0);
                 Opcion opcionPotencial = opcionesSeleccionadas.size() > 1 ? opcionesSeleccionadas.get(1) : opcionActual;
 
-                // Verifica si la pregunta ya está en la base de datos
                 if (isQuestionInDatabase(nombreEmpresa, preguntaNumero)) {
-                    // La pregunta ya está en la base de datos, entonces actualizamos la respuesta
                     dbHelper.updateAnswerInDatabase(nombreEmpresa, preguntaNumero, opcionActual.getNumero(), opcionPotencial.getNumero());
                 } else {
-                    // La pregunta no está en la base de datos, entonces la guardamos
                     dbHelper.insertarOpcionesEnRespuestas(nombreEmpresa, preguntaNumero, opcionActual.getNumero(), opcionPotencial.getNumero());
                 }
 
@@ -111,8 +108,6 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.Motivo
     }
 
     private boolean isQuestionInDatabase(String nombreEmpresa, String preguntaNumero) {
-        // Implementa tu lógica para verificar si la pregunta ya está en la base de datos
-        // Devuelve true si está en la base de datos, false si no está
         return dbHelper.isQuestionInDatabase(nombreEmpresa, preguntaNumero);
     }
 
