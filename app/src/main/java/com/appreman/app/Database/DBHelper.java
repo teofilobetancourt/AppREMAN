@@ -449,6 +449,33 @@ public class DBHelper extends SQLiteAssetHelper {
         return (totalPreguntas == 0) ? 0 : (preguntasRespondidas * 100) / totalPreguntas;
     }
 
+    @SuppressLint("Range")
+    public List<Empresa> getEmpresasEnRespuestas() {
+        List<Empresa> empresas = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT * FROM empresa WHERE nombre IN (SELECT DISTINCT TRIM(Empresa) AS Empresa FROM respuestas)", null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                // Obtener detalles de la empresa desde el cursor
+                String nombre = cursor.getString(cursor.getColumnIndex("nombre"));
+                String pais = cursor.getString(cursor.getColumnIndex("pais"));
+                String region = cursor.getString(cursor.getColumnIndex("region"));
+                String sitio = cursor.getString(cursor.getColumnIndex("sitio"));
+
+                // Crear un objeto Empresa y agrégalo a la lista
+                Empresa empresa = new Empresa(nombre, pais, region, sitio);
+                empresas.add(empresa);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return empresas;
+    }
+
 
 }
 

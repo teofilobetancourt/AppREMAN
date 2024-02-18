@@ -25,6 +25,13 @@ public class Empresa {
     public Empresa() {
     }
 
+    public Empresa(String nombre, String pais, String region, String sitio) {
+        this.nombre = nombre;
+        this.pais = pais;
+        this.region = region;
+        this.sitio = sitio;
+    }
+
     public int getId() {
         return id;
     }

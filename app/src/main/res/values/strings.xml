@@ -19,6 +19,8 @@
     <string name="title_activity_scrolling">ScrollingActivity</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_encuestas">Encuestas REMAN</string>
+    <string name="title_activity_empresas_encuestadas">Empresas Encuestadas</string>
+
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
