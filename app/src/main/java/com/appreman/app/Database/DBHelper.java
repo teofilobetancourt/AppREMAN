@@ -420,34 +420,26 @@ public class DBHelper extends SQLiteAssetHelper {
 
     public int getRespuestasCount(String nombreEmpresa) {
         SQLiteDatabase db = this.getReadableDatabase();
-        int totalPreguntas = 0;
         int preguntasRespondidas = 0;
 
         try {
-            // Obtener la cantidad total de preguntas para la empresa
-            Cursor cursorTotal = db.rawQuery("SELECT COUNT(*) FROM pregunta", null);
-            if (cursorTotal.moveToFirst()) {
-                totalPreguntas = cursorTotal.getInt(0);
-            }
-            cursorTotal.close();
-
             // Obtener la cantidad de preguntas respondidas para la empresa
             Cursor cursorRespondidas = db.rawQuery("SELECT COUNT(DISTINCT pregunta) FROM respuestas WHERE empresa='" + nombreEmpresa + "'", null);
             if (cursorRespondidas.moveToFirst()) {
                 preguntasRespondidas = cursorRespondidas.getInt(0);
             }
             cursorRespondidas.close();
-
         } catch (SQLException e) {
             Log.e(TAG, e.toString());
             e.printStackTrace();
+        } finally {
+            db.close();
         }
 
-        db.close();
-
-        // Devolver el porcentaje de preguntas respondidas
-        return (totalPreguntas == 0) ? 0 : (preguntasRespondidas * 100) / totalPreguntas;
+        return preguntasRespondidas;
     }
+
+
 
     @SuppressLint("Range")
     public List<Empresa> getEmpresasEnRespuestas() {
@@ -514,8 +506,6 @@ public class DBHelper extends SQLiteAssetHelper {
             db.close();
         }
     }
-
-
 
 }
 
