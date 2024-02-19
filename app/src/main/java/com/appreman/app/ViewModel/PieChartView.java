@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.appreman.app.Database.DBHelper;
+import com.appreman.app.Models.Pregunta;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,11 +63,14 @@ public class PieChartView extends View {
     }
 
     private void updateChartData() {
+        // Obtener todas las preguntas de la base de datos
+        List<Pregunta> preguntas = dbHelper.getAllPreguntas();
+
         // Obtener las preguntas respondidas para la empresa seleccionada
         int preguntasRespondidas = dbHelper.getRespuestasCount(selectedEmpresa);
 
         // Calcular el porcentaje de preguntas respondidas
-        float porcentajeRespondido = ((float) preguntasRespondidas / 377) * 100;
+        float porcentajeRespondido = (preguntasRespondidas / (float) preguntas.size()) * 100;
 
         // Actualizar el mapa de porcentajes
         porcentajes.put(selectedEmpresa, porcentajeRespondido);
@@ -76,6 +80,7 @@ public class PieChartView extends View {
         data.add(100 - porcentajeRespondido); // Porcentaje de preguntas no respondidas
         data.add(porcentajeRespondido); // Porcentaje de preguntas respondidas
     }
+
 
 
 
