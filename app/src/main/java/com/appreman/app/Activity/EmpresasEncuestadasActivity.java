@@ -1,5 +1,6 @@
 package com.appreman.app.Activity;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,7 +26,7 @@ public class EmpresasEncuestadasActivity extends AppCompatActivity {
 
         List<Empresa> empresasEncuestadas = dbHelper.getEmpresasEnRespuestas();
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerViewEmpresasEncuestadasAdapter);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) RecyclerView recyclerView = findViewById(R.id.recyclerViewEmpresasEncuestadasAdapter);
         EmpresaEncuestadaAdapter adapter = new EmpresaEncuestadaAdapter(empresasEncuestadas);
         recyclerView.setAdapter(adapter);
     }
