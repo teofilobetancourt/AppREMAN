@@ -1,15 +1,12 @@
 package com.appreman.app.Activity;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import com.appreman.app.Database.DBHelper;
 import com.appreman.appreman.R;
@@ -17,7 +14,6 @@ import com.appreman.appreman.R;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.TimeZone;
 
 public class NuevaEmpresaActivity extends AppCompatActivity {
@@ -31,13 +27,6 @@ public class NuevaEmpresaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nueva_empresa);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-
-        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) ImageView imageView = findViewById(R.id.imageView);
-        imageView.setOnClickListener(v -> onBackPressed());
 
         dbHelper = new DBHelper(this);
 
