@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 import android.util.Log;
 
 import com.appreman.app.Models.Elemento;
@@ -15,6 +16,13 @@ import com.appreman.app.Models.Opcion;
 import com.appreman.app.Models.Pregunta;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -506,6 +514,46 @@ public class DBHelper extends SQLiteAssetHelper {
             db.close();
         }
     }
+
+    public boolean exportRespuestasToExcel(String filePath, String selectedEmpresa) {
+        try (SQLiteDatabase db = this.getReadableDatabase()) {
+            String[] selectionArgs = {selectedEmpresa};
+            Cursor cursor = db.rawQuery("SELECT * FROM respuestas WHERE empresa = ?", selectionArgs);
+
+            Workbook workbook = new XSSFWorkbook();
+            Sheet sheet = workbook.createSheet("respuestas");
+
+            // ... Tu código existente para crear la hoja de trabajo y la fila de encabezados
+
+            // Obtén el directorio de descargas del dispositivo Android
+            File downloadsDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+
+            // Crea la carpeta "Documents" dentro del directorio de descargas si no existe
+            File documentsDirectory = new File(downloadsDirectory, "Documents");
+            if (!documentsDirectory.exists()) {
+                documentsDirectory.mkdirs();
+            }
+
+            // Genera el nombre de archivo basado en el nombre de la empresa
+            String nombreArchivo = "datos_" + selectedEmpresa + ".xls";
+
+            // Crea el archivo en la carpeta "Documents" dentro del directorio de descargas
+            File file = new File(documentsDirectory, nombreArchivo);
+
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                workbook.write(fos);
+                Log.d("DBHelper", "Exportación exitosa a Excel: " + file.getAbsolutePath());
+            } catch (IOException e) {
+                Log.e("DBHelper", "Error al exportar a Excel: " + e.getMessage());
+            }
+
+            workbook.close();
+        } catch (Exception e) {
+            Log.e("DBHelper", "Error al exportar a Excel: " + e.getMessage());
+        }
+        return false;
+    }
+
 
 }
 
