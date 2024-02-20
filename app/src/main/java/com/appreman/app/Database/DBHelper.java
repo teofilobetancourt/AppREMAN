@@ -554,6 +554,41 @@ public class DBHelper extends SQLiteAssetHelper {
         return false;
     }
 
+    public int getEmpresasCount() {
+        int count = 0;
+
+        try (SQLiteDatabase db = this.getReadableDatabase()) {
+            Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM empresa", null);
+            if (cursor.moveToFirst()) {
+                count = cursor.getInt(0);
+            }
+            cursor.close();
+        } catch (SQLException e) {
+            Log.e(TAG, e.toString());
+            e.printStackTrace();
+        }
+
+        return count;
+    }
+
+    public int getRespuestasEmpresasCount() {
+        int count = 0;
+
+        try (SQLiteDatabase db = this.getReadableDatabase()) {
+            Cursor cursor = db.rawQuery("SELECT COUNT(DISTINCT empresa) FROM respuestas", null);
+            if (cursor.moveToFirst()) {
+                count = cursor.getInt(0);
+            }
+            cursor.close();
+        } catch (SQLException e) {
+            Log.e(TAG, e.toString());
+            e.printStackTrace();
+        }
+
+        return count;
+    }
+
+
 
 }
 

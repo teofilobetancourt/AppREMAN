@@ -8,26 +8,33 @@
         android:id="@+id/imageView"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="260dp"
-        android:layout_marginStart="118dp"
-        android:layout_marginTop="-1dp"
-        android:layout_marginEnd="122dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
         android:adjustViewBounds="true"
         android:contentDescription="logo"
         android:scaleType="fitCenter"
         android:src="@drawable/eman2"
         tools:ignore="HardcodedText" />
 
+    <com.appreman.app.ViewModel.DonutChartView
+        android:id="@+id/donutChartView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@id/imageView"
+        android:layout_marginTop="16dp"
+        android:layout_centerHorizontal="true"
+        tools:ignore="MissingClass" />
+
     <Button
         android:id="@+id/btnNuevaEmpresa"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/imageView"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="210dp"
+        android:layout_below="@id/donutChartView"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="229dp"
+        android:layout_marginEnd="32dp"
         android:onClick="nuevaEmpresaOnClick"
         android:text="Agregar Empresa para Encuestar" />
 
@@ -36,8 +43,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/btnNuevaEmpresa"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="14dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="11dp"
+        android:layout_marginEnd="32dp"
         android:onClick="listaEmpresasOnClick"
         android:text="Listado de Empresas Encuestadas" />
 
