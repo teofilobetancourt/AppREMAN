@@ -45,8 +45,11 @@ public class EmpresaAdapter extends RecyclerView.Adapter<EmpresaAdapter.EmpresaV
     public class EmpresaViewHolder extends RecyclerView.ViewHolder {
         TextView textViewNombre, textViewPais, textViewRegion, textViewSitio, textViewSector, textViewPlanta, textViewRepresentante, textViewTelefono, textViewEmail, textViewClienteAct, textViewNumeroDePlant, textViewNumeroDePlantIm;
         TextView textViewFechaRegistro, textViewHoraRegistro;
+        TextView textViewPlantaLabel, textViewRepresentanteLabel, textViewTelefonoLabel, textViewEmailLabel,
+                textViewClienteActLabel, textViewNumeroDePlantLabel, textViewNumeroDePlantImLabel,
+                textViewFechaRegistroLabel, textViewHoraRegistroLabel;
         View buttonEncuesta;
-        FloatingActionButton fabMostrarMas;  // Agrega el botón flotante
+        FloatingActionButton fabMostrarMas;
 
         public EmpresaViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -65,6 +68,16 @@ public class EmpresaAdapter extends RecyclerView.Adapter<EmpresaAdapter.EmpresaV
             textViewFechaRegistro = itemView.findViewById(R.id.textViewFechaRegistro);
             textViewHoraRegistro = itemView.findViewById(R.id.textViewHoraRegistro);
 
+            textViewPlantaLabel = itemView.findViewById(R.id.textViewPlantaLabel);
+            textViewRepresentanteLabel = itemView.findViewById(R.id.textViewRepresentanteLabel);
+            textViewTelefonoLabel = itemView.findViewById(R.id.textViewTelefonoLabel);
+            textViewEmailLabel = itemView.findViewById(R.id.textViewEmailLabel);
+            textViewClienteActLabel = itemView.findViewById(R.id.textViewClienteActualLabel);
+            textViewNumeroDePlantLabel = itemView.findViewById(R.id.textViewNumeroDePlantasLabel);
+            textViewNumeroDePlantImLabel = itemView.findViewById(R.id.textViewPlantasImplementarLabel);
+            textViewFechaRegistroLabel = itemView.findViewById(R.id.textViewFechaRegistroLabel);
+            textViewHoraRegistroLabel = itemView.findViewById(R.id.textViewHoraRegistroLabel);
+
             buttonEncuesta = itemView.findViewById(R.id.buttonEncuesta);
             buttonEncuesta.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -82,10 +95,8 @@ public class EmpresaAdapter extends RecyclerView.Adapter<EmpresaAdapter.EmpresaV
             fabMostrarMas.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // Cambia el estado de visibilidad de los campos adicionales para el elemento actual
                     Empresa empresa = empresas.get(getAdapterPosition());
                     empresa.toggleVisibilidadCamposAdicionales();
-                    // Notifica al adaptador que los datos han cambiado para reflejar el cambio en la vista
                     notifyItemChanged(getAdapterPosition());
                 }
             });
@@ -108,22 +119,37 @@ public class EmpresaAdapter extends RecyclerView.Adapter<EmpresaAdapter.EmpresaV
             textViewFechaRegistro.setText("Fecha: " + empresa.getFechaRegistro());
             textViewHoraRegistro.setText("Hora: " + empresa.getHoraRegistro());
 
-            // Actualiza la visibilidad de los elementos según el estado de la empresa
             updateVisibility(empresa);
         }
 
         private void updateVisibility(Empresa empresa) {
             int visibility = empresa.areCamposAdicionalesVisible() ? View.VISIBLE : View.GONE;
             textViewPlanta.setVisibility(visibility);
+            textViewPlantaLabel.setVisibility(visibility);
+
             textViewRepresentante.setVisibility(visibility);
+            textViewRepresentanteLabel.setVisibility(visibility);
+
             textViewTelefono.setVisibility(visibility);
+            textViewTelefonoLabel.setVisibility(visibility);
+
             textViewEmail.setVisibility(visibility);
+            textViewEmailLabel.setVisibility(visibility);
+
             textViewClienteAct.setVisibility(visibility);
+            textViewClienteActLabel.setVisibility(visibility);
+
             textViewNumeroDePlant.setVisibility(visibility);
+            textViewNumeroDePlantLabel.setVisibility(visibility);
+
             textViewNumeroDePlantIm.setVisibility(visibility);
+            textViewNumeroDePlantImLabel.setVisibility(visibility);
+
             textViewFechaRegistro.setVisibility(visibility);
+            textViewFechaRegistroLabel.setVisibility(visibility);
+
             textViewHoraRegistro.setVisibility(visibility);
-            // Otros campos adicionales aquí
+            textViewHoraRegistroLabel.setVisibility(visibility);
         }
     }
 

@@ -196,170 +196,376 @@
         </LinearLayout>
 
 
-        <TextView
-            android:id="@+id/textViewPlanta"
+        <!-- Campo Tipo de Planta -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/colorPrimary"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:paddingTop="6dp"
-            android:paddingBottom="6dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:text="Tipo de Planta"
-            android:visibility="gone"
-            tools:ignore="HardcodedText" />
+            android:orientation="horizontal"
+            android:layout_below="@id/imageView"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/textViewRepresentante"
+            <!-- Descripción para el campo Tipo de Planta -->
+            <TextView
+                android:id="@+id/textViewPlantaLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tipo de Planta:"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+
+            <!-- Valor para el campo Tipo de Planta -->
+            <TextView
+                android:id="@+id/textViewPlanta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="Valor Tipo de Planta"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+        <!-- Campo Representante de la Empresa -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/colorPrimary"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:paddingTop="6dp"
-            android:paddingBottom="6dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:text="Representante de la Empresa"
-            android:visibility="gone"
-            tools:ignore="HardcodedText" />
+            android:orientation="horizontal"
+            android:layout_below="@id/imageView"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/textViewTelefono"
+            <!-- Descripción para el campo Representante de la Empresa -->
+            <TextView
+                android:id="@+id/textViewRepresentanteLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Representante de la Empresa:"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+
+            <!-- Valor para el campo Representante de la Empresa -->
+            <TextView
+                android:id="@+id/textViewRepresentante"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="Valor Representante de la Empresa"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/colorPrimary"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:paddingTop="6dp"
-            android:paddingBottom="6dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:text="Teléfono"
-            android:visibility="gone"
-            tools:ignore="HardcodedText" />
+            android:orientation="horizontal"
+            android:layout_below="@id/imageView"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
+
+            <!-- Descripción para el campo Teléfono -->
+            <TextView
+                android:id="@+id/textViewTelefonoLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Teléfono:"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+
+            <!-- Valor para el campo Teléfono -->
+            <TextView
+                android:id="@+id/textViewTelefono"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="Valor Teléfono"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
 
 
-        <TextView
-            android:id="@+id/textViewEmail"
+        <!-- Campo Correo Electrónico -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/colorPrimary"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:paddingTop="6dp"
-            android:paddingBottom="6dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:text="Correo Electrónico"
-            android:visibility="gone"
-            tools:ignore="HardcodedText" />
+            android:orientation="horizontal"
+            android:layout_below="@id/imageView"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
+
+            <!-- Descripción para el campo Correo Electrónico -->
+            <TextView
+                android:id="@+id/textViewEmailLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Correo Electrónico:"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+
+            <!-- Valor para el campo Correo Electrónico -->
+            <TextView
+                android:id="@+id/textViewEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="Valor Correo Electrónico"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
 
 
-        <TextView
-            android:id="@+id/textViewClienteActual"
+        <!-- Campo Cliente Actual -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/colorPrimary"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:paddingTop="6dp"
-            android:paddingBottom="6dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:text="Cliente Actual"
-            android:visibility="gone"
-            tools:ignore="HardcodedText,VisualLintBounds" />
+            android:orientation="horizontal"
+            android:layout_below="@id/imageView"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/textViewNumeroDePlantas"
+            <!-- Descripción para el campo Cliente Actual -->
+            <TextView
+                android:id="@+id/textViewClienteActualLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cliente Actual:"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+
+            <!-- Valor para el campo Cliente Actual -->
+            <TextView
+                android:id="@+id/textViewClienteActual"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="Valor Cliente Actual"
+                android:visibility="gone"
+                tools:ignore="HardcodedText,VisualLintBounds" />
+        </LinearLayout>
+
+        <!-- Campo Número de Plantas -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/colorPrimary"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:paddingTop="6dp"
-            android:paddingBottom="6dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:text="Número de Plantas"
-            android:visibility="gone"
-            tools:ignore="HardcodedText,VisualLintBounds" />
+            android:orientation="horizontal"
+            android:layout_below="@id/imageView"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
+
+            <!-- Descripción para el campo Número de Plantas -->
+            <TextView
+                android:id="@+id/textViewNumeroDePlantasLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Número de Plantas:"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+
+            <!-- Valor para el campo Número de Plantas -->
+            <TextView
+                android:id="@+id/textViewNumeroDePlantas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="Valor Número de Plantas"
+                android:visibility="gone"
+                tools:ignore="HardcodedText,VisualLintBounds" />
+        </LinearLayout>
 
 
-        <TextView
-            android:id="@+id/textViewPlantasImplementar"
+        <!-- Campo Plantas a Implementar -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/colorPrimary"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:paddingTop="6dp"
-            android:paddingBottom="6dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:text="Plantas a Implementar"
-            android:visibility="gone"
-            tools:ignore="HardcodedText" />
+            android:orientation="horizontal"
+            android:layout_below="@id/imageView"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/textViewHoraRegistro"
+            <!-- Descripción para el campo Plantas a Implementar -->
+            <TextView
+                android:id="@+id/textViewPlantasImplementarLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Plantas a Implementar:"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+
+            <!-- Valor para el campo Plantas a Implementar -->
+            <TextView
+                android:id="@+id/textViewPlantasImplementar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="Valor Plantas a Implementar"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+        <!-- Campo Hora de Registro -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/colorPrimary"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:paddingTop="6dp"
-            android:paddingBottom="6dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:text="Hora de Registro"
-            android:visibility="gone"
-            tools:ignore="HardcodedText" />
+            android:orientation="horizontal"
+            android:layout_below="@id/imageView"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/textViewFechaRegistro"
+            <!-- Descripción para el campo Hora de Registro -->
+            <TextView
+                android:id="@+id/textViewHoraRegistroLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hora de Registro:"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+
+            <!-- Valor para el campo Hora de Registro -->
+            <TextView
+                android:id="@+id/textViewHoraRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="Valor Hora de Registro"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+        <!-- Campo Fecha de Registro -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/colorPrimary"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:paddingTop="6dp"
-            android:paddingBottom="6dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:text="Fecha de Registro"
-            android:visibility="gone"
-            tools:ignore="HardcodedText" />
+            android:orientation="horizontal"
+            android:layout_below="@id/imageView"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
+
+            <!-- Descripción para el campo Fecha de Registro -->
+            <TextView
+                android:id="@+id/textViewFechaRegistroLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fecha de Registro:"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+
+            <!-- Valor para el campo Fecha de Registro -->
+            <TextView
+                android:id="@+id/textViewFechaRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="Valor Fecha de Registro"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/buttonEncuesta"
@@ -379,7 +585,8 @@
             android:layout_margin="16dp"
             android:src="@drawable/ic_plus"
             app:backgroundTint="@color/colorAccent"
-            tools:ignore="SpeakableTextPresentCheck" />
+            tools:ignore="SpeakableTextPresentCheck"
+            android:contentDescription="TODO" />
 
 
 
