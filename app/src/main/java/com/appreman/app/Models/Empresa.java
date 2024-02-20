@@ -22,6 +22,9 @@ public class Empresa {
     public String fechaRegistro;
     public String horaRegistro;
 
+    // Nuevas variables para gestionar la visibilidad de los campos adicionales
+    private boolean camposAdicionalesVisible = false;
+
     public Empresa() {
     }
 
@@ -150,5 +153,15 @@ public class Empresa {
 
     public void setHoraRegistro(String horaRegistro) {
         this.horaRegistro = horaRegistro;
+    }
+
+    // Función para cambiar la visibilidad de los campos adicionales
+    public void toggleVisibilidadCamposAdicionales() {
+        camposAdicionalesVisible = !camposAdicionalesVisible;
+    }
+
+    // Función para obtener el estado actual de visibilidad de los campos adicionales
+    public boolean areCamposAdicionalesVisible() {
+        return camposAdicionalesVisible;
     }
 }

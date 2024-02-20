@@ -195,6 +195,7 @@
                 tools:ignore="HardcodedText" />
         </LinearLayout>
 
+
         <TextView
             android:id="@+id/textViewPlanta"
             android:layout_width="match_parent"
@@ -369,6 +370,16 @@
             android:minHeight="48dp"
             android:text="Encuestar"
             tools:ignore="HardcodedText,TouchTargetSizeCheck" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabMostrarMas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_plus"
+            app:backgroundTint="@color/colorAccent"
+            tools:ignore="SpeakableTextPresentCheck" />
 
 
 

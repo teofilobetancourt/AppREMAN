@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.appreman.app.Models.Empresa;
 import com.appreman.appreman.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
@@ -41,10 +42,11 @@ public class EmpresaAdapter extends RecyclerView.Adapter<EmpresaAdapter.EmpresaV
         return empresas.size();
     }
 
-    public class EmpresaViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class EmpresaViewHolder extends RecyclerView.ViewHolder {
         TextView textViewNombre, textViewPais, textViewRegion, textViewSitio, textViewSector, textViewPlanta, textViewRepresentante, textViewTelefono, textViewEmail, textViewClienteAct, textViewNumeroDePlant, textViewNumeroDePlantIm;
         TextView textViewFechaRegistro, textViewHoraRegistro;
         View buttonEncuesta;
+        FloatingActionButton fabMostrarMas;  // Agrega el botón flotante
 
         public EmpresaViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -64,7 +66,29 @@ public class EmpresaAdapter extends RecyclerView.Adapter<EmpresaAdapter.EmpresaV
             textViewHoraRegistro = itemView.findViewById(R.id.textViewHoraRegistro);
 
             buttonEncuesta = itemView.findViewById(R.id.buttonEncuesta);
-            buttonEncuesta.setOnClickListener(this);
+            buttonEncuesta.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (encuestaClickListener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            encuestaClickListener.onEncuestaClick(position);
+                        }
+                    }
+                }
+            });
+
+            fabMostrarMas = itemView.findViewById(R.id.fabMostrarMas);
+            fabMostrarMas.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Cambia el estado de visibilidad de los campos adicionales para el elemento actual
+                    Empresa empresa = empresas.get(getAdapterPosition());
+                    empresa.toggleVisibilidadCamposAdicionales();
+                    // Notifica al adaptador que los datos han cambiado para reflejar el cambio en la vista
+                    notifyItemChanged(getAdapterPosition());
+                }
+            });
         }
 
         @SuppressLint("SetTextI18n")
@@ -83,16 +107,23 @@ public class EmpresaAdapter extends RecyclerView.Adapter<EmpresaAdapter.EmpresaV
             textViewNumeroDePlantIm.setText(empresa.getNumeroDePlantIm());
             textViewFechaRegistro.setText("Fecha: " + empresa.getFechaRegistro());
             textViewHoraRegistro.setText("Hora: " + empresa.getHoraRegistro());
+
+            // Actualiza la visibilidad de los elementos según el estado de la empresa
+            updateVisibility(empresa);
         }
 
-        @Override
-        public void onClick(View v) {
-            if (v.getId() == R.id.buttonEncuesta && encuestaClickListener != null) {
-                int position = getAdapterPosition();
-                if (position != RecyclerView.NO_POSITION) {
-                    encuestaClickListener.onEncuestaClick(position);
-                }
-            }
+        private void updateVisibility(Empresa empresa) {
+            int visibility = empresa.areCamposAdicionalesVisible() ? View.VISIBLE : View.GONE;
+            textViewPlanta.setVisibility(visibility);
+            textViewRepresentante.setVisibility(visibility);
+            textViewTelefono.setVisibility(visibility);
+            textViewEmail.setVisibility(visibility);
+            textViewClienteAct.setVisibility(visibility);
+            textViewNumeroDePlant.setVisibility(visibility);
+            textViewNumeroDePlantIm.setVisibility(visibility);
+            textViewFechaRegistro.setVisibility(visibility);
+            textViewHoraRegistro.setVisibility(visibility);
+            // Otros campos adicionales aquí
         }
     }
 
