@@ -111,6 +111,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:text="Sector Industrial"
+            android:visibility="gone"
             tools:ignore="HardcodedText" />
 
 
@@ -129,6 +130,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:text="Tipo de Planta"
+            android:visibility="gone"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -146,6 +148,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:text="Representante de la Empresa"
+            android:visibility="gone"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -163,6 +166,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:text="Teléfono"
+            android:visibility="gone"
             tools:ignore="HardcodedText" />
 
 
@@ -181,6 +185,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:text="Correo Electrónico"
+            android:visibility="gone"
             tools:ignore="HardcodedText" />
 
 
@@ -199,6 +204,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:text="Cliente Actual"
+            android:visibility="gone"
             tools:ignore="HardcodedText,VisualLintBounds" />
 
         <TextView
@@ -216,6 +222,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:text="Número de Plantas"
+            android:visibility="gone"
             tools:ignore="HardcodedText,VisualLintBounds" />
 
 
@@ -234,6 +241,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:text="Plantas a Implementar"
+            android:visibility="gone"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -251,6 +259,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:text="Hora de Registro"
+            android:visibility="gone"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -268,6 +277,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:text="Fecha de Registro"
+            android:visibility="gone"
             tools:ignore="HardcodedText" />
 
         <Button
