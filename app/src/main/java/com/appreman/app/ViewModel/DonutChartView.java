@@ -58,7 +58,7 @@ public class DonutChartView extends View {
         // Ajustar el tamaño del dashboard en relación con el ancho y alto de la vista
         float centerX = getWidth() / 2;
         float centerY = getHeight() / 2;
-        float radius = Math.min(getWidth(), getHeight()) / 2 * 0.8f; // Ajuste el factor para hacer el donut más grande
+        float radius = Math.min(getWidth(), getHeight()) / 2 * 0.9f; // Ajuste el factor para hacer el donut más grande
 
         rectF.set(centerX - radius, centerY - radius, centerX + radius, centerY + radius);
 
@@ -89,44 +89,7 @@ public class DonutChartView extends View {
         // Dibujar un círculo blanco en el centro para hacer un agujero
         paint.setColor(Color.WHITE);
         canvas.drawCircle(centerX, centerY, radius / 2, paint);
-
-        // Dibujar leyenda
-        drawLegend(canvas, centerX, centerY, radius);
     }
-
-    private void drawLegend(Canvas canvas, float centerX, float centerY, float radius) {
-        float legendSize = 50; // Ajuste el tamaño de la leyenda
-        float legendSpacing = 20; // Ajuste el espacio entre leyendas
-
-        float totalLegendHeight = colors.length * (legendSize + legendSpacing) - legendSpacing;
-        float legendX = centerX - radius;
-        float legendY = centerY + radius + legendSpacing; // Agrega un espacio entre el círculo y la leyenda
-
-        // Dibujar cuadrados de colores y etiquetas
-        for (int i = 0; i < colors.length; i++) {
-            paint.setColor(colors[i]);
-
-            float legendBottom = legendY + legendSize;
-
-            // Ajustar la posición vertical según la altura del texto
-            float textHeight = paint.getFontMetrics().bottom;
-            float textAdjustment = (legendSize - textHeight) / 2;
-
-            canvas.drawRect(legendX, legendY, legendX + legendSize, legendBottom, paint);
-
-            paint.setColor(Color.DKGRAY);
-            paint.setTextSize(30); // Ajuste el tamaño del texto de la leyenda
-            canvas.drawText((i == 0 ? "Empresas Agregadas" : "Empresas Encuestadas"),
-                    legendX + legendSize + legendSpacing,
-                    legendBottom - textAdjustment, // Ajustar la posición vertical del texto
-                    paint);
-
-            // Incrementar la posición Y para el próximo conjunto de leyendas
-            legendY = legendBottom + legendSpacing;
-        }
-    }
-
-
 
     private float getTotal(float[] array) {
         float total = 0;
