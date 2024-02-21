@@ -1,13 +1,19 @@
 package com.appreman.app.Database;
 
 import android.annotation.SuppressLint;
+import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
+
+import androidx.core.content.FileProvider;
 
 import com.appreman.app.Models.Elemento;
 import com.appreman.app.Models.Empresa;
@@ -16,6 +22,8 @@ import com.appreman.app.Models.Opcion;
 import com.appreman.app.Models.Pregunta;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -515,61 +523,116 @@ public class DBHelper extends SQLiteAssetHelper {
         }
     }
 
-    public boolean exportRespuestasToExcel(String filePath, String selectedEmpresa) {
+    public File guardarRespuestasEnArchivo(String selectedEmpresa, Context context) {
         try (SQLiteDatabase db = this.getReadableDatabase()) {
+            // Consulta la base de datos para obtener los datos que se guardarán en el archivo
             String[] selectionArgs = {selectedEmpresa};
             Cursor cursor = db.rawQuery("SELECT * FROM respuestas WHERE empresa = ?", selectionArgs);
 
+            // Crea un nuevo libro de trabajo y hoja de cálculo en Excel
             Workbook workbook = new XSSFWorkbook();
             Sheet sheet = workbook.createSheet("respuestas");
 
-            // ... Tu código existente para crear la hoja de trabajo y la fila de encabezados
+            try {
+                // Itera sobre el cursor y agrega los datos a la hoja de trabajo
+                if (cursor != null && cursor.moveToFirst()) {
+                    // Crea la fila de encabezados (puedes personalizar esto según tus necesidades)
+                    Row headerRow = sheet.createRow(0);
+                    int columnCount = cursor.getColumnCount();
+                    for (int i = 0; i < columnCount; i++) {
+                        Cell headerCell = headerRow.createCell(i);
+                        headerCell.setCellValue(cursor.getColumnName(i));
+                    }
 
-            // Obtén el directorio de descargas del dispositivo Android
-            File downloadsDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                    // Llena la hoja de trabajo con los datos
+                    int rowCount = 1;
+                    do {
+                        Row dataRow = sheet.createRow(rowCount++);
+                        for (int i = 0; i < columnCount; i++) {
+                            Cell dataCell = dataRow.createCell(i);
+                            dataCell.setCellValue(cursor.getString(i));
+                        }
+                    } while (cursor.moveToNext());
+                }
 
-            // Crea la carpeta "Documents" dentro del directorio de descargas si no existe
-            File documentsDirectory = new File(downloadsDirectory, "Documents");
-            if (!documentsDirectory.exists()) {
-                documentsDirectory.mkdirs();
+                // Crea el archivo en el directorio de descargas
+                String fileName = "datos_" + selectedEmpresa + ".xls";
+                File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                File file = new File(downloadsDir, fileName);
+
+                // Escribe el libro de trabajo en el archivo
+                try (FileOutputStream fos = new FileOutputStream(file)) {
+                    workbook.write(fos);
+                    Log.d(TAG, "Guardado exitoso en el archivo: " + file.getAbsolutePath());
+                    return file;
+                } catch (IOException e) {
+                    Log.e(TAG, "Error al guardar en el archivo: " + e.getMessage());
+                }
+
+            } catch (Exception e) {
+                Log.e(TAG, "Error al guardar en el archivo: " + e.getMessage());
+            } finally {
+                workbook.close();
             }
-
-            // Genera el nombre de archivo basado en el nombre de la empresa
-            String nombreArchivo = "datos_" + selectedEmpresa + ".xls";
-
-            // Crea el archivo en la carpeta "Documents" dentro del directorio de descargas
-            File file = new File(documentsDirectory, nombreArchivo);
-
-            try (FileOutputStream fos = new FileOutputStream(file)) {
-                workbook.write(fos);
-                Log.d("DBHelper", "Exportación exitosa a Excel: " + file.getAbsolutePath());
-            } catch (IOException e) {
-                Log.e("DBHelper", "Error al exportar a Excel: " + e.getMessage());
-            }
-
-            workbook.close();
         } catch (Exception e) {
-            Log.e("DBHelper", "Error al exportar a Excel: " + e.getMessage());
+            Log.e(TAG, "Error al guardar en el archivo: " + e.getMessage());
         }
-        return false;
+        return null;
     }
 
+    public void descargarArchivo(File archivo, Context context) {
+        if (archivo != null) {
+            // Crea un Intent para abrir el archivo con una actividad de visor de archivos
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            Uri uri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", archivo);
+
+            // Intenta abrir el archivo utilizando un intent genérico
+            intent.setData(uri);
+
+            // Agrega el flag FLAG_GRANT_READ_URI_PERMISSION
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            // Inicia la actividad desde el contexto
+            try {
+                context.startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                // Maneja la excepción si no hay actividad para manejar el intent
+                Toast.makeText(context, "No hay aplicación para abrir el archivo", Toast.LENGTH_SHORT).show();
+                Log.e("DBHelper", "No se pudo encontrar una actividad para manejar el intent");
+            }
+        } else {
+            // Maneja el caso donde hubo un problema con la operación de guardar
+            Toast.makeText(context, "Error al guardar los datos", Toast.LENGTH_SHORT).show();
+            Log.e("DBHelper", "Error al guardar en el archivo");
+        }
+    }
+
+
     public int getEmpresasCount() {
+        SQLiteDatabase db = this.getReadableDatabase();
         int count = 0;
 
-        try (SQLiteDatabase db = this.getReadableDatabase()) {
-            Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM empresa", null);
-            if (cursor.moveToFirst()) {
+        try {
+            String query = "SELECT COUNT(*) FROM empresa";
+            Cursor cursor = db.rawQuery(query, null);
+
+            if (cursor != null && cursor.moveToFirst()) {
                 count = cursor.getInt(0);
             }
-            cursor.close();
+
+            if (cursor != null) {
+                cursor.close();
+            }
         } catch (SQLException e) {
             Log.e(TAG, e.toString());
             e.printStackTrace();
+        } finally {
+            db.close();
         }
 
         return count;
     }
+
 
     public int getRespuestasEmpresasCount() {
         int count = 0;
@@ -589,6 +652,7 @@ public class DBHelper extends SQLiteAssetHelper {
     }
 
 
-
 }
+
+
 
