@@ -1,6 +1,5 @@
 package com.appreman.app.Fragments;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +17,7 @@ import com.appreman.appreman.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
@@ -68,15 +68,19 @@ public class HomeFragment extends Fragment {
         });
 
         // Busca el FloatingActionButton (botón flotante) en el layout
-        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) FloatingActionButton fabDescargar = view.findViewById(R.id.fabDescargar);
+        FloatingActionButton fabDescargar = view.findViewById(R.id.fabDescargar);
 
         // Configura el listener del FloatingActionButton
         fabDescargar.setOnClickListener(v -> {
             // Llama al método para guardar en el archivo y obtener el archivo
             String selectedEmpresa = (String) spinner.getSelectedItem();
-            File archivoGuardado = dbHelper.guardarRespuestasEnArchivo(selectedEmpresa, requireContext());
-            // Llama al método para descargar el archivo
-            dbHelper.descargarArchivo(archivoGuardado, requireContext());
+            try {
+                File archivoGuardado = dbHelper.guardarRespuestasEnArchivoConInformacionAdicional(selectedEmpresa, requireContext());
+                // Llama al método para descargar el archivo
+                dbHelper.descargarArchivo(archivoGuardado, requireContext());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
 
         return view;

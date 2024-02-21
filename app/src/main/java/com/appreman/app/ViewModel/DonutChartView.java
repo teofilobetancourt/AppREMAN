@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.appreman.app.Database.DBHelper;
@@ -19,6 +20,8 @@ public class DonutChartView extends View {
     private Paint paint;
     private RectF rectF;
     private DBHelper dbHelper;
+
+    private String selectedSectorName = "";
 
     public DonutChartView(Context context) {
         super(context);
@@ -64,24 +67,19 @@ public class DonutChartView extends View {
 
         float startAngle = 0;
 
-        // Obtener la cantidad de empresas y respuestas de empresas desde DBHelper
-        int empresasCount = dbHelper.getEmpresasCount();
-        int respuestasEmpresasCount = dbHelper.getRespuestasEmpresasCount();
-
-        float totalEmpresas = empresasCount + respuestasEmpresasCount;
-        float porcentajeEmpresas = (empresasCount / totalEmpresas) * 100;
-        float porcentajeRespuestasEmpresas = (respuestasEmpresasCount / totalEmpresas) * 100;
-
-        float[] newData = {porcentajeEmpresas, porcentajeRespuestasEmpresas};
-
-        for (int i = 0; i < newData.length; i++) {
+        for (int i = 0; i < data.size(); i++) {
             paint.setColor(colors[i % colors.length]);
 
-            float sweepAngle = 360 * (newData[i] / getTotal(newData));
+            float sweepAngle = 360 * (data.get(i) / getTotal(data));
 
             paint.setShadowLayer(10, 0, 0, Color.BLACK);
             canvas.drawArc(rectF, startAngle, sweepAngle, true, paint);
             paint.setShadowLayer(0, 0, 0, 0);
+
+            // Verificar si se tocó el área del sector actual
+            if (isTouchInSector(centerX, centerY, radius, startAngle, sweepAngle)) {
+                selectedSectorName = (i == 0) ? "Empresas Agregadas" : "Empresas Encuestadas";
+            }
 
             startAngle += sweepAngle;
         }
@@ -89,9 +87,39 @@ public class DonutChartView extends View {
         // Dibujar un círculo blanco en el centro para hacer un agujero
         paint.setColor(Color.WHITE);
         canvas.drawCircle(centerX, centerY, radius / 2, paint);
+
+        // Dibujar el nombre del sector seleccionado
+        paint.setColor(Color.BLACK);
+        paint.setTextSize(30);
+        float textX = centerX - paint.measureText(selectedSectorName) / 2;
+        float textY = centerY;
+        canvas.drawText(selectedSectorName, textX, textY, paint);
     }
 
-    private float getTotal(float[] array) {
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            invalidate(); // Redibujar para actualizar el nombre del sector seleccionado
+        }
+        return true;
+    }
+
+    private boolean isTouchInSector(float centerX, float centerY, float radius, float startAngle, float sweepAngle) {
+        float touchX = getXFromAngle(centerX, radius, startAngle + sweepAngle / 2);
+        float touchY = getYFromAngle(centerY, radius, startAngle + sweepAngle / 2);
+
+        return rectF.contains(touchX, touchY);
+    }
+
+    private float getXFromAngle(float centerX, float radius, float angle) {
+        return centerX + (float) (radius * Math.cos(Math.toRadians(angle)));
+    }
+
+    private float getYFromAngle(float centerY, float radius, float angle) {
+        return centerY + (float) (radius * Math.sin(Math.toRadians(angle)));
+    }
+
+    private float getTotal(List<Float> array) {
         float total = 0;
         for (float value : array) {
             total += value;

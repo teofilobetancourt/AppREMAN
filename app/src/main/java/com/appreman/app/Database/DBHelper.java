@@ -651,6 +651,173 @@ public class DBHelper extends SQLiteAssetHelper {
         return count;
     }
 
+    public String getSignificadoOpcion(String numeroOpcion) {
+        String significado = "";
+
+        try (SQLiteDatabase db = this.getReadableDatabase()) {
+            Cursor cursor = db.rawQuery("SELECT significado FROM opcion WHERE numero = ?", new String[]{numeroOpcion});
+            if (cursor.moveToFirst()) {
+                significado = cursor.getString(0);
+            }
+            cursor.close();
+        } catch (SQLException e) {
+            Log.e(TAG, e.toString());
+            e.printStackTrace();
+        }
+
+        return significado;
+    }
+
+    public String getSignificadoPregunta(String numeroPregunta) {
+        String significado = "";
+
+        try (SQLiteDatabase db = this.getReadableDatabase()) {
+            Cursor cursor = db.rawQuery("SELECT descripcion FROM pregunta WHERE numero = ?", new String[]{numeroPregunta});
+            if (cursor.moveToFirst()) {
+                significado = cursor.getString(0);
+            }
+            cursor.close();
+        } catch (SQLException e) {
+            Log.e(TAG, e.toString());
+            e.printStackTrace();
+        }
+
+        return significado;
+    }
+
+    public String getElementoPregunta(String numeroPregunta) {
+        String elemento = "";
+
+        try (SQLiteDatabase db = this.getReadableDatabase()) {
+            Cursor cursor = db.rawQuery("SELECT elemento FROM pregunta WHERE numero = ?", new String[]{numeroPregunta});
+            if (cursor.moveToFirst()) {
+                elemento = cursor.getString(0);
+            }
+            cursor.close();
+        } catch (SQLException e) {
+            Log.e(TAG, e.toString());
+            e.printStackTrace();
+        }
+
+        return elemento;
+    }
+
+    public String getGrupoElemento(String numeroElemento) {
+        String grupo = "";
+
+        try (SQLiteDatabase db = this.getReadableDatabase()) {
+            Cursor cursor = db.rawQuery("SELECT grupo FROM elemento WHERE numero = ?", new String[]{numeroElemento});
+            if (cursor.moveToFirst()) {
+                grupo = cursor.getString(0);
+            }
+            cursor.close();
+        } catch (SQLException e) {
+            Log.e(TAG, e.toString());
+            e.printStackTrace();
+        }
+
+        return grupo;
+    }
+
+    public File guardarRespuestasEnArchivoConInformacionAdicional(String selectedEmpresa, Context context) throws IOException {
+        List<String> respuestasConInformacionAdicional = new ArrayList<>();
+
+        try (SQLiteDatabase db = this.getReadableDatabase()) {
+            // Obtén las respuestas desde la base de datos
+            String[] selectionArgs = {selectedEmpresa};
+            Cursor cursor = db.rawQuery("SELECT * FROM respuestas WHERE empresa = ?", selectionArgs);
+
+            // Itera sobre el cursor y agrega los datos a la lista
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    StringBuilder respuesta = new StringBuilder();
+
+                    // Obtén información adicional para cada columna
+                    for (int i = 0; i < cursor.getColumnCount(); i++) {
+                        String columnName = cursor.getColumnName(i);
+                        String cellValue = cursor.getString(i);
+
+                        switch (columnName) {
+                            case "opcionActual":
+                            case "opcionPotencial":
+                                // Agrega el significado de la opción
+                                String significadoOpcion = getSignificadoOpcion(cellValue);
+                                respuesta.append("Opción ").append(significadoOpcion).append(": ");
+                                break;
+                            case "pregunta":
+                                // Agrega el significado de la pregunta y el elemento al que pertenece
+                                String significadoPregunta = getSignificadoPregunta(cellValue);
+                                String elementoPregunta = getElementoPregunta(cellValue);
+                                String grupoElemento = getGrupoElemento(elementoPregunta);
+                                respuesta.append("Pregunta ").append(significadoPregunta)
+                                        .append(" (Elemento: ").append(elementoPregunta)
+                                        .append(", Grupo: ").append(grupoElemento).append("): ");
+                                break;
+                            // Agrega más casos según tus columnas
+                            default:
+                                respuesta.append(cellValue).append(": ");
+                                break;
+                        }
+                    }
+
+                    // Elimina el último ": " agregado
+                    respuesta.setLength(respuesta.length() - 2);
+                    respuestasConInformacionAdicional.add(respuesta.toString());
+                } while (cursor.moveToNext());
+
+                cursor.close();
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, e.toString());
+            e.printStackTrace();
+        }
+
+        // Crea un nuevo libro de trabajo y hoja de cálculo en Excel
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("respuestas");
+
+        try {
+            // Crea la fila de encabezados (puedes personalizar esto según tus necesidades)
+            Row headerRow = sheet.createRow(0);
+            int columnCount = respuestasConInformacionAdicional.get(0).split(": ").length;
+            for (int i = 0; i < columnCount; i++) {
+                Cell headerCell = headerRow.createCell(i);
+                headerCell.setCellValue("Columna " + (i + 1));
+            }
+
+            // Llena la hoja de trabajo con los datos y su información adicional
+            for (int i = 0; i < respuestasConInformacionAdicional.size(); i++) {
+                Row dataRow = sheet.createRow(i + 1);
+                String[] respuestaParts = respuestasConInformacionAdicional.get(i).split(": ");
+                for (int j = 0; j < respuestaParts.length; j++) {
+                    Cell dataCell = dataRow.createCell(j);
+                    dataCell.setCellValue(respuestaParts[j]);
+                }
+            }
+
+            // Crea el archivo en el directorio de descargas
+            String fileName = "datos_" + selectedEmpresa + ".xls";
+            File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            File file = new File(downloadsDir, fileName);
+
+            // Escribe el libro de trabajo en el archivo
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                workbook.write(fos);
+                Log.d(TAG, "Guardado exitoso en el archivo: " + file.getAbsolutePath());
+                return file;
+            } catch (IOException e) {
+                Log.e(TAG, "Error al guardar en el archivo: " + e.getMessage());
+            }
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error al guardar en el archivo: " + e.getMessage());
+        } finally {
+            workbook.close();
+        }
+
+        return null;
+    }
+
 
 }
 
