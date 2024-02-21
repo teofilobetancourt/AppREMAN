@@ -1,5 +1,6 @@
 package com.appreman.app.Fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,7 +68,7 @@ public class HomeFragment extends Fragment {
         });
 
         // Busca el FloatingActionButton (botón flotante) en el layout
-        FloatingActionButton fabDescargar = view.findViewById(R.id.fabDescargar);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) FloatingActionButton fabDescargar = view.findViewById(R.id.fabDescargar);
 
         // Configura el listener del FloatingActionButton
         fabDescargar.setOnClickListener(v -> {
