@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
+
         BottomNavigationView navigation = findViewById(R.id.navigation);
 
 
