@@ -22,6 +22,7 @@ import java.util.List;
 public class SurveyFragment extends Fragment {
 
     private DBHelper dbHelper;
+    private DonutChartView donutChartView;
 
     public SurveyFragment() {
     }
@@ -41,8 +42,8 @@ public class SurveyFragment extends Fragment {
         @SuppressLint({"MissingInflatedId", "LocalSuppress"}) Button btnListaEmpresa = view.findViewById(R.id.btnListaEmpresas);
         btnListaEmpresa.setOnClickListener(v -> listaEmpresasOnClick());
 
-        DonutChartView donutChartView = view.findViewById(R.id.donutChartView);
-        donutChartView.setData(getRandomData());
+        donutChartView = view.findViewById(R.id.donutChartView);
+        updateDonutChart();
 
         return view;
     }
@@ -52,10 +53,16 @@ public class SurveyFragment extends Fragment {
         startActivity(intent);
     }
 
-    private List<Float> getRandomData() {
+    private void updateDonutChart() {
+        // Obtener las cantidades de empresas y respuestas de empresas desde DBHelper
+        int empresasCount = dbHelper.getEmpresasCount();
+        int respuestasEmpresasCount = dbHelper.getRespuestasEmpresasCount();
+
+        // Configurar los datos en el DonutChartView
         List<Float> data = new ArrayList<>();
-        data.add(30f);
-        data.add(70f);
-        return data;
+        data.add((float) empresasCount);
+        data.add((float) respuestasEmpresasCount);
+
+        donutChartView.setData(data);
     }
 }
