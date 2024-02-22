@@ -568,18 +568,14 @@ public class DBHelper extends SQLiteAssetHelper {
 
     public File guardarRespuestasEnArchivo(String selectedEmpresa, Context context) {
         try (SQLiteDatabase db = this.getReadableDatabase()) {
-            // Consulta la base de datos para obtener los datos que se guardarán en el archivo
             String[] selectionArgs = {selectedEmpresa};
             Cursor cursor = db.rawQuery("SELECT * FROM respuestas WHERE empresa = ?", selectionArgs);
 
-            // Crea un nuevo libro de trabajo y hoja de cálculo en Excel
             Workbook workbook = new XSSFWorkbook();
             Sheet sheet = workbook.createSheet("respuestas");
 
             try {
-                // Itera sobre el cursor y agrega los datos a la hoja de trabajo
                 if (cursor != null && cursor.moveToFirst()) {
-                    // Crea la fila de encabezados (puedes personalizar esto según tus necesidades)
                     Row headerRow = sheet.createRow(0);
                     int columnCount = cursor.getColumnCount();
                     for (int i = 0; i < columnCount; i++) {
@@ -591,7 +587,6 @@ public class DBHelper extends SQLiteAssetHelper {
                     Cell headerCellElemento = headerRow.createCell(columnCount);
                     headerCellElemento.setCellValue("Elemento");
 
-                    // Llena la hoja de trabajo con los datos
                     int rowCount = 1;
                     do {
                         Row dataRow = sheet.createRow(rowCount++);
@@ -600,28 +595,21 @@ public class DBHelper extends SQLiteAssetHelper {
                             String columnName = cursor.getColumnName(i);
                             String cellValue = cursor.getString(i);
 
-                            // Reemplaza el número de pregunta con su descripción
                             if ("pregunta".equals(columnName)) {
                                 String descripcionPregunta = getDescripcionPregunta(cellValue);
                                 dataCell.setCellValue(descripcionPregunta);
-                            } else if ("opcion_actual".equals(columnName) || "opcion_potencial".equals(columnName)) {
-                                // Obtiene el nombre de la opción correspondiente a la pregunta
-                                String nombreOpcion = getNombreOpcion(cellValue);
-                                dataCell.setCellValue(nombreOpcion);
                             } else {
-                                // Si no es la columna de pregunta u opción, simplemente agrega el valor a la celda
+                                // Si no es la columna de pregunta, simplemente agrega el valor a la celda
                                 dataCell.setCellValue(cellValue);
                             }
                         }
                     } while (cursor.moveToNext());
                 }
 
-                // Crea el archivo en el directorio de descargas
                 String fileName = "datos_" + selectedEmpresa + ".xls";
                 File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
                 File file = new File(downloadsDir, fileName);
 
-                // Escribe el libro de trabajo en el archivo
                 try (FileOutputStream fos = new FileOutputStream(file)) {
                     workbook.write(fos);
                     Log.d(TAG, "Guardado exitoso en el archivo: " + file.getAbsolutePath());
@@ -639,25 +627,6 @@ public class DBHelper extends SQLiteAssetHelper {
             Log.e(TAG, "Error al guardar en el archivo: " + e.getMessage());
         }
         return null;
-    }
-
-    public String getNombreOpcion(String numeroOpcion) {
-        String nombreOpcion = "";
-        try {
-            SQLiteDatabase db = this.getReadableDatabase();
-            Cursor cursor = db.rawQuery("SELECT nombre FROM opcion WHERE numero = ?", new String[]{numeroOpcion});
-            if (cursor.moveToFirst()) {
-                nombreOpcion = cursor.getString(0);
-            } else {
-                Log.e(TAG, "No se encontró la opción con número: " + numeroOpcion);
-            }
-            cursor.close();
-        } catch (SQLException e) {
-            Log.e(TAG, e.toString());
-            e.printStackTrace();
-        }
-        Log.d(TAG, "Nombre de la opción para el número " + numeroOpcion + ": " + nombreOpcion);
-        return nombreOpcion;
     }
 
     // Rename the method to avoid ambiguity
