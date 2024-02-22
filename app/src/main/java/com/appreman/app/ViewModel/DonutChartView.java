@@ -94,24 +94,31 @@ public class DonutChartView extends View {
     }
 
     private void drawLegend(Canvas canvas, float centerX, float centerY, float radius) {
-        float legendSize = 30;
-        float legendSpacing = 10;
-        float legendY = centerY - radius - legendSize - legendSpacing; // Ajusta esta coordenada para mover la leyenda arriba
+        float legendSize = 40; // Ajusta este valor para cambiar el tamaño de la leyenda
+        float legendSpacing = 20; // Ajusta este valor para cambiar el espacio entre las leyendas
+        float legendX = centerX - radius * 2; // Ajusta esta coordenada para mover la leyenda hacia la izquierda
+        float legendY = centerY; // Ajusta esta coordenada para cambiar la posición vertical
 
         // Dibujar cuadrados de colores y etiquetas
         for (int i = 0; i < colors.length; i++) {
             paint.setColor(colors[i]);
-            canvas.drawRect(centerX - radius, legendY + legendSpacing + (legendSize + legendSpacing) * i,
-                    centerX - radius + legendSize, legendY + legendSpacing + (legendSize + legendSpacing) * i + legendSize, paint);
+            canvas.drawRect(legendX,
+                    legendY + (legendSize + legendSpacing) * i,
+                    legendX + legendSize,
+                    legendY + (legendSize + legendSpacing) * i + legendSize,
+                    paint);
 
             paint.setColor(Color.DKGRAY);
-            paint.setTextSize(20);
+            paint.setTextSize(25); // Ajusta el tamaño del texto según tus preferencias
             canvas.drawText((i == 0 ? "Empresas Agregadas" : "Empresas Encuestadas"),
-                    centerX - radius + legendSize + legendSpacing,
-                    legendY + legendSpacing + (legendSize + legendSpacing) * i + legendSize,
+                    legendX + legendSize + legendSpacing,
+                    legendY + (legendSize + legendSpacing) * i + legendSize,
                     paint);
         }
     }
+
+
+
 
 
     private float getTotal(float[] array) {
