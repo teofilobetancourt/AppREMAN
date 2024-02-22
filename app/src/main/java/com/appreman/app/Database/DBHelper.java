@@ -587,13 +587,31 @@ public class DBHelper extends SQLiteAssetHelper {
                         headerCell.setCellValue(cursor.getColumnName(i));
                     }
 
+                    // Agrega la nueva columna "Elemento"
+                    Cell headerCellElemento = headerRow.createCell(columnCount);
+                    headerCellElemento.setCellValue("Elemento");
+
                     // Llena la hoja de trabajo con los datos
                     int rowCount = 1;
                     do {
                         Row dataRow = sheet.createRow(rowCount++);
                         for (int i = 0; i < columnCount; i++) {
                             Cell dataCell = dataRow.createCell(i);
-                            dataCell.setCellValue(cursor.getString(i));
+                            String columnName = cursor.getColumnName(i);
+                            String cellValue = cursor.getString(i);
+
+                            // Reemplaza el número de pregunta con su descripción
+                            if ("pregunta".equals(columnName)) {
+                                String descripcionPregunta = getDescripcionPregunta(cellValue);
+                                dataCell.setCellValue(descripcionPregunta);
+                            } else if ("opcion_actual".equals(columnName) || "opcion_potencial".equals(columnName)) {
+                                // Obtiene el nombre de la opción correspondiente a la pregunta
+                                String nombreOpcion = getNombreOpcion(cellValue);
+                                dataCell.setCellValue(nombreOpcion);
+                            } else {
+                                // Si no es la columna de pregunta u opción, simplemente agrega el valor a la celda
+                                dataCell.setCellValue(cellValue);
+                            }
                         }
                     } while (cursor.moveToNext());
                 }
@@ -623,6 +641,42 @@ public class DBHelper extends SQLiteAssetHelper {
         return null;
     }
 
+    public String getNombreOpcion(String numeroOpcion) {
+        String nombreOpcion = "";
+        try {
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor cursor = db.rawQuery("SELECT nombre FROM opcion WHERE numero = ?", new String[]{numeroOpcion});
+            if (cursor.moveToFirst()) {
+                nombreOpcion = cursor.getString(0);
+            } else {
+                Log.e(TAG, "No se encontró la opción con número: " + numeroOpcion);
+            }
+            cursor.close();
+        } catch (SQLException e) {
+            Log.e(TAG, e.toString());
+            e.printStackTrace();
+        }
+        Log.d(TAG, "Nombre de la opción para el número " + numeroOpcion + ": " + nombreOpcion);
+        return nombreOpcion;
+    }
+
+    // Rename the method to avoid ambiguity
+    public String getDescripcionPregunta(String numeroPregunta) {
+        String descripcion = "";
+        try (SQLiteDatabase db = this.getReadableDatabase()) {
+            Cursor cursor = db.rawQuery("SELECT descripcion FROM pregunta WHERE numero = ?", new String[]{numeroPregunta});
+            if (cursor.moveToFirst()) {
+                descripcion = cursor.getString(0);
+            }
+            cursor.close();
+        } catch (SQLException e) {
+            Log.e(TAG, e.toString());
+            e.printStackTrace();
+        }
+        return descripcion;
+    }
+
+
     public void descargarArchivo(File archivo, Context context) {
         if (archivo != null) {
             // Crea un Intent para abrir el archivo con una actividad de visor de archivos
@@ -649,6 +703,9 @@ public class DBHelper extends SQLiteAssetHelper {
             Log.e("DBHelper", "Error al guardar en el archivo");
         }
     }
+
+
+
 
 }
 
