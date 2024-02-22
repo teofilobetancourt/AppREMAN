@@ -17,7 +17,6 @@ import com.appreman.appreman.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
@@ -74,13 +73,9 @@ public class HomeFragment extends Fragment {
         fabDescargar.setOnClickListener(v -> {
             // Llama al método para guardar en el archivo y obtener el archivo
             String selectedEmpresa = (String) spinner.getSelectedItem();
-            try {
-                File archivoGuardado = dbHelper.guardarRespuestasEnArchivoConInformacionAdicional(selectedEmpresa, requireContext());
-                // Llama al método para descargar el archivo
-                dbHelper.descargarArchivo(archivoGuardado, requireContext());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            File archivoGuardado = dbHelper.guardarRespuestasEnArchivo(selectedEmpresa, requireContext());
+            // Llama al método para descargar el archivo
+            dbHelper.descargarArchivo(archivoGuardado, requireContext());
         });
 
         return view;
