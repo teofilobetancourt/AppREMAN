@@ -1,0 +1,596 @@
+<androidx.cardview.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:background="@color/colorAmarillo"
+    app:cardElevation="12dp"
+    app:cardUseCompatPadding="true"
+    layout_height="">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:padding="16dp">
+
+        <!-- Nombre de la empresa como título -->
+        <TextView
+            android:id="@+id/textViewNombre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_marginBottom="8dp"
+            android:text="Nombre de la Empresa"
+            tools:ignore="HardcodedText" />
+
+        <!-- Icono -->
+        <ImageView
+            android:id="@+id/imageViewIcono"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_play"
+            android:layout_marginEnd="8dp"
+            tools:ignore="UseAppTint"
+            app:tint="@android:color/white"
+            android:contentDescription="TODO" />
+
+        <!-- Campo Pais -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/imageView"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
+
+            <!-- Descripción para el campo Pais -->
+            <TextView
+                android:id="@+id/textViewPaisLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="País:"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"
+                tools:ignore="HardcodedText" />
+
+            <!-- Valor para el campo Pais -->
+            <TextView
+                android:id="@+id/textViewPais"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="Valor País"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+        <!-- Campo Región -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/imageView"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
+
+            <!-- Descripción para el campo Región -->
+            <TextView
+                android:id="@+id/textViewRegionLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Región:"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"
+                tools:ignore="HardcodedText" />
+
+            <!-- Valor para el campo Región -->
+            <TextView
+                android:id="@+id/textViewRegion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="Valor Región"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+        <!-- Campo Sitio -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/imageView"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
+
+            <!-- Descripción para el campo Sitio -->
+            <TextView
+                android:id="@+id/textViewSitioLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sitio:"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"
+                tools:ignore="HardcodedText" />
+
+            <!-- Valor para el campo Sitio -->
+            <TextView
+                android:id="@+id/textViewSitio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="Valor Sitio"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+        <!-- Campo Sector Industrial -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/imageView"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
+
+            <!-- Descripción para el campo Sector Industrial -->
+            <TextView
+                android:id="@+id/textViewSectorLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sector Industrial:"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"
+                tools:ignore="HardcodedText" />
+
+            <!-- Valor para el campo Sector Industrial -->
+            <TextView
+                android:id="@+id/textViewSector"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="Valor Sector Industrial"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+
+        <!-- Campo Tipo de Planta -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/imageView"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
+
+            <!-- Descripción para el campo Tipo de Planta -->
+            <TextView
+                android:id="@+id/textViewPlantaLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tipo de Planta:"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+
+            <!-- Valor para el campo Tipo de Planta -->
+            <TextView
+                android:id="@+id/textViewPlanta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="Valor Tipo de Planta"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+        <!-- Campo Representante de la Empresa -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/imageView"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
+
+            <!-- Descripción para el campo Representante de la Empresa -->
+            <TextView
+                android:id="@+id/textViewRepresentanteLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Representante de la Empresa:"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+
+            <!-- Valor para el campo Representante de la Empresa -->
+            <TextView
+                android:id="@+id/textViewRepresentante"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="Valor Representante de la Empresa"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/imageView"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
+
+            <!-- Descripción para el campo Teléfono -->
+            <TextView
+                android:id="@+id/textViewTelefonoLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Teléfono:"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+
+            <!-- Valor para el campo Teléfono -->
+            <TextView
+                android:id="@+id/textViewTelefono"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="Valor Teléfono"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+
+        <!-- Campo Correo Electrónico -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/imageView"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
+
+            <!-- Descripción para el campo Correo Electrónico -->
+            <TextView
+                android:id="@+id/textViewEmailLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Correo Electrónico:"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+
+            <!-- Valor para el campo Correo Electrónico -->
+            <TextView
+                android:id="@+id/textViewEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="Valor Correo Electrónico"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+
+        <!-- Campo Cliente Actual -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/imageView"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
+
+            <!-- Descripción para el campo Cliente Actual -->
+            <TextView
+                android:id="@+id/textViewClienteActualLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cliente Actual:"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+
+            <!-- Valor para el campo Cliente Actual -->
+            <TextView
+                android:id="@+id/textViewClienteActual"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="Valor Cliente Actual"
+                android:visibility="gone"
+                tools:ignore="HardcodedText,VisualLintBounds" />
+        </LinearLayout>
+
+        <!-- Campo Número de Plantas -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/imageView"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
+
+            <!-- Descripción para el campo Número de Plantas -->
+            <TextView
+                android:id="@+id/textViewNumeroDePlantasLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Número de Plantas:"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+
+            <!-- Valor para el campo Número de Plantas -->
+            <TextView
+                android:id="@+id/textViewNumeroDePlantas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="Valor Número de Plantas"
+                android:visibility="gone"
+                tools:ignore="HardcodedText,VisualLintBounds" />
+        </LinearLayout>
+
+
+        <!-- Campo Plantas a Implementar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/imageView"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
+
+            <!-- Descripción para el campo Plantas a Implementar -->
+            <TextView
+                android:id="@+id/textViewPlantasImplementarLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Plantas a Implementar:"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+
+            <!-- Valor para el campo Plantas a Implementar -->
+            <TextView
+                android:id="@+id/textViewPlantasImplementar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="Valor Plantas a Implementar"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+        <!-- Campo Hora de Registro -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/imageView"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
+
+            <!-- Descripción para el campo Hora de Registro -->
+            <TextView
+                android:id="@+id/textViewHoraRegistroLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hora de Registro:"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+
+            <!-- Valor para el campo Hora de Registro -->
+            <TextView
+                android:id="@+id/textViewHoraRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="Valor Hora de Registro"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+        <!-- Campo Fecha de Registro -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/imageView"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
+
+            <!-- Descripción para el campo Fecha de Registro -->
+            <TextView
+                android:id="@+id/textViewFechaRegistroLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fecha de Registro:"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+
+            <!-- Valor para el campo Fecha de Registro -->
+            <TextView
+                android:id="@+id/textViewFechaRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="Valor Fecha de Registro"
+                android:visibility="gone"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/buttonEncuesta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:minHeight="48dp"
+            android:text="Encuestar"
+            tools:ignore="HardcodedText,TouchTargetSizeCheck" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabMostrarMas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_plus"
+            app:backgroundTint="@color/colorAccent"
+            tools:ignore="SpeakableTextPresentCheck"
+            android:contentDescription="TODO" />
+
+
+
+    </LinearLayout>
+
+
+</androidx.cardview.widget.CardView>

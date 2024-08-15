@@ -1,0 +1,323 @@
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context="NuevaEmpresaActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:orientation="vertical"
+        tools:ignore="UselessParent">
+
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:contentDescription="logo"
+            android:scaleType="fitCenter"
+            android:src="@drawable/eman2"
+            tools:ignore="HardcodedText" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            style="@style/AppTheme.TextInputLayout"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:hintEnabled="true"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txtNombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_nombre"
+                android:inputType="textPersonName"
+                android:textColorHint="#757575"
+                android:textSize="16sp"
+                tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            style="@style/AppTheme.TextInputLayout"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:hintEnabled="true"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txtPais"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_pais"
+                android:inputType="textPersonName"
+                android:textColorHint="#757575"
+                android:textSize="16sp"
+                tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            style="@style/AppTheme.TextInputLayout"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:hintEnabled="true"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txtRegion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_region"
+                android:inputType="textPersonName"
+                android:textColorHint="#757575"
+                android:textSize="16sp"
+                tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            style="@style/AppTheme.TextInputLayout"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:hintEnabled="true"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txtSitio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_sitio"
+                android:inputType="textPersonName"
+                android:textColorHint="#757575"
+                android:textSize="16sp"
+                tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            style="@style/AppTheme.TextInputLayout"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:hintEnabled="true"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txtSector"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_sector_industrial"
+                android:inputType="textPersonName"
+                android:textColorHint="#757575"
+                android:textSize="16sp"
+                tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            style="@style/AppTheme.TextInputLayout"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:hintEnabled="true"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txtPlanta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_tipo_planta"
+                android:inputType="textPersonName"
+                android:textColorHint="#757575"
+                android:textSize="16sp"
+                tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            style="@style/AppTheme.TextInputLayout"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:hintEnabled="true"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txtRepresentanteEmpresa"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_representante_empresa"
+                android:inputType="textPersonName"
+                android:textColorHint="#757575"
+                android:textSize="16sp"
+                tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            style="@style/AppTheme.TextInputLayout"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:hintEnabled="true"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txtTelefono"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_telefono"
+                android:inputType="number"
+                android:textColorHint="#757575"
+                android:textSize="16sp"
+                tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            style="@style/AppTheme.TextInputLayout"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:hintEnabled="true"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txtEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_email"
+                android:inputType="textEmailAddress"
+                android:textColorHint="#757575"
+                android:textSize="16sp"
+                tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            style="@style/AppTheme.TextInputLayout"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:hintEnabled="true"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txtClienteActual"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_cliente_actual"
+                android:inputType="textPersonName"
+                android:textColorHint="#757575"
+                android:textSize="16sp"
+                tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            style="@style/AppTheme.TextInputLayout"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:hintEnabled="true"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txtNumeroPlantas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:hint="@string/hint_numero_plantas"
+                android:textSize="16sp"
+                tools:ignore="VisualLintTextFieldSize" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            style="@style/AppTheme.TextInputLayout"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:hintEnabled="true"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txtPlantasImplementar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:hint="@string/hint_plantas_implementar"
+                android:textSize="16sp"
+                tools:ignore="VisualLintTextFieldSize" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <Button
+            android:id="@+id/btnGuarda"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/btn_guarda"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

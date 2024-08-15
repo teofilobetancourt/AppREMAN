@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="primaryColor">#121F3A</color>
+    <color name="primaryLightColor">#a5bc75</color>
+    <color name="primaryDarkColor">#485f1d</color>
+    <color name="secondaryColor">#63B041</color>
+    <color name="secondaryLightColor">#afe07a</color>
+    <color name="secondaryDarkColor">#4e7e1c</color>
+    <color name="primaryTextColor">#ffffff</color>
+
+    <!--<color name="colorPrimary">#121F3A</color>-->
+    <color name="colorPrimary">#154f87</color>
+    <color name="colorPrimaryDark">#003e4d</color>
+    <color name="colorAccent">#154f87</color>
+    <color name="colorTitulos">#142432</color>
+    <!--<color name="colorSecundario">#07b135</color>-->
+    <color name="colorSecundario">#56cc4a</color>
+    <color name="colorMenu">#B9C2D0</color>
+    <color name="secondaryTextColor">#ABB3CB</color>
+    <color name="colorFondoTextInput">#f7f8fa</color>
+    <color name="colorBarra">#59F7FAF7</color>
+    <color name="colorPantone">#D4EC8E</color>
+    <color name="colorPantoneGray">#D9D9D6</color>
+    <color name="colorBlanco">#ffffff</color>
+    <color name="colorRojo">#DB2A2A</color>
+    <color name="colorAmarillo">#FCF6A0</color>
+
+    <color name="colorVerde">#008f39</color>
+    <color name="colorNaranja">#F49308</color>
+
+
+    <color name="colorFondo">#F0F4FD</color>
+    <color name="colorIconosOpcion">#2CC09C</color>
+    <color name="colorLabel">#394241</color>
+    <color name="colorTexto">#607D8B</color>
+    <color name="colorEncabezado">#F2F2F2</color>
+
+    <color name="colorFondoFragment">#FCFCFC</color>
+    <color name="colorFondoCarview">#F0F4FD</color>
+    <color name="colorInputs">#F7F8F9</color>
+    <color name="colorCamara">#EDF4F9</color>
+    <color name="colorFondoLabel">#E1FF79</color>
+    <color name="colorLetrasLabel">#2CC09C</color>
+    <color name="colorFondoLabel1">#DDF9CD</color>
+    <color name="colorFondoLabel2">#F9ED33</color>
+    <color name="colorLetrasLabel2">#F79903</color>
+    <color name="colorIcono">#B9C2D0</color>
+
+    <color name="colorVentas">#C9F6BD</color>
+    <color name="colorSinVentas">#E0E7ED</color>
+    <color name="colorCuotaAlca">#7FF1A3</color>
+    <color name="colorCuotanOAlca">#D1F8E2</color>
+    <color name="colorComp">#F5F8F6</color>
+
+    <color name="colorVerdeClaro">#C1F4C5</color>
+    <color name="colorLetras">#303033</color>
+    <color name="colorGris">#CED6D8</color>
+    <color name="colorNegro">#000000</color>
+
+
+    <color name="transparent">#00000000</color>
+
+   <!-- <color name="themeColor1">#946c82</color>
+    <color name="themeColor2">#758b8b</color>-->
+
+</resources>

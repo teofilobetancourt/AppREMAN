@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true">
+
+    <RelativeLayout
+        android:id="@+id/layoutView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_5sdp"
+        android:orientation="horizontal"
+        android:padding="@dimen/_2sdp"
+        tools:ignore="UselessParent">
+
+        <TextView
+            android:id="@+id/textNombre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:layout_marginBottom="@dimen/_2sdp"
+            android:fontFamily="@font/opensans_semibold"
+            android:text="Elementos"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/_12sdp"
+            tools:ignore="HardcodedText,TextSizeCheck" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textNombre"
+            android:layout_alignStart="@id/textNombre"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_10sdp" />
+
+
+    </RelativeLayout>
+
+
+</RelativeLayout>
+

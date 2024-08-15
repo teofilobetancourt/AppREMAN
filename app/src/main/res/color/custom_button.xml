@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <!-- Disabled state. -->
+        <item android:state_enabled="false"
+            android:colorAccent="#0057BB"
+            android:alpha="?android:attr/disabledAlpha"/>
+
+        <!-- Enabled state. -->
+        <item android:colorAccent="#0057BB"/>
+
+    </selector>
+</selector>
+
