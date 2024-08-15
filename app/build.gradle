@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.appreman.appreman"
-        minSdk 26
+        minSdk 22
         targetSdk 34
         versionCode 1
         versionName "1.0"
@@ -28,15 +28,11 @@ android {
     }
     buildFeatures {
         viewBinding true
-    }
-
-    buildFeatures {
         dataBinding true
     }
 }
 
 dependencies {
-
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.10.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -48,9 +44,14 @@ dependencies {
     implementation 'com.intuit.sdp:sdp-android:1.1.0'
     implementation "androidx.room:room-runtime:2.6.1"
     implementation 'com.readystatesoftware.sqliteasset:sqliteassethelper:2.0.1'
-    implementation 'androidx.recyclerview:recyclerview:version'
-    implementation 'org.apache.poi:poi:5.2.1'
-    implementation 'org.apache.poi:poi-ooxml:5.2.1'
-    annotationProcessor "androidx.room:room-compiler:2.6.1"
 
+    // Versiones antiguas de Apache POI
+    implementation ('org.apache.poi:poi:3.17') {
+        exclude group: 'org.apache.xmlbeans', module: 'xmlbeans'
+    }
+    implementation ('org.apache.poi:poi-ooxml:3.17') {
+        exclude group: 'org.apache.xmlbeans', module: 'xmlbeans'
+    }
+
+    annotationProcessor "androidx.room:room-compiler:2.6.1"
 }
