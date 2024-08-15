@@ -19,6 +19,7 @@ import java.util.List;
 public class EncuestasActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
+    //PRUEBA
 
     public static void start(Context context) {
         Intent intent = new Intent(context, EncuestasActivity.class);
