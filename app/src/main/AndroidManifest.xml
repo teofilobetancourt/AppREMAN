@@ -11,13 +11,30 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:largeHeap="true"
         android:theme="@style/AppTheme"
-
         android:requestLegacyExternalStorage="true"
-
-
         tools:targetApi="31">
 
+        <!-- Splash Screen Activity -->
+        <activity
+            android:name="com.appreman.app.Activity.SplashActivity"
+            android:exported="true"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Login Activity -->
+        <activity
+            android:name="com.appreman.app.Activity.LoginActivity"
+            android:exported="false"
+            android:label="@string/activity_login"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <!-- Other Activities -->
         <activity
             android:name="com.appreman.app.Activity.EmpresasEncuestadasActivity"
             android:exported="false"
@@ -33,10 +50,6 @@
         <activity
             android:name="com.appreman.app.Activity.MainActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <activity
@@ -45,7 +58,7 @@
             android:label="@string/title_nueva_empresa"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <!-- Agregado el proveedor de archivos -->
+        <!-- File provider -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.appreman.appreman.provider"

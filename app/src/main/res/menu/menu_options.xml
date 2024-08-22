@@ -1,0 +1,8 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_download"
+        android:title="Exportar en el dispositivo" />
+    <item
+        android:id="@+id/menu_send_email"
+        android:title="Exportar al correo" />
+</menu>

@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 public class AppPreferences {
     public static final String APP_PREFERENCES = "app_preferences";
     public static final String KEY_NOMBRE_EMPRESA = "nombre_empresa";
+    public static final String KEY_ID_EMPRESA = "id_empresa";
 
     private final SharedPreferences sharedPreferences;
 
@@ -13,11 +14,23 @@ public class AppPreferences {
         this.sharedPreferences = context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
     }
 
+    // Obtener el nombre de la empresa
     public String getNombreEmpresa() {
         return sharedPreferences.getString(KEY_NOMBRE_EMPRESA, "");
     }
 
+    // Guardar el nombre de la empresa
     public void setNombreEmpresa(String nombreEmpresa) {
         sharedPreferences.edit().putString(KEY_NOMBRE_EMPRESA, nombreEmpresa).apply();
+    }
+
+    // Obtener el ID de la empresa
+    public int getIdEmpresa() {
+        return sharedPreferences.getInt(KEY_ID_EMPRESA, -1); // Devuelve -1 si no se ha guardado un ID
+    }
+
+    // Guardar el ID de la empresa
+    public void setIdEmpresa(int idEmpresa) {
+        sharedPreferences.edit().putInt(KEY_ID_EMPRESA, idEmpresa).apply();
     }
 }

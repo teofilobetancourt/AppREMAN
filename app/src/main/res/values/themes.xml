@@ -169,20 +169,20 @@
 
 
     <style name="SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="android:windowBackground">@drawable/splash_background</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
+        <!--  <item name="android:windowBackground">@drawable/splash_background</item> -->
+          <item name="colorPrimary">@color/colorPrimary</item>
+          <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+          <item name="colorAccent">@color/colorAccent</item>
+      </style>
 
-    <style name="MyCheckBox" parent="Theme.AppCompat.Light">
-        <item name="colorControlNormal">@color/colorTexto</item>
-        <item name="colorControlActivated">@color/colorRojo</item>
-    </style>
+      <style name="MyCheckBox" parent="Theme.AppCompat.Light">
+          <item name="colorControlNormal">@color/colorTexto</item>
+          <item name="colorControlActivated">@color/colorRojo</item>
+      </style>
 
-    <style name="MyCheckBoxLin" parent="Theme.AppCompat.Light">
-        <item name="colorControlNormal">@color/colorTexto</item>
-        <item name="colorControlActivated">@color/colorIconosOpcion</item>
-    </style>
+      <style name="MyCheckBoxLin" parent="Theme.AppCompat.Light">
+          <item name="colorControlNormal">@color/colorTexto</item>
+          <item name="colorControlActivated">@color/colorIconosOpcion</item>
+      </style>
 
-</resources>
+  </resources>

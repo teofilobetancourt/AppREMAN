@@ -5,9 +5,19 @@
     <color name="primaryLightColor">#a5bc75</color>
     <color name="primaryDarkColor">#485f1d</color>
     <color name="secondaryColor">#63B041</color>
+
     <color name="secondaryLightColor">#afe07a</color>
     <color name="secondaryDarkColor">#4e7e1c</color>
     <color name="primaryTextColor">#ffffff</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="toolbar_background_semi_transparent">#800000FF</color>
+    <color name="Azul">#154f87</color>
+    <color name="Verde">#56cc4a</color>
+    <color name="cardBackgroundColor">#FFFFFF</color>
+
+
+
+
 
     <!--<color name="colorPrimary">#121F3A</color>-->
     <color name="colorPrimary">#154f87</color>

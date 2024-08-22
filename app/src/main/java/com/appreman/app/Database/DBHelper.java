@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
@@ -30,9 +31,12 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DBHelper extends SQLiteAssetHelper {
 
@@ -343,15 +347,25 @@ public class DBHelper extends SQLiteAssetHelper {
     public void insertarOpcionesEnRespuestas(String nombreEmpresa, String numeroPregunta, String opcionActual, String opcionPotencial) {
         SQLiteDatabase db = this.getWritableDatabase();
 
+        // Recuperar el elemento correspondiente a la pregunta
+        String elemento = getElementoDePregunta(numeroPregunta);
+
+        if (elemento == null) {
+            Log.e(TAG, "No se pudo encontrar el elemento para la pregunta número: " + numeroPregunta);
+            return;
+        }
+
         ContentValues values = new ContentValues();
         values.put("Empresa", nombreEmpresa);
         values.put("pregunta", numeroPregunta);
         values.put("opcionActual", opcionActual);
         values.put("opcionPotencial", opcionPotencial);
+        values.put("elemento", elemento);  // Incluir el elemento en la inserción
 
         Log.d(TAG, "Número de Pregunta: " + numeroPregunta);
-        Log.d(TAG, "Opcion Actual: " + opcionActual);
-        Log.d(TAG, "Opcion Potencial: " + opcionPotencial);
+        Log.d(TAG, "Opción Actual: " + opcionActual);
+        Log.d(TAG, "Opción Potencial: " + opcionPotencial);
+        Log.d(TAG, "Elemento: " + elemento);  // Log para verificar el elemento
 
         long insertResult = db.insert("respuestas", null, values);
 
@@ -362,6 +376,23 @@ public class DBHelper extends SQLiteAssetHelper {
         }
 
         db.close();
+    }
+
+    // Método para obtener el elemento de una pregunta dada
+    @SuppressLint("Range")
+    private String getElementoDePregunta(String numeroPregunta) {
+        String elemento = null;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT elemento FROM pregunta WHERE numero = ?", new String[]{numeroPregunta});
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                elemento = cursor.getString(cursor.getColumnIndex("elemento"));
+            }
+            cursor.close();
+        }
+
+        return elemento;
     }
 
 
@@ -566,62 +597,47 @@ public class DBHelper extends SQLiteAssetHelper {
         return count;
     }
 
+    @SuppressLint("Range")
     public File guardarRespuestasEnArchivo(String selectedEmpresa, Context context) {
         try (SQLiteDatabase db = this.getReadableDatabase()) {
             String[] selectionArgs = {selectedEmpresa};
-            Cursor cursor = db.rawQuery("SELECT * FROM respuestas WHERE empresa = ?", selectionArgs);
+            Cursor cursor = db.rawQuery(
+                    "SELECT empresa, pregunta, opcionActual, opcionPotencial, elemento FROM respuestas WHERE empresa = ?",
+                    selectionArgs
+            );
 
-            Workbook workbook = new XSSFWorkbook();
-            Sheet sheet = workbook.createSheet("respuestas");
-
-            try {
-                if (cursor != null && cursor.moveToFirst()) {
-                    Row headerRow = sheet.createRow(0);
-                    int columnCount = cursor.getColumnCount();
-                    for (int i = 0; i < columnCount; i++) {
-                        Cell headerCell = headerRow.createCell(i);
-                        headerCell.setCellValue(cursor.getColumnName(i));
+            // Log the content of the 'respuestas' table
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    StringBuilder rowContent = new StringBuilder();
+                    for (int i = 0; i < cursor.getColumnCount(); i++) {
+                        rowContent.append(cursor.getColumnName(i)).append(": ").append(cursor.getString(i)).append(", ");
                     }
+                    Log.d(TAG, "Row content: " + rowContent.toString());
+                } while (cursor.moveToNext());
+            }
 
-                    // Agrega la nueva columna "Elemento"
-                    Cell headerCellElemento = headerRow.createCell(columnCount);
-                    headerCellElemento.setCellValue("Elemento");
+            File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            String fileName = selectedEmpresa + ".csv";
+            File file = new File(downloadsDir, fileName);
 
-                    int rowCount = 1;
+            try (FileWriter writer = new FileWriter(file)) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    // Write column names, including the new 'elemento' column
+                    writer.append("empresa,pregunta,opcionActual,opcionPotencial,elemento\n");
+
                     do {
-                        Row dataRow = sheet.createRow(rowCount++);
-                        for (int i = 0; i < columnCount; i++) {
-                            Cell dataCell = dataRow.createCell(i);
-                            String columnName = cursor.getColumnName(i);
-                            String cellValue = cursor.getString(i);
-
-                            if ("pregunta".equals(columnName)) {
-                                String descripcionPregunta = getDescripcionPregunta(cellValue);
-                                dataCell.setCellValue(descripcionPregunta);
-                            } else {
-                                // Si no es la columna de pregunta, simplemente agrega el valor a la celda
-                                dataCell.setCellValue(cellValue);
-                            }
-                        }
+                        writer.append(cursor.getString(cursor.getColumnIndex("empresa"))).append(",");
+                        writer.append(cursor.getString(cursor.getColumnIndex("pregunta"))).append(",");
+                        writer.append(cursor.getString(cursor.getColumnIndex("opcionActual"))).append(",");
+                        writer.append(cursor.getString(cursor.getColumnIndex("opcionPotencial"))).append(",");
+                        writer.append(cursor.getString(cursor.getColumnIndex("elemento"))).append("\n");
                     } while (cursor.moveToNext());
                 }
-
-                String fileName = "datos_" + selectedEmpresa + ".xls";
-                File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-                File file = new File(downloadsDir, fileName);
-
-                try (FileOutputStream fos = new FileOutputStream(file)) {
-                    workbook.write(fos);
-                    Log.d(TAG, "Guardado exitoso en el archivo: " + file.getAbsolutePath());
-                    return file;
-                } catch (IOException e) {
-                    Log.e(TAG, "Error al guardar en el archivo: " + e.getMessage());
-                }
-
-            } catch (Exception e) {
+                Log.d(TAG, "Guardado exitoso en el archivo: " + file.getAbsolutePath());
+                return file;
+            } catch (IOException e) {
                 Log.e(TAG, "Error al guardar en el archivo: " + e.getMessage());
-            } finally {
-                workbook.close();
             }
         } catch (Exception e) {
             Log.e(TAG, "Error al guardar en el archivo: " + e.getMessage());
@@ -629,6 +645,44 @@ public class DBHelper extends SQLiteAssetHelper {
         return null;
     }
 
+    public void descargarArchivo(File archivo, Context context) {
+        if (archivo != null) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            Uri uri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", archivo);
+            intent.setData(uri);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            try {
+                context.startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                Toast.makeText(context, "No hay aplicación para abrir el archivo", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "No se pudo encontrar una actividad para manejar el intent");
+            }
+        } else {
+            Toast.makeText(context, "Error al guardar los datos", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Error al guardar en el archivo");
+        }
+    }
+
+    public int getTotalPreguntasCount() {
+        int count = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        try {
+            Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM pregunta", null);
+            if (cursor.moveToFirst()) {
+                count = cursor.getInt(0);
+            }
+            cursor.close();
+        } catch (SQLException e) {
+            Log.e(TAG, e.toString());
+            e.printStackTrace();
+        } finally {
+            db.close();
+        }
+
+        return count;
+    }
     // Rename the method to avoid ambiguity
     public String getDescripcionPregunta(String numeroPregunta) {
         String descripcion = "";
@@ -646,34 +700,83 @@ public class DBHelper extends SQLiteAssetHelper {
     }
 
 
-    public void descargarArchivo(File archivo, Context context) {
-        if (archivo != null) {
-            // Crea un Intent para abrir el archivo con una actividad de visor de archivos
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            Uri uri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", archivo);
 
-            // Intenta abrir el archivo utilizando un intent genérico
-            intent.setData(uri);
+    public Map<String, Double> obtenerContadoresYPorcentajes(String nombreEmpresa) {
+        SQLiteDatabase db = this.getReadableDatabase();
 
-            // Agrega el flag FLAG_GRANT_READ_URI_PERMISSION
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        // Contadores
+        int contadorActual = 0;
+        int contadorPotencial = 0;
+        int contadorAmbas = 0;
+        int totalOpciones = 0;
 
-            // Inicia la actividad desde el contexto
-            try {
-                context.startActivity(intent);
-            } catch (ActivityNotFoundException e) {
-                // Maneja la excepción si no hay actividad para manejar el intent
-                Toast.makeText(context, "No hay aplicación para abrir el archivo", Toast.LENGTH_SHORT).show();
-                Log.e("DBHelper", "No se pudo encontrar una actividad para manejar el intent");
-            }
-        } else {
-            // Maneja el caso donde hubo un problema con la operación de guardar
-            Toast.makeText(context, "Error al guardar los datos", Toast.LENGTH_SHORT).show();
-            Log.e("DBHelper", "Error al guardar en el archivo");
+        // Consulta para obtener todas las respuestas agrupadas por pregunta y opción
+        Cursor cursorRespuestas = db.rawQuery(
+                "SELECT pregunta, opcionActual, opcionPotencial FROM respuestas WHERE empresa = ?",
+                new String[]{nombreEmpresa}
+        );
+
+        // Mapas para contar opciones
+        Map<String, Integer> mapaOpcionesActual = new HashMap<>();
+        Map<String, Integer> mapaOpcionesPotencial = new HashMap<>();
+        Map<String, Integer> mapaOpcionesAmbas = new HashMap<>();
+
+        if (cursorRespuestas.moveToFirst()) {
+            do {
+                String pregunta = cursorRespuestas.getString(0);
+                String opcionActual = cursorRespuestas.getString(1);
+                String opcionPotencial = cursorRespuestas.getString(2);
+
+                // Actualiza los contadores para cada opción
+                if (opcionActual.equals(opcionPotencial)) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        mapaOpcionesAmbas.put(pregunta, mapaOpcionesAmbas.getOrDefault(pregunta, 0) + 1);
+                    }
+                } else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        mapaOpcionesActual.put(pregunta, mapaOpcionesActual.getOrDefault(pregunta, 0) + 1);
+                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        mapaOpcionesPotencial.put(pregunta, mapaOpcionesPotencial.getOrDefault(pregunta, 0) + 1);
+                    }
+                }
+            } while (cursorRespuestas.moveToNext());
         }
+        cursorRespuestas.close();
+
+        // Calcula los contadores totales
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            contadorActual = mapaOpcionesActual.values().stream().mapToInt(Integer::intValue).sum();
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            contadorPotencial = mapaOpcionesPotencial.values().stream().mapToInt(Integer::intValue).sum();
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            contadorAmbas = mapaOpcionesAmbas.values().stream().mapToInt(Integer::intValue).sum();
+        }
+        totalOpciones = contadorActual + contadorPotencial + contadorAmbas;
+
+        // Crear un mapa para los resultados
+        Map<String, Double> resultados = new HashMap<>();
+        resultados.put("Actual", (double) contadorActual);
+        resultados.put("Potencial", (double) contadorPotencial);
+        resultados.put("Ambas", (double) contadorAmbas);
+        resultados.put("Total", (double) totalOpciones);
+
+        // Calcular porcentajes
+        if (totalOpciones > 0) {
+            resultados.put("ActualPorcentaje", (contadorActual * 100.0) / totalOpciones);
+            resultados.put("PotencialPorcentaje", (contadorPotencial * 100.0) / totalOpciones);
+            resultados.put("AmbasPorcentaje", (contadorAmbas * 100.0) / totalOpciones);
+        } else {
+            resultados.put("ActualPorcentaje", 0.0);
+            resultados.put("PotencialPorcentaje", 0.0);
+            resultados.put("AmbasPorcentaje", 0.0);
+        }
+
+        db.close();
+        return resultados;
     }
-
-
 
 
 }

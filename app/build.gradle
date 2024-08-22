@@ -33,6 +33,7 @@ android {
 }
 
 dependencies {
+    implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.10.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -44,6 +45,9 @@ dependencies {
     implementation 'com.intuit.sdp:sdp-android:1.1.0'
     implementation "androidx.room:room-runtime:2.6.1"
     implementation 'com.readystatesoftware.sqliteasset:sqliteassethelper:2.0.1'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    implementation 'javax.xml.stream:stax-api:1.0-2'
+    implementation 'org.codehaus.woodstox:stax2-api:4.2.1' // Añadir esta línea
 
     // Versiones antiguas de Apache POI
     implementation ('org.apache.poi:poi:3.17') {

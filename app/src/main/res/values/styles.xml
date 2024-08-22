@@ -1,0 +1,9 @@
+<resources>
+    <!-- Otros estilos -->
+    <style name="CustomSpinnerStyle" parent="Widget.AppCompat.Spinner">
+        <item name="android:background">@drawable/spinner_item_background</item>
+        <item name="android:dropDownVerticalOffset">10dp</item> <!-- Espacio adicional al desplegar -->
+        <item name="android:drawableRight">@drawable/spinner_arrow</item> <!-- Flecha personalizada -->
+        <item name="android:textStyle">bold</item> <!-- Texto en negrita -->
+    </style>
+</resources>
