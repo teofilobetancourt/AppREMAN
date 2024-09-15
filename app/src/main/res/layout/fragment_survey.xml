@@ -4,10 +4,29 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
+<<<<<<< HEAD
+=======
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="logo"
+        android:scaleType="centerCrop"
+        android:src="@drawable/eman2"
+        tools:ignore="HardcodedText" />
+
+>>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
     <com.appreman.app.ViewModel.DonutChartView
         android:id="@+id/donutChartView"
         android:layout_width="match_parent"
         android:layout_height="200dp"
+<<<<<<< HEAD
+=======
+        android:layout_below="@id/imageView"
+>>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         tools:ignore="MissingClass" />
@@ -19,7 +38,11 @@
         android:layout_below="@id/donutChartView"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
+<<<<<<< HEAD
         android:layout_marginTop="16dp"
+=======
+        android:layout_marginTop="200dp"
+>>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
         android:onClick="nuevaEmpresaOnClick"
         android:text="Agregar Empresa para Encuestar" />
 

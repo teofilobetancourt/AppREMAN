@@ -5,6 +5,7 @@
     <color name="primaryLightColor">#a5bc75</color>
     <color name="primaryDarkColor">#485f1d</color>
     <color name="secondaryColor">#63B041</color>
+<<<<<<< HEAD
 
     <color name="secondaryLightColor">#afe07a</color>
     <color name="secondaryDarkColor">#4e7e1c</color>
@@ -18,6 +19,11 @@
 
 
 
+=======
+    <color name="secondaryLightColor">#afe07a</color>
+    <color name="secondaryDarkColor">#4e7e1c</color>
+    <color name="primaryTextColor">#ffffff</color>
+>>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
 
     <!--<color name="colorPrimary">#121F3A</color>-->
     <color name="colorPrimary">#154f87</color>

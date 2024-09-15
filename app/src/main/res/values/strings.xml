@@ -1,12 +1,17 @@
 <resources>
     <string name="app_name">Remam</string>
     <string name="inicio">Inicio</string>
+<<<<<<< HEAD
     <string name="version">Version 2.0</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="title_nueva_empresa">Nueva Empresa</string>
     <string name="activity_login">Nueva Empresa</string>
 
+=======
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="title_nueva_empresa">Nueva Empresa</string>
+>>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
     <string name="hint_nombre">Nombre de Empresa:</string>
     <string name="hint_pais">Pais:</string>
     <string name="hint_region">Region:</string>

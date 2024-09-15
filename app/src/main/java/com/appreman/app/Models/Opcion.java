@@ -1,5 +1,6 @@
 package com.appreman.app.Models;
 
+<<<<<<< HEAD
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -26,6 +27,14 @@ public class Opcion {
     private String nombreOpcion;
 
     @ColumnInfo(name = "respondida")
+=======
+public class Opcion {
+    private String numero;
+    private String nombre;
+    private String pregunta;
+    private boolean seleccionada;
+    private String nombreOpcion;
+>>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
     private boolean respondida;
 
     public Opcion() {
@@ -84,4 +93,8 @@ public class Opcion {
     public void setRespondida(boolean respondida) {
         this.respondida = respondida;
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30

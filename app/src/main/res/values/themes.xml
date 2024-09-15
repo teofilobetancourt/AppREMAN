@@ -169,6 +169,7 @@
 
 
     <style name="SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+<<<<<<< HEAD
         <!--  <item name="android:windowBackground">@drawable/splash_background</item> -->
           <item name="colorPrimary">@color/colorPrimary</item>
           <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -186,3 +187,22 @@
       </style>
 
   </resources>
+=======
+        <item name="android:windowBackground">@drawable/splash_background</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="MyCheckBox" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/colorTexto</item>
+        <item name="colorControlActivated">@color/colorRojo</item>
+    </style>
+
+    <style name="MyCheckBoxLin" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/colorTexto</item>
+        <item name="colorControlActivated">@color/colorIconosOpcion</item>
+    </style>
+
+</resources>
+>>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30

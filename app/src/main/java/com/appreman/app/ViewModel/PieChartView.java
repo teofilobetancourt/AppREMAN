@@ -1,11 +1,18 @@
+<<<<<<< HEAD
 /*package com.appreman.app.ViewModel;
+=======
+package com.appreman.app.ViewModel;
+>>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+<<<<<<< HEAD
 import android.graphics.Typeface;
+=======
+>>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,6 +35,10 @@ public class PieChartView extends View {
     private RectF rectF;
     private String selectedEmpresa = "";
     private Map<String, Float> porcentajes;
+<<<<<<< HEAD
+=======
+    private int preguntasRespondidas;  // Declarar la variable en la clase
+>>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
 
     public PieChartView(Context context) {
         super(context);
@@ -81,13 +92,24 @@ public class PieChartView extends View {
         data.add(porcentajeRespondido); // Porcentaje de preguntas respondidas
     }
 
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
         float centerX = getWidth() / 2;
+<<<<<<< HEAD
         float centerY = getMeasuredHeight() / 2 - 30; // Subir un poco el gráfico
         float radius = Math.min(getWidth(), getMeasuredHeight()) / 2 * 0.7f; // Ajustar el radio
+=======
+        float centerY = getHeight() / 3; // Ajusta esta línea para cambiar la posición vertical
+        float radius = Math.min(getWidth(), getHeight()) / 2 * 0.8f;
+>>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
 
         rectF.set(centerX - radius, centerY - radius, centerX + radius, centerY + radius);
 
@@ -105,13 +127,21 @@ public class PieChartView extends View {
         }
 
         // Dibujar leyenda de colores debajo del PieChart
+<<<<<<< HEAD
         drawLegend(canvas, centerX, centerY + radius + 50, radius); // Ajustar posición de leyenda
+=======
+        drawLegend(canvas, centerX, centerY + radius + 30, radius);
+>>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
 
         if (!selectedEmpresa.isEmpty()) {
             // Mostrar el porcentaje de preguntas respondidas
             paint.setColor(Color.DKGRAY);
+<<<<<<< HEAD
             paint.setTextSize(22); // Ajustar el tamaño de texto
             paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD)); // Hacer el texto en negrita
+=======
+            paint.setTextSize(20);
+>>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
             float porcentaje = porcentajes.get(selectedEmpresa);
             String porcentajeFormateado = String.format("%.2f", porcentaje);
 
@@ -119,6 +149,7 @@ public class PieChartView extends View {
             float textWidth = paint.measureText(porcentajeFormateado + "%");
             float adjustedX = centerX - textWidth / 2;
 
+<<<<<<< HEAD
             canvas.drawText(porcentajeFormateado + "%", adjustedX, centerY + radius + 70, paint); // Ajuste vertical
             canvas.drawText("Total respondidas: " + dbHelper.getRespuestasCount(selectedEmpresa), adjustedX, centerY + radius + 100, paint); // Ajuste vertical
             canvas.drawText("Faltando por responder: " + (377 - dbHelper.getRespuestasCount(selectedEmpresa)), adjustedX, centerY + radius + 130, paint); // Ajuste vertical
@@ -159,6 +190,48 @@ public class PieChartView extends View {
     }
 
 
+=======
+            canvas.drawText(porcentajeFormateado + "%", adjustedX, centerY + radius + 70, paint);
+
+            // Mostrar cantidad de preguntas respondidas y las que faltan en líneas separadas
+            int totalPreguntas = 377;
+            int preguntasRespondidas = dbHelper.getRespuestasCount(selectedEmpresa);
+            int preguntasRestantes = totalPreguntas - preguntasRespondidas;
+
+            // Mensaje para total respondidas
+            String totalRespondidas = "Total respondidas: " + preguntasRespondidas;
+            float totalRespondidasWidth = paint.measureText(totalRespondidas);
+            float adjustedTotalX = centerX - totalRespondidasWidth / 2;
+            canvas.drawText(totalRespondidas, adjustedTotalX, centerY + radius + 100, paint);
+
+            // Mensaje para por responder
+            String porResponder = "Faltando por responder: " + preguntasRestantes;
+            float porResponderWidth = paint.measureText(porResponder);
+            float adjustedPorResponderX = centerX - porResponderWidth / 2;
+            canvas.drawText(porResponder, adjustedPorResponderX, centerY + radius + 130, paint);
+        }
+    }
+
+
+    private void drawLegend(Canvas canvas, float centerX, float top, float radius) {
+        float legendSize = 30;
+        float legendSpacing = 10;
+        float legendX = centerX - radius;
+
+        paint.setColor(colors[0]);
+        canvas.drawRect(legendX, top, legendX + legendSize, top + legendSize, paint);
+        paint.setTextSize(20);
+        paint.setColor(Color.DKGRAY);
+        canvas.drawText("Preguntas", legendX + legendSize + legendSpacing, top + legendSize, paint);
+
+        paint.setColor(colors[1]);
+        canvas.drawRect(legendX, top + legendSize + legendSpacing, legendX + legendSize, top + 2 * legendSize + legendSpacing, paint);
+        paint.setTextSize(20);
+        paint.setColor(Color.DKGRAY);
+        canvas.drawText("Respuestas", legendX + legendSize + legendSpacing, top + 2 * legendSize + legendSpacing, paint);
+    }
+
+>>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         return super.onTouchEvent(event);
@@ -172,4 +245,7 @@ public class PieChartView extends View {
         return total;
     }
 }
+<<<<<<< HEAD
 */
+=======
+>>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30

@@ -40,13 +40,17 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
     public void onBindViewHolder(@NonNull final MotivosViewHolder holder, int position) {
         final Opcion opcion = items.get(position);
 
+<<<<<<< HEAD
         // Configurar el texto de la opción dependiendo de si es "Actual" o "Potencial"
+=======
+>>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
         if (opcion.isSeleccionada()) {
             holder.txtOpcion.setText(opcion.getNombreOpcion() + " : " + opcion.getNumero().concat(".- ").concat(opcion.getNombre()));
         } else {
             holder.txtOpcion.setText(opcion.getNumero().concat(".- ").concat(opcion.getNombre()));
         }
 
+<<<<<<< HEAD
         // Configurar el fondo de la opción
         if (opcion.isRespondida()) {
             holder.itemView.setBackgroundColor(Color.LTGRAY);  // Fondo gris para opciones respondidas
@@ -65,6 +69,20 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
 
         // Manejar la selección al hacer clic en el texto de la opción
         holder.txtOpcion.setOnClickListener(v -> handleOptionSelection(opcion));
+=======
+        if (opcion.isRespondida()) {
+            holder.itemView.setBackgroundColor(Color.LTGRAY);
+        } else {
+            holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+        }
+
+        holder.txtOpcion.setOnClickListener(v -> handleOptionSelection(opcion));
+
+        holder.checkBox.setOnCheckedChangeListener(null);
+        holder.checkBox.setChecked(opcion.isSeleccionada());
+
+        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> handleOptionSelection(opcion));
+>>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -112,7 +130,10 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
             }
         }
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
     private void uncheckOldestSelectedOptions(String pregunta) {
         for (Opcion option : items) {
             if (option.isSeleccionada() && option.getPregunta().equals(pregunta) && !option.getNombreOpcion().equals("Actual")) {
