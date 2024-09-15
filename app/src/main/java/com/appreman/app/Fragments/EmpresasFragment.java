@@ -1,7 +1,6 @@
 package com.appreman.app.Fragments;
 
 import android.os.Bundle;
-<<<<<<< HEAD
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -13,26 +12,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.appreman.app.Activity.EncuestasActivity;
 import com.appreman.app.Activity.MainActivity;
-=======
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.appreman.app.Activity.EncuestasActivity;
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
 import com.appreman.app.Adapter.EmpresaAdapter;
 import com.appreman.app.Database.DBHelper;
 import com.appreman.app.Models.Empresa;
 import com.appreman.app.Repository.AppPreferences;
 import com.appreman.appreman.R;
-<<<<<<< HEAD
-=======
-
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
 import java.util.Collections;
 import java.util.List;
 
@@ -41,21 +25,15 @@ public class EmpresasFragment extends Fragment {
     private RecyclerView recyclerViewEmpresas;
     private DBHelper dbHelper;
     private AppPreferences appPreferences;
-<<<<<<< HEAD
     private GestureDetector gestureDetector;
-=======
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
 
     public EmpresasFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-<<<<<<< HEAD
         Log.d("EmpresasFragment", "onCreateView called");
 
-=======
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
         View rootView = inflater.inflate(R.layout.fragment_empresas, container, false);
 
         recyclerViewEmpresas = rootView.findViewById(R.id.recyclerViewEmpresas);
@@ -64,7 +42,6 @@ public class EmpresasFragment extends Fragment {
 
         setupRecyclerView();
 
-<<<<<<< HEAD
         gestureDetector = new GestureDetector(requireActivity(), new GestureListener());
 
         recyclerViewEmpresas.setOnTouchListener((v, event) -> {
@@ -78,20 +55,14 @@ public class EmpresasFragment extends Fragment {
             activity.getSupportActionBar().setTitle("Empresas");
         }
 
-=======
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
         return rootView;
     }
 
     private void setupRecyclerView() {
-<<<<<<< HEAD
         Log.d("EmpresasFragment", "setupRecyclerView called");
 
         List<Empresa> empresas = dbHelper.getAllEmpresas();
         Log.d("EmpresasFragment", "Empresas size: " + empresas.size());
-=======
-        List<Empresa> empresas = dbHelper.getAllEmpresas();
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
 
         Collections.reverse(empresas);
 
@@ -106,15 +77,11 @@ public class EmpresasFragment extends Fragment {
 
                 appPreferences.setNombreEmpresa(nombreEmpresaSeleccionada);
 
-<<<<<<< HEAD
                 Log.d("EmpresasFragment", "Empresa selected: " + nombreEmpresaSeleccionada);
-=======
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
                 EncuestasActivity.start(requireActivity());
             }
         });
     }
-<<<<<<< HEAD
 
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
         private static final int SWIPE_THRESHOLD = 100;
@@ -172,6 +139,4 @@ public class EmpresasFragment extends Fragment {
             }
         }
     }
-=======
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
 }

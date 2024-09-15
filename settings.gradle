@@ -3,30 +3,20 @@ pluginManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
-<<<<<<< HEAD
         maven {url="https://jitpack.io" }
 
     }
 }
 
-=======
-    }
-}
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
-<<<<<<< HEAD
         maven {url="https://jitpack.io" }
 
     }
 }
 
-=======
-    }
-}
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
 rootProject.name = "AppREMAN"
 include ':app'

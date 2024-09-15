@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /*package com.appreman.app.ViewModel;
 =======
 package com.appreman.app.ViewModel;
@@ -247,5 +246,4 @@ public class PieChartView extends View {
 }
 <<<<<<< HEAD
 */
-=======
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
+

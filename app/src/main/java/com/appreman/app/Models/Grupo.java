@@ -15,10 +15,7 @@ public class Grupo {
     private String mNombre;
 
     public Grupo() {
-
     }
-
-
 
     public String getNombre() {
         return mNombre;

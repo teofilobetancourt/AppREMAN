@@ -1,43 +1,29 @@
 package com.appreman.app.Activity;
 
 import android.os.Bundle;
-<<<<<<< HEAD
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-=======
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
 import com.appreman.app.Fragments.EmpresasFragment;
 import com.appreman.app.Fragments.HomeFragment;
 import com.appreman.app.Fragments.SurveyFragment;
 import com.appreman.appreman.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-<<<<<<< HEAD
 public class MainActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private BottomNavigationView navigation;
     private GestureDetector gestureDetector;
-=======
-
-public class MainActivity extends AppCompatActivity {
-
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-<<<<<<< HEAD
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -167,52 +153,5 @@ public class MainActivity extends AppCompatActivity {
                 displayFragment(new SurveyFragment(), true); // Volver al último fragmento
             }
         }
-=======
-
-
-        BottomNavigationView navigation = findViewById(R.id.navigation);
-
-
-        displayfragment(new HomeFragment());
-
-
-        navigation.setOnItemSelectedListener(item -> {
-
-            Fragment fragment = null;
-            int id = item.getItemId();
-
-            if (id==R.id.navigation_home){
-
-                fragment = new HomeFragment();
-
-
-            }
-
-            if (id==R.id.navigation_empresa){
-
-                fragment = new EmpresasFragment();
-
-            }
-
-            if (id==R.id.navigation_survey){
-
-                fragment = new SurveyFragment();
-
-            }
-
-
-            displayfragment(fragment);
-
-            return true;
-
-        });
-
-
-    }
-
-    private void displayfragment(Fragment fragment) {
-
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_content, fragment).commit();
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
     }
 }

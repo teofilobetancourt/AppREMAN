@@ -3,16 +3,12 @@ package com.appreman.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-<<<<<<< HEAD
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
-=======
-
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
@@ -20,14 +16,10 @@ import com.appreman.app.Adapter.ViewPagerAdapter;
 import com.appreman.app.Database.DBHelper;
 import com.appreman.app.Fragments.ElementosFragment;
 import com.appreman.app.Models.Grupo;
-<<<<<<< HEAD
 import com.appreman.app.Repository.AppPreferences;
 import com.appreman.appreman.R;
 import com.appreman.appreman.databinding.ActivityEncuestasBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-=======
-import com.appreman.appreman.databinding.ActivityEncuestasBinding;
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.List;
@@ -35,10 +27,7 @@ import java.util.List;
 public class EncuestasActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
-<<<<<<< HEAD
     private DBHelper dbHelper;
-=======
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
 
     public static void start(Context context) {
         Intent intent = new Intent(context, EncuestasActivity.class);
@@ -52,7 +41,6 @@ public class EncuestasActivity extends AppCompatActivity {
         ActivityEncuestasBinding binding = ActivityEncuestasBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-<<<<<<< HEAD
         // Configura la barra de herramientas
         setSupportActionBar(binding.toolbar);
         binding.toolbar.setTitle(getTitle());
@@ -69,36 +57,17 @@ public class EncuestasActivity extends AppCompatActivity {
         List<Grupo> grupos = dbHelper.getAllGrupos();
 
         // Añade los fragmentos al adaptador
-=======
-        setSupportActionBar(binding.toolbar);
-        binding.toolbar.setTitle(getTitle());
-
-        viewPager = binding.viewPager;
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), 0);
-        DBHelper dbHelper = new DBHelper(getApplicationContext());
-
-        List<Grupo> grupos = dbHelper.getAllGrupos();
-
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
         for (Grupo grupo : grupos) {
             ElementosFragment fragment = ElementosFragment.newInstance(grupo.getNumero());
             viewPagerAdapter.addFragment(fragment, grupo.getNombre());
         }
 
-<<<<<<< HEAD
         // Configura el ViewPager y TabLayout
         viewPager.setAdapter(viewPagerAdapter);
         binding.tabLayoutGrupos.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(0);
 
         // Configura el listener para cambios en las pestañas
-=======
-        viewPager.setAdapter(viewPagerAdapter);
-        binding.tabLayoutGrupos.setupWithViewPager(viewPager);
-
-        viewPager.setCurrentItem(0);
-
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
         binding.tabLayoutGrupos.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -114,7 +83,6 @@ public class EncuestasActivity extends AppCompatActivity {
             }
         });
 
-<<<<<<< HEAD
         // Configura el listener para el FloatingActionButton
         fabNotification.setOnClickListener(v -> showGroupInfoDialog());
     }
@@ -162,7 +130,4 @@ public class EncuestasActivity extends AppCompatActivity {
     }
 
 
-=======
-    }
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
 }

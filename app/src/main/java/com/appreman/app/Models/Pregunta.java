@@ -1,6 +1,5 @@
 package com.appreman.app.Models;
 
-<<<<<<< HEAD
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -20,15 +19,6 @@ public class Pregunta {
     @ColumnInfo(name = "elemento")
     private String elemento;
 
-=======
-public class Pregunta {
-
-    private String numero;
-    private String descripcion;
-    private String elemento;
-
-
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
     public String getNumero() {
         return numero;
     }
@@ -52,9 +42,4 @@ public class Pregunta {
     public void setElemento(String elemento) {
         this.elemento = elemento;
     }
-<<<<<<< HEAD
-=======
-
-
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
 }

@@ -9,10 +9,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-<<<<<<< HEAD
 import android.os.Build;
-=======
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
@@ -24,10 +21,7 @@ import com.appreman.app.Models.Empresa;
 import com.appreman.app.Models.Grupo;
 import com.appreman.app.Models.Opcion;
 import com.appreman.app.Models.Pregunta;
-<<<<<<< HEAD
 import com.appreman.app.Models.Respuesta;
-=======
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -38,18 +32,12 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
 import java.io.FileOutputStream;
-<<<<<<< HEAD
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-=======
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
 
 public class DBHelper extends SQLiteAssetHelper {
 
@@ -360,7 +348,6 @@ public class DBHelper extends SQLiteAssetHelper {
     public void insertarOpcionesEnRespuestas(String nombreEmpresa, String numeroPregunta, String opcionActual, String opcionPotencial) {
         SQLiteDatabase db = this.getWritableDatabase();
 
-<<<<<<< HEAD
         // Recuperar el elemento correspondiente a la pregunta
         String elemento = getElementoDePregunta(numeroPregunta);
 
@@ -390,17 +377,6 @@ public class DBHelper extends SQLiteAssetHelper {
         Log.d(TAG, "Opción Actual: " + respuesta.getOpcionActual());
         Log.d(TAG, "Opción Potencial: " + respuesta.getOpcionPotencial());
         Log.d(TAG, "Elemento: " + respuesta.getElemento());  // Log para verificar el elemento
-=======
-        ContentValues values = new ContentValues();
-        values.put("Empresa", nombreEmpresa);
-        values.put("pregunta", numeroPregunta);
-        values.put("opcionActual", opcionActual);
-        values.put("opcionPotencial", opcionPotencial);
-
-        Log.d(TAG, "Número de Pregunta: " + numeroPregunta);
-        Log.d(TAG, "Opcion Actual: " + opcionActual);
-        Log.d(TAG, "Opcion Potencial: " + opcionPotencial);
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
 
         long insertResult = db.insert("respuestas", null, values);
 
@@ -414,7 +390,6 @@ public class DBHelper extends SQLiteAssetHelper {
     }
 
 
-<<<<<<< HEAD
     // Método para obtener el elemento de una pregunta dada
     @SuppressLint("Range")
     private String getElementoDePregunta(String numeroPregunta) {
@@ -433,37 +408,21 @@ public class DBHelper extends SQLiteAssetHelper {
     }
 
 
-=======
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
     public List<Opcion> getOpcionesPregunta(String pregunta, String nombreEmpresa) {
         List<Opcion> v_opciones = new ArrayList<>();
 
         try (SQLiteDatabase v_db = this.getReadableDatabase()) {
-<<<<<<< HEAD
             // Obtener las opciones de la tabla Opcion
             Cursor v_cursor = v_db.rawQuery("SELECT numero, nombre, pregunta FROM opcion WHERE pregunta = ? ORDER BY numero", new String[]{pregunta});
 
             if (v_cursor != null) {
                 while (v_cursor.moveToNext()) {
                     Opcion v_opcion = new Opcion();
-=======
-
-            Cursor v_cursor = v_db.rawQuery("select numero, nombre, pregunta from opcion where pregunta='" + pregunta + "' order by numero", null);
-
-            if (null != v_cursor) {
-                while (v_cursor.moveToNext()) {
-
-                    Opcion v_opcion = new Opcion();
-
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
                     v_opcion.setNumero(v_cursor.getString(0));
                     v_opcion.setNombre(v_cursor.getString(1));
                     v_opcion.setPregunta(v_cursor.getString(2));
 
-<<<<<<< HEAD
                     // Verificar si la opción está respondida
-=======
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
                     v_opcion.setRespondida(isOpcionRespondida(v_db, v_opcion.getNumero(), pregunta, nombreEmpresa));
 
                     v_opciones.add(v_opcion);
@@ -471,7 +430,6 @@ public class DBHelper extends SQLiteAssetHelper {
                 v_cursor.close();
             }
 
-<<<<<<< HEAD
             // Ahora obtenemos las respuestas para esta pregunta y empresa
             Cursor respuestaCursor = v_db.rawQuery(
                     "SELECT opcionActual, opcionPotencial FROM respuestas WHERE pregunta = ? AND empresa = ?",
@@ -500,8 +458,6 @@ public class DBHelper extends SQLiteAssetHelper {
                 }
                 respuestaCursor.close();
             }
-=======
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
         } catch (SQLException e) {
             Log.e(TAG, e.toString());
             e.printStackTrace();
@@ -510,11 +466,8 @@ public class DBHelper extends SQLiteAssetHelper {
         return v_opciones;
     }
 
-<<<<<<< HEAD
 
 
-=======
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
     private boolean isOpcionRespondida(SQLiteDatabase db, String opcionNumero, String preguntaNumero, String nombreEmpresa) {
         Cursor cursor = db.rawQuery(
                 "SELECT * FROM respuestas WHERE empresa='" + nombreEmpresa + "' AND pregunta='" + preguntaNumero +
@@ -685,7 +638,6 @@ public class DBHelper extends SQLiteAssetHelper {
         return count;
     }
 
-<<<<<<< HEAD
     @SuppressLint("Range")
     public File guardarRespuestasEnArchivo(String selectedEmpresa, Context context) {
         try (SQLiteDatabase db = this.getReadableDatabase()) {
@@ -727,64 +679,6 @@ public class DBHelper extends SQLiteAssetHelper {
                 return file;
             } catch (IOException e) {
                 Log.e(TAG, "Error al guardar en el archivo: " + e.getMessage());
-=======
-    public File guardarRespuestasEnArchivo(String selectedEmpresa, Context context) {
-        try (SQLiteDatabase db = this.getReadableDatabase()) {
-            String[] selectionArgs = {selectedEmpresa};
-            Cursor cursor = db.rawQuery("SELECT * FROM respuestas WHERE empresa = ?", selectionArgs);
-
-            Workbook workbook = new XSSFWorkbook();
-            Sheet sheet = workbook.createSheet("respuestas");
-
-            try {
-                if (cursor != null && cursor.moveToFirst()) {
-                    Row headerRow = sheet.createRow(0);
-                    int columnCount = cursor.getColumnCount();
-                    for (int i = 0; i < columnCount; i++) {
-                        Cell headerCell = headerRow.createCell(i);
-                        headerCell.setCellValue(cursor.getColumnName(i));
-                    }
-
-                    // Agrega la nueva columna "Elemento"
-                    Cell headerCellElemento = headerRow.createCell(columnCount);
-                    headerCellElemento.setCellValue("Elemento");
-
-                    int rowCount = 1;
-                    do {
-                        Row dataRow = sheet.createRow(rowCount++);
-                        for (int i = 0; i < columnCount; i++) {
-                            Cell dataCell = dataRow.createCell(i);
-                            String columnName = cursor.getColumnName(i);
-                            String cellValue = cursor.getString(i);
-
-                            if ("pregunta".equals(columnName)) {
-                                String descripcionPregunta = getDescripcionPregunta(cellValue);
-                                dataCell.setCellValue(descripcionPregunta);
-                            } else {
-                                // Si no es la columna de pregunta, simplemente agrega el valor a la celda
-                                dataCell.setCellValue(cellValue);
-                            }
-                        }
-                    } while (cursor.moveToNext());
-                }
-
-                String fileName = "datos_" + selectedEmpresa + ".xls";
-                File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-                File file = new File(downloadsDir, fileName);
-
-                try (FileOutputStream fos = new FileOutputStream(file)) {
-                    workbook.write(fos);
-                    Log.d(TAG, "Guardado exitoso en el archivo: " + file.getAbsolutePath());
-                    return file;
-                } catch (IOException e) {
-                    Log.e(TAG, "Error al guardar en el archivo: " + e.getMessage());
-                }
-
-            } catch (Exception e) {
-                Log.e(TAG, "Error al guardar en el archivo: " + e.getMessage());
-            } finally {
-                workbook.close();
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
             }
         } catch (Exception e) {
             Log.e(TAG, "Error al guardar en el archivo: " + e.getMessage());
@@ -792,7 +686,6 @@ public class DBHelper extends SQLiteAssetHelper {
         return null;
     }
 
-<<<<<<< HEAD
     public void descargarArchivo(File archivo, Context context) {
         if (archivo != null) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -831,8 +724,6 @@ public class DBHelper extends SQLiteAssetHelper {
 
         return count;
     }
-=======
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
     // Rename the method to avoid ambiguity
     public String getDescripcionPregunta(String numeroPregunta) {
         String descripcion = "";
@@ -850,7 +741,6 @@ public class DBHelper extends SQLiteAssetHelper {
     }
 
 
-<<<<<<< HEAD
 
     public Map<String, Double> obtenerContadoresYPorcentajes(String nombreEmpresa) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -1011,44 +901,14 @@ public class DBHelper extends SQLiteAssetHelper {
         db.close();
 
         return grupo;
-=======
-    public void descargarArchivo(File archivo, Context context) {
-        if (archivo != null) {
-            // Crea un Intent para abrir el archivo con una actividad de visor de archivos
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            Uri uri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", archivo);
-
-            // Intenta abrir el archivo utilizando un intent genérico
-            intent.setData(uri);
-
-            // Agrega el flag FLAG_GRANT_READ_URI_PERMISSION
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-            // Inicia la actividad desde el contexto
-            try {
-                context.startActivity(intent);
-            } catch (ActivityNotFoundException e) {
-                // Maneja la excepción si no hay actividad para manejar el intent
-                Toast.makeText(context, "No hay aplicación para abrir el archivo", Toast.LENGTH_SHORT).show();
-                Log.e("DBHelper", "No se pudo encontrar una actividad para manejar el intent");
-            }
-        } else {
-            // Maneja el caso donde hubo un problema con la operación de guardar
-            Toast.makeText(context, "Error al guardar los datos", Toast.LENGTH_SHORT).show();
-            Log.e("DBHelper", "Error al guardar en el archivo");
-        }
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
     }
 
 
 
 
-<<<<<<< HEAD
 
 
 
-=======
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
 }
 
 

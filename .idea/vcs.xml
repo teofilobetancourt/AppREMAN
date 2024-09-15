@@ -2,9 +2,5 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-<<<<<<< HEAD
-    <mapping directory="$PROJECT_DIR$/AppREMAN" vcs="Git" />
-=======
->>>>>>> a21008206cf1f372d46ed21e6732f650f9060c30
   </component>
 </project>
