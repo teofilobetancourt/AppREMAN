@@ -31,12 +31,25 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
+
         <ImageView
+            android:id="@+id/notification_icon"
             android:layout_width="50dp"
             android:layout_height="40dp"
             android:layout_gravity="center"
             android:padding="10dp"
             android:src="@drawable/notifi" />
+
+        <TextView
+            android:id="@+id/notification_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="10dp"
+            android:text="0"
+            android:textColor="#FFF"
+            android:textSize="16sp" />
+
 
     </LinearLayout>
 

@@ -21,6 +21,7 @@ import com.appreman.app.Models.Empresa;
 import com.appreman.app.Models.Grupo;
 import com.appreman.app.Models.Opcion;
 import com.appreman.app.Models.Pregunta;
+import com.appreman.app.Models.Respuesta;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -355,17 +356,27 @@ public class DBHelper extends SQLiteAssetHelper {
             return;
         }
 
-        ContentValues values = new ContentValues();
-        values.put("Empresa", nombreEmpresa);
-        values.put("pregunta", numeroPregunta);
-        values.put("opcionActual", opcionActual);
-        values.put("opcionPotencial", opcionPotencial);
-        values.put("elemento", elemento);  // Incluir el elemento en la inserción
+        // Crear una instancia del modelo Respuesta
+        Respuesta respuesta = new Respuesta(
+                nombreEmpresa,
+                numeroPregunta,
+                opcionActual,
+                opcionPotencial,
+                elemento
+        );
 
-        Log.d(TAG, "Número de Pregunta: " + numeroPregunta);
-        Log.d(TAG, "Opción Actual: " + opcionActual);
-        Log.d(TAG, "Opción Potencial: " + opcionPotencial);
-        Log.d(TAG, "Elemento: " + elemento);  // Log para verificar el elemento
+        // Insertar en la base de datos
+        ContentValues values = new ContentValues();
+        values.put("empresa", respuesta.getNombreEmpresa());  // Nombre correcto de columna
+        values.put("pregunta", respuesta.getPregunta());
+        values.put("opcionActual", respuesta.getOpcionActual());  // Nombre correcto de columna
+        values.put("opcionPotencial", respuesta.getOpcionPotencial());  // Nombre correcto de columna
+        values.put("elemento", respuesta.getElemento());
+
+        Log.d(TAG, "Número de Pregunta: " + respuesta.getPregunta());
+        Log.d(TAG, "Opción Actual: " + respuesta.getOpcionActual());
+        Log.d(TAG, "Opción Potencial: " + respuesta.getOpcionPotencial());
+        Log.d(TAG, "Elemento: " + respuesta.getElemento());  // Log para verificar el elemento
 
         long insertResult = db.insert("respuestas", null, values);
 
@@ -377,6 +388,7 @@ public class DBHelper extends SQLiteAssetHelper {
 
         db.close();
     }
+
 
     // Método para obtener el elemento de una pregunta dada
     @SuppressLint("Range")
@@ -400,18 +412,17 @@ public class DBHelper extends SQLiteAssetHelper {
         List<Opcion> v_opciones = new ArrayList<>();
 
         try (SQLiteDatabase v_db = this.getReadableDatabase()) {
+            // Obtener las opciones de la tabla Opcion
+            Cursor v_cursor = v_db.rawQuery("SELECT numero, nombre, pregunta FROM opcion WHERE pregunta = ? ORDER BY numero", new String[]{pregunta});
 
-            Cursor v_cursor = v_db.rawQuery("select numero, nombre, pregunta from opcion where pregunta='" + pregunta + "' order by numero", null);
-
-            if (null != v_cursor) {
+            if (v_cursor != null) {
                 while (v_cursor.moveToNext()) {
-
                     Opcion v_opcion = new Opcion();
-
                     v_opcion.setNumero(v_cursor.getString(0));
                     v_opcion.setNombre(v_cursor.getString(1));
                     v_opcion.setPregunta(v_cursor.getString(2));
 
+                    // Verificar si la opción está respondida
                     v_opcion.setRespondida(isOpcionRespondida(v_db, v_opcion.getNumero(), pregunta, nombreEmpresa));
 
                     v_opciones.add(v_opcion);
@@ -419,6 +430,34 @@ public class DBHelper extends SQLiteAssetHelper {
                 v_cursor.close();
             }
 
+            // Ahora obtenemos las respuestas para esta pregunta y empresa
+            Cursor respuestaCursor = v_db.rawQuery(
+                    "SELECT opcionActual, opcionPotencial FROM respuestas WHERE pregunta = ? AND empresa = ?",
+                    new String[]{pregunta, nombreEmpresa}
+            );
+
+            if (respuestaCursor != null && respuestaCursor.moveToFirst()) {
+                String opcionActualNumero = respuestaCursor.getString(0);  // opción actual
+                String opcionPotencialNumero = respuestaCursor.getString(1);  // opción potencial
+
+                // Asignar la opción actual y potencial a las opciones correspondientes
+                for (Opcion opcion : v_opciones) {
+                    if (opcion.getNumero().equals(opcionActualNumero)) {
+                        opcion.setSeleccionada(true);
+                        if (opcionActualNumero.equals(opcionPotencialNumero)) {
+                            opcion.setNombreOpcion("Actual&Potencial");
+                        } else {
+                            opcion.setNombreOpcion("Actual");
+                        }
+                    } else if (opcion.getNumero().equals(opcionPotencialNumero)) {
+                        opcion.setSeleccionada(true);
+                        if (!opcionActualNumero.equals(opcionPotencialNumero)) {
+                            opcion.setNombreOpcion("Potencial");
+                        }
+                    }
+                }
+                respuestaCursor.close();
+            }
         } catch (SQLException e) {
             Log.e(TAG, e.toString());
             e.printStackTrace();
@@ -426,6 +465,8 @@ public class DBHelper extends SQLiteAssetHelper {
 
         return v_opciones;
     }
+
+
 
     private boolean isOpcionRespondida(SQLiteDatabase db, String opcionNumero, String preguntaNumero, String nombreEmpresa) {
         Cursor cursor = db.rawQuery(
@@ -777,6 +818,95 @@ public class DBHelper extends SQLiteAssetHelper {
         db.close();
         return resultados;
     }
+    // Devuelve el número total de preguntas en un grupo específico.
+    @SuppressLint("Range")
+    public int getTotalQuestionsForGrupo(int grupoNumero, String nombreEmpresa) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        // Consulta SQL para contar el número total de preguntas en el grupo especificado
+        String query = "SELECT COUNT(*) AS total FROM pregunta p " +
+                "INNER JOIN elemento e ON p.elemento = e.numero " +
+                "WHERE e.grupo = ?";
+        Cursor cursor = db.rawQuery(query, new String[] { String.valueOf(grupoNumero) });
+
+        int total = 0;
+        // Verifica si el cursor tiene datos y obtiene el conteo total de preguntas
+        if (cursor.moveToFirst()) {
+            total = cursor.getInt(cursor.getColumnIndex("total"));
+        }
+        cursor.close();
+        return total;
+    }
+
+    /// Devuelve el número total de elementos en un grupo específico.
+    @SuppressLint("Range")
+    public int getTotalElementsForGrupo(int grupoNumero) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        // Consulta SQL para contar el número total de elementos en el grupo especificado
+        String query = "SELECT COUNT(*) AS total FROM elemento e " +
+                "WHERE e.grupo = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(grupoNumero)});
+
+        int totalElements = 0;
+        // Verifica si el cursor tiene datos y obtiene el conteo total de elementos
+        if (cursor.moveToFirst()) {
+            totalElements = cursor.getInt(cursor.getColumnIndex("total"));
+        }
+        cursor.close();
+        db.close();
+
+        return totalElements;
+    }
+
+
+    // Devuelve el número total de preguntas respondidas en un grupo específico.
+    @SuppressLint("Range")
+    public int getAnsweredQuestionsForGrupo(int grupoNumero, String nombreEmpresa) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        // Consulta SQL para contar el número de preguntas respondidas en el grupo especificado
+        String query = "SELECT COUNT(*) AS answered FROM pregunta p " +
+                "INNER JOIN elemento e ON p.elemento = e.numero " +
+                "INNER JOIN respuestas r ON p.numero = r.pregunta " +
+                "WHERE e.grupo = ? AND r.empresa = ?";
+        Cursor cursor = db.rawQuery(query, new String[] { String.valueOf(grupoNumero), nombreEmpresa });
+
+        int answered = 0;
+        // Verifica si el cursor tiene datos y obtiene el conteo de preguntas respondidas
+        if (cursor.moveToFirst()) {
+            answered = cursor.getInt(cursor.getColumnIndex("answered"));
+        }
+        cursor.close();
+        return answered;
+    }
+
+    // Devuelve el grupo correspondiente a una posición específica en la lista de grupos.
+    @SuppressLint("Range")
+    public Grupo getGrupoByPosition(int position) {
+        Grupo grupo = null;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Consulta SQL para obtener el número y nombre del grupo basado en la posición
+        String query = "SELECT g.numero, g.nombre FROM grupo g " +
+                "ORDER BY g.numero LIMIT 1 OFFSET ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(position)});
+
+        // Verifica si el cursor tiene datos y crea un objeto Grupo con el número y nombre del grupo
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                grupo = new Grupo();
+                grupo.setNumero(cursor.getInt(cursor.getColumnIndex("numero")));
+                grupo.setNombre(cursor.getString(cursor.getColumnIndex("nombre")));
+            }
+            cursor.close();
+        }
+        db.close();
+
+        return grupo;
+    }
+
+
+
+
+
 
 
 }

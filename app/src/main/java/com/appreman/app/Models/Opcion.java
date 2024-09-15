@@ -1,11 +1,31 @@
 package com.appreman.app.Models;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "opcion")
 public class Opcion {
+
+    @PrimaryKey
+    @ColumnInfo(name = "numero")
+    @NonNull
     private String numero;
+
+    @ColumnInfo(name = "nombre")
     private String nombre;
+
+    @ColumnInfo(name = "pregunta")
     private String pregunta;
+
+    @ColumnInfo(name = "seleccionada")
     private boolean seleccionada;
+
+    @ColumnInfo(name = "nombre_opcion")
     private String nombreOpcion;
+
+    @ColumnInfo(name = "respondida")
     private boolean respondida;
 
     public Opcion() {

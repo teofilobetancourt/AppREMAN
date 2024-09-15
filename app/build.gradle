@@ -48,6 +48,10 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation 'javax.xml.stream:stax-api:1.0-2'
     implementation 'org.codehaus.woodstox:stax2-api:4.2.1' // Añadir esta línea
+    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+    implementation 'androidx.room:room-runtime:2.5.0'
+
+
 
     // Versiones antiguas de Apache POI
     implementation ('org.apache.poi:poi:3.17') {

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +26,7 @@ import androidx.fragment.app.Fragment;
 import com.appreman.app.Activity.EncuestasActivity;
 import com.appreman.app.Database.DBHelper;
 import com.appreman.app.Repository.AppPreferences;
+import com.appreman.app.Repository.WebSocketManager;
 import com.appreman.appreman.R;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
@@ -41,10 +43,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements WebSocketManager.NotificationListener {
 
     private static final int REQUEST_WRITE_STORAGE = 112;
-
     private Spinner spinner;
     private DBHelper dbHelper;
     private AppPreferences appPreferences;
@@ -55,6 +56,10 @@ public class HomeFragment extends Fragment {
     private TextView textBalanceTotal;
     private BarChart barChart;
     private ImageView menuIcon;
+    private ImageView notifi;
+    private TextView notificationText;
+
+    private WebSocketManager webSocketManager;
 
     private static final int TOTAL_PREGUNTAS = 377;
 
@@ -80,6 +85,8 @@ public class HomeFragment extends Fragment {
         textBalanceTotal = view.findViewById(R.id.text_balance_total);
         barChart = view.findViewById(R.id.chart1);
         menuIcon = view.findViewById(R.id.menu_icon);
+        notificationText = view.findViewById(R.id.notification_text);
+        notifi = view.findViewById(R.id.notification_icon); // Asumiendo que has agregado el ImageView notifi en el layout XML
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -109,10 +116,29 @@ public class HomeFragment extends Fragment {
 
         menuIcon.setOnClickListener(v -> showPopupMenu(v));
 
+        // Initialize WebSocketManager with the NotificationListener implementation
+        webSocketManager = new WebSocketManager(this); // Pass 'this' as NotificationListener
+        webSocketManager.start();
+
+        // Send a notification to all devices when the fragment is created
+        webSocketManager.sendNotification("Nueva notificación para todos los dispositivos");
+
         return view;
     }
 
-    // Método que se llama cuando el fragmento se vuelve visible
+    @Override
+    public void onNotificationReceived(int count) {
+        if (notificationText != null) {
+            notificationText.setText(String.valueOf(count));
+            notificationText.setVisibility(View.VISIBLE); // Asegúrate de que el texto es visible
+        }
+
+        if (notifi != null) {
+            notifi.setImageResource(R.drawable.notifi); // Asegúrate de que este recurso drawable es el correcto
+        }
+    }
+
+
     @Override
     public void onResume() {
         super.onResume();
@@ -121,6 +147,14 @@ public class HomeFragment extends Fragment {
         String selectedEmpresa = appPreferences.getNombreEmpresa();
         if (selectedEmpresa != null && !selectedEmpresa.isEmpty()) {
             updateFinancialData(selectedEmpresa);
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (webSocketManager != null) {
+            webSocketManager.close();
         }
     }
 
@@ -146,9 +180,19 @@ public class HomeFragment extends Fragment {
             contadorAmbas = resultados.getOrDefault("Ambas", 0.0);
         }
 
+        // Agregar logs para verificar los valores obtenidos
+        Log.d("HomeFragment", "contadorActual: " + contadorActual);
+        Log.d("HomeFragment", "contadorPotencial: " + contadorPotencial);
+        Log.d("HomeFragment", "contadorAmbas: " + contadorAmbas);
+
         double porcentajeActual = (contadorActual / totalPreguntas) * 100;
         double porcentajePotencial = (contadorPotencial / totalPreguntas) * 100;
         double porcentajeAmbas = (contadorAmbas / totalPreguntas) * 100;
+
+        // Agregar logs para verificar los porcentajes calculados
+        Log.d("HomeFragment", "porcentajeActual: " + porcentajeActual);
+        Log.d("HomeFragment", "porcentajePotencial: " + porcentajePotencial);
+        Log.d("HomeFragment", "porcentajeAmbas: " + porcentajeAmbas);
 
         TextView textActual = cardActual.findViewById(R.id.text_actual);
         TextView textPotencial = cardPotencial.findViewById(R.id.text_potencial);
@@ -161,6 +205,10 @@ public class HomeFragment extends Fragment {
         double total = contadorActual + contadorPotencial + contadorAmbas;
         double totalPorcentaje = (total / totalPreguntas) * 100;
 
+        // Agregar logs para verificar el total y el porcentaje total
+        Log.d("HomeFragment", "total: " + total);
+        Log.d("HomeFragment", "totalPorcentaje: " + totalPorcentaje);
+
         textBalanceTotal.setText(String.format("S/ %.2f (%.2f%%)", total, totalPorcentaje));
 
         // Actualiza el TextView con la cantidad de preguntas respondidas y el total
@@ -169,7 +217,6 @@ public class HomeFragment extends Fragment {
 
         setupChart(barChart, contadorActual, contadorPotencial, contadorAmbas);
     }
-
 
     private void setupChart(BarChart chart, double actual, double potencial, double ambas) {
         List<BarEntry> entries = new ArrayList<>();

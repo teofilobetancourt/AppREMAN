@@ -1,11 +1,23 @@
 package com.appreman.app.Models;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "pregunta")
 public class Pregunta {
 
+    @PrimaryKey
+    @ColumnInfo(name = "numero")
+    @NonNull
     private String numero;
-    private String descripcion;
-    private String elemento;
 
+    @ColumnInfo(name = "descripcion")
+    private String descripcion;
+
+    @ColumnInfo(name = "elemento")
+    private String elemento;
 
     public String getNumero() {
         return numero;
@@ -30,6 +42,4 @@ public class Pregunta {
     public void setElemento(String elemento) {
         this.elemento = elemento;
     }
-
-
 }

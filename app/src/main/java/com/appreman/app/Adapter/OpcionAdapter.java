@@ -40,24 +40,31 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
     public void onBindViewHolder(@NonNull final MotivosViewHolder holder, int position) {
         final Opcion opcion = items.get(position);
 
+        // Configurar el texto de la opción dependiendo de si es "Actual" o "Potencial"
         if (opcion.isSeleccionada()) {
             holder.txtOpcion.setText(opcion.getNombreOpcion() + " : " + opcion.getNumero().concat(".- ").concat(opcion.getNombre()));
         } else {
             holder.txtOpcion.setText(opcion.getNumero().concat(".- ").concat(opcion.getNombre()));
         }
 
+        // Configurar el fondo de la opción
         if (opcion.isRespondida()) {
-            holder.itemView.setBackgroundColor(Color.LTGRAY);
+            holder.itemView.setBackgroundColor(Color.LTGRAY);  // Fondo gris para opciones respondidas
         } else {
-            holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+            holder.itemView.setBackgroundColor(Color.TRANSPARENT);  // Fondo transparente para las no respondidas
         }
 
-        holder.txtOpcion.setOnClickListener(v -> handleOptionSelection(opcion));
-
+        // Restablecer el OnCheckedChangeListener para evitar problemas al reciclar vistas
         holder.checkBox.setOnCheckedChangeListener(null);
+
+        // Asegurarse de que el CheckBox refleje el estado correcto
         holder.checkBox.setChecked(opcion.isSeleccionada());
 
+        // Manejar la selección al cambiar el estado del CheckBox
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> handleOptionSelection(opcion));
+
+        // Manejar la selección al hacer clic en el texto de la opción
+        holder.txtOpcion.setOnClickListener(v -> handleOptionSelection(opcion));
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -105,6 +112,7 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
             }
         }
     }
+
     private void uncheckOldestSelectedOptions(String pregunta) {
         for (Opcion option : items) {
             if (option.isSeleccionada() && option.getPregunta().equals(pregunta) && !option.getNombreOpcion().equals("Actual")) {
