@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,10 +29,10 @@ import com.appreman.app.Database.DBHelper;
 import com.appreman.app.Repository.AppPreferences;
 import com.appreman.app.Repository.WebSocketManager;
 import com.appreman.appreman.R;
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -46,6 +47,8 @@ import java.util.Map;
 public class HomeFragment extends Fragment implements WebSocketManager.NotificationListener {
 
     private static final int REQUEST_WRITE_STORAGE = 112;
+    private static final int TOTAL_PREGUNTAS = 377;
+
     private Spinner spinner;
     private DBHelper dbHelper;
     private AppPreferences appPreferences;
@@ -54,14 +57,12 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
     private MaterialCardView cardAmbas;
     private MaterialCardView cardContinuar;
     private TextView textBalanceTotal;
-    private BarChart barChart;
+    private LineChart lineChart;
     private ImageView menuIcon;
     private ImageView notifi;
     private TextView notificationText;
 
     private WebSocketManager webSocketManager;
-
-    private static final int TOTAL_PREGUNTAS = 377;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -83,29 +84,24 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
         cardContinuar = view.findViewById(R.id.card_continuar);
 
         textBalanceTotal = view.findViewById(R.id.text_balance_total);
-        barChart = view.findViewById(R.id.chart1);
+        lineChart = view.findViewById(R.id.chart1);
         menuIcon = view.findViewById(R.id.menu_icon);
-        notificationText = view.findViewById(R.id.notification_text);
-        notifi = view.findViewById(R.id.notification_icon); // Asumiendo que has agregado el ImageView notifi en el layout XML
+        notifi = view.findViewById(R.id.notification_icon);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 String selectedEmpresa = (String) parentView.getItemAtPosition(position);
-
-                // Guarda el nombre de la empresa seleccionada en SharedPreferences
                 appPreferences.setNombreEmpresa(selectedEmpresa);
-
                 updateFinancialData(selectedEmpresa);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                // Maneja el caso donde no hay nada seleccionado
+                // Handle case where nothing is selected
             }
         });
 
-        // Obtiene el nombre de la empresa guardada y actualiza la UI en consecuencia
         String lastSelectedEmpresa = appPreferences.getNombreEmpresa();
         if (lastSelectedEmpresa != null && !lastSelectedEmpresa.isEmpty()) {
             int spinnerPosition = spinnerAdapter.getPosition(lastSelectedEmpresa);
@@ -113,14 +109,10 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
         }
 
         cardContinuar.setOnClickListener(v -> iniciarEncuestasActivity());
+        menuIcon.setOnClickListener(this::showPopupMenu);
 
-        menuIcon.setOnClickListener(v -> showPopupMenu(v));
-
-        // Initialize WebSocketManager with the NotificationListener implementation
-        webSocketManager = new WebSocketManager(this); // Pass 'this' as NotificationListener
+        webSocketManager = new WebSocketManager(this);
         webSocketManager.start();
-
-        // Send a notification to all devices when the fragment is created
         webSocketManager.sendNotification("Nueva notificación para todos los dispositivos");
 
         return view;
@@ -130,20 +122,17 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
     public void onNotificationReceived(int count) {
         if (notificationText != null) {
             notificationText.setText(String.valueOf(count));
-            notificationText.setVisibility(View.VISIBLE); // Asegúrate de que el texto es visible
+            notificationText.setVisibility(View.VISIBLE);
         }
 
         if (notifi != null) {
-            notifi.setImageResource(R.drawable.notifi); // Asegúrate de que este recurso drawable es el correcto
+            notifi.setImageResource(R.drawable.notifi);
         }
     }
-
 
     @Override
     public void onResume() {
         super.onResume();
-
-        // Actualiza los datos de la empresa seleccionada
         String selectedEmpresa = appPreferences.getNombreEmpresa();
         if (selectedEmpresa != null && !selectedEmpresa.isEmpty()) {
             updateFinancialData(selectedEmpresa);
@@ -164,8 +153,8 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
         // Obtener el número de respuestas respondidas para la empresa
         int respuestasCount = dbHelper.getRespuestasCount(empresa);
 
-        // Obtener el total de preguntas (puedes reemplazar este valor con un método si lo tienes)
-        int totalPreguntas = TOTAL_PREGUNTAS;
+        // Obtener el total de preguntas utilizando el método getTotalPreguntasCount
+        int totalPreguntas = dbHelper.getTotalPreguntasCount();
 
         double contadorActual = 0;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
@@ -215,46 +204,61 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
         TextView textViewPreguntas = getView().findViewById(R.id.text_view_preguntas);
         textViewPreguntas.setText(String.format("%d de %d", respuestasCount, totalPreguntas));
 
-        setupChart(barChart, contadorActual, contadorPotencial, contadorAmbas);
+        setupChart(lineChart, dbHelper.obtenerRespuestasPorDia(empresa), totalPreguntas);
     }
 
-    private void setupChart(BarChart chart, double actual, double potencial, double ambas) {
-        List<BarEntry> entries = new ArrayList<>();
-        entries.add(new BarEntry(0f, (float) actual));
-        entries.add(new BarEntry(1f, (float) potencial));
-        entries.add(new BarEntry(2f, (float) ambas));
+    private void setupChart(LineChart chart, Map<String, Integer> respuestasPorDia, int totalPreguntas) {
+        List<Entry> entriesRespuestas = new ArrayList<>();
+        List<Entry> entriesObjetivo = new ArrayList<>();
+        String[] dias = {"Lunes", "Martes", "Miércoles", "Jueves", "Viernes"};
+        int index = 0;
+        int preguntasPorDia = totalPreguntas / dias.length;
 
-        BarDataSet dataSet = new BarDataSet(entries, "Distribución");
-        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        for (String dia : dias) {
+            int respuestas = respuestasPorDia.containsKey(dia) ? respuestasPorDia.get(dia) : 0;
+            entriesRespuestas.add(new Entry(index, respuestas));
+            entriesObjetivo.add(new Entry(index, preguntasPorDia));
+            index++;
+        }
 
-        BarData barData = new BarData(dataSet);
-        chart.setData(barData);
+        LineDataSet dataSetRespuestas = new LineDataSet(entriesRespuestas, "Respuestas por día");
+        dataSetRespuestas.setColor(Color.BLUE); // Cambiar el color de la línea a rojo
+        dataSetRespuestas.setLineWidth(2.5f);
+        dataSetRespuestas.setCircleColor(ColorTemplate.getHoloBlue());
+        dataSetRespuestas.setCircleRadius(5f);
+        dataSetRespuestas.setFillColor(ColorTemplate.getHoloBlue());
+        dataSetRespuestas.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
+        dataSetRespuestas.setDrawValues(true);
+
+        LineDataSet dataSetObjetivo = new LineDataSet(entriesObjetivo, "Objetivo diario");
+        dataSetObjetivo.setColor(Color.RED); // Cambiar el color de la línea a verde
+        dataSetObjetivo.setLineWidth(2.5f);
+        dataSetObjetivo.setCircleColor(ColorTemplate.getHoloBlue());
+        dataSetObjetivo.setCircleRadius(5f);
+        dataSetObjetivo.setFillColor(ColorTemplate.getHoloBlue());
+        dataSetObjetivo.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
+        dataSetObjetivo.setDrawValues(true);
+
+        LineData lineData = new LineData(dataSetRespuestas, dataSetObjetivo);
+        chart.setData(lineData);
 
         XAxis xAxis = chart.getXAxis();
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(new String[]{"Actual", "Potencial", "Ambas"}));
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(dias));
         xAxis.setGranularity(1f);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
         YAxis leftAxis = chart.getAxisLeft();
         leftAxis.setGranularity(1f);
         leftAxis.setAxisMinimum(0f);
-        leftAxis.setAxisMaximum((float) TOTAL_PREGUNTAS);
+        leftAxis.setAxisMaximum(totalPreguntas);
 
         chart.getAxisRight().setEnabled(false);
         chart.getDescription().setEnabled(false);
-
-        // Configuración para 3D
-        chart.setDrawBarShadow(true);
-        chart.setDrawValueAboveBar(true);
-        chart.setMaxVisibleValueCount(60);
-        chart.setPinchZoom(false);
-        chart.setDrawGridBackground(false);
-
         chart.invalidate();
     }
 
     private void iniciarEncuestasActivity() {
         String selectedEmpresa = (String) spinner.getSelectedItem();
-
         if (selectedEmpresa != null && !selectedEmpresa.isEmpty()) {
             Intent intent = new Intent(getActivity(), EncuestasActivity.class);
             intent.putExtra("empresa_nombre", selectedEmpresa);
@@ -263,8 +267,7 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
     }
 
     private void sendEmail() {
-        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                "mailto", "teoedmundo@gmail.com", null));
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", "teoedmundo@gmail.com", null));
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Asunto del correo");
         emailIntent.putExtra(Intent.EXTRA_TEXT, "Contenido del correo");
 

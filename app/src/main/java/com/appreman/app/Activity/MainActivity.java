@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (fragment instanceof EmpresasFragment) {
             toolbar.setTitle("Empresas");
         } else if (fragment instanceof SurveyFragment) {
-            toolbar.setTitle("Encuestas");
+            toolbar.setTitle("Survey");
         }
     }
 

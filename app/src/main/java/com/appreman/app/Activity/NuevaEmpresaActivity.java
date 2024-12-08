@@ -1,12 +1,16 @@
 package com.appreman.app.Activity;
 
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.appreman.app.Database.DBHelper;
 import com.appreman.appreman.R;
@@ -27,6 +31,15 @@ public class NuevaEmpresaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nueva_empresa);
 
+        // Configurar el Toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            SpannableString spannableTitle = getSpannableTitle("Nueva Empresa");
+            getSupportActionBar().setTitle(spannableTitle);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.setNavigationIcon(R.drawable.arrow_back);
+        }
 
         dbHelper = new DBHelper(this);
 
@@ -47,13 +60,18 @@ public class NuevaEmpresaActivity extends AppCompatActivity {
         btnGuarda.setOnClickListener(view -> guardarEmpresa());
     }
 
+    private SpannableString getSpannableTitle(String title) {
+        SpannableString spannable = new SpannableString(title);
+        spannable.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.white)), 0, spannable.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannable;
+    }
+
     private void guardarEmpresa() {
         String nombre = txtNombre.getText().toString();
         String pais = txtPais.getText().toString();
 
         if (!nombre.isEmpty() && !pais.isEmpty()) {
             String fechaActual = obtenerFechaActual();
-
             String horaActual = obtenerHoraActual();
 
             dbHelper.insertEmpresa(
@@ -109,6 +127,7 @@ public class NuevaEmpresaActivity extends AppCompatActivity {
         timeFormat.setTimeZone(TimeZone.getDefault());
         return timeFormat.format(calendar.getTime());
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {

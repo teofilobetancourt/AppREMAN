@@ -1,37 +1,232 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="8dp"
+    tools:context=".Activity.DashboardActivity">
 
-    <com.appreman.app.ViewModel.DonutChartView
-        android:id="@+id/donutChartView"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
+    <!-- Primer BarChart -->
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barChart1"
+        android:layout_width="0dp"
+        android:layout_height="190dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/barChart2"
+        app:layout_constraintWidth_percent="0.5"
         tools:ignore="MissingClass" />
 
-    <Button
-        android:id="@+id/btnNuevaEmpresa"
-        android:layout_width="match_parent"
+    <!-- Texto debajo del primer BarChart -->
+    <TextView
+        android:id="@+id/textBarChart1"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/donutChartView"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="16dp"
-        android:onClick="nuevaEmpresaOnClick"
-        android:text="Agregar Empresa para Encuestar" />
+        android:layout_marginTop="2dp"
+        android:text="Número total de empresas"
+        android:textAlignment="center"
+        app:layout_constraintTop_toBottomOf="@+id/barChart1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/textBarChart2"
+        app:layout_constraintWidth_percent="0.5" />
 
-    <Button
-        android:id="@+id/btnListaEmpresas"
-        android:layout_width="match_parent"
+    <!-- Segundo BarChart -->
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barChart2"
+        android:layout_width="0dp"
+        android:layout_height="190dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/barChart1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.5"
+        tools:ignore="MissingClass" />
+
+    <!-- Texto debajo del segundo BarChart -->
+    <TextView
+        android:id="@+id/textBarChart2"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/btnNuevaEmpresa"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="11dp"
-        android:onClick="listaEmpresasOnClick"
-        android:text="Listado de Empresas Encuestadas" />
+        android:layout_marginTop="2dp"
+        android:text="Número de empresas encuestadas"
+        android:textAlignment="center"
+        app:layout_constraintTop_toBottomOf="@+id/barChart2"
+        app:layout_constraintStart_toEndOf="@+id/textBarChart1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.5" />
 
-</RelativeLayout>
+    <!-- Tercer BarChart -->
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barChart3"
+        android:layout_width="0dp"
+        android:layout_height="190dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toBottomOf="@+id/textBarChart1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/barChart4"
+        app:layout_constraintWidth_percent="0.5"
+        tools:ignore="MissingClass" />
+
+    <!-- Texto debajo del tercer BarChart -->
+    <TextView
+        android:id="@+id/textBarChart3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="Número de empresas completadas"
+        android:textAlignment="center"
+        app:layout_constraintTop_toBottomOf="@+id/barChart3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/textBarChart4"
+        app:layout_constraintWidth_percent="0.5" />
+
+    <!-- Cuarto BarChart -->
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barChart4"
+        android:layout_width="0dp"
+        android:layout_height="190dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toBottomOf="@+id/textBarChart2"
+        app:layout_constraintStart_toEndOf="@+id/barChart3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.5"
+        tools:ignore="MissingClass" />
+
+    <!-- Texto debajo del cuarto BarChart -->
+    <TextView
+        android:id="@+id/textBarChart4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="Número de empresas por encuestar"
+        android:textAlignment="center"
+        app:layout_constraintTop_toBottomOf="@+id/barChart4"
+        app:layout_constraintStart_toEndOf="@+id/textBarChart3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.5" />
+
+    <!-- Quinto BarChart -->
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barChart5"
+        android:layout_width="0dp"
+        android:layout_height="190dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toBottomOf="@+id/textBarChart3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/barChart6"
+        app:layout_constraintWidth_percent="0.5"
+        tools:ignore="MissingClass" />
+
+    <!-- Texto debajo del quinto BarChart -->
+    <TextView
+        android:id="@+id/textBarChart5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="Tiempo de la encuesta"
+        android:textAlignment="center"
+        app:layout_constraintTop_toBottomOf="@+id/barChart5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/textBarChart6"
+        app:layout_constraintWidth_percent="0.5" />
+
+    <!-- Sexto BarChart -->
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barChart6"
+        android:layout_width="0dp"
+        android:layout_height="190dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toBottomOf="@+id/textBarChart4"
+        app:layout_constraintStart_toEndOf="@+id/barChart5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.5"
+        tools:ignore="MissingClass" />
+
+    <!-- Texto debajo del sexto BarChart -->
+    <TextView
+        android:id="@+id/textBarChart6"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="Promedio de encuesta por min"
+        android:textAlignment="center"
+        app:layout_constraintTop_toBottomOf="@+id/barChart6"
+        app:layout_constraintStart_toEndOf="@+id/textBarChart5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.5" />
+
+    <!-- CardView para agregar nueva empresa -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardNuevaEmpresa"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:layout_margin="4dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="10dp"
+        android:background="@drawable/gradientblue"
+        android:padding="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toBottomOf="@+id/textBarChart5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/cardListaEmpresas"
+        app:layout_constraintWidth_percent="0.5">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@drawable/gradientblue"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Agregar Empresa para
+                Encuestar"
+                android:textAlignment="center"
+                android:textColor="#FFF"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- CardView para listar empresas -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardListaEmpresas"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:layout_margin="4dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="10dp"
+        android:background="@drawable/gradientblue"
+        android:padding="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toBottomOf="@+id/textBarChart5"
+        app:layout_constraintStart_toEndOf="@+id/cardNuevaEmpresa"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.48">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/gradientblue"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Listado de Empresas
+                Encuestadas"
+                android:textAlignment="center"
+                android:textColor="#FFF"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

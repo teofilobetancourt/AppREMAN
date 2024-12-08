@@ -28,17 +28,6 @@
             android:text="Nombre de la Empresa"
             tools:ignore="HardcodedText" />
 
-        <!-- Icono -->
-        <ImageView
-            android:id="@+id/imageViewIcono"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_play"
-            android:layout_marginEnd="8dp"
-            tools:ignore="UseAppTint"
-            app:tint="@android:color/white"
-            android:contentDescription="TODO" />
-
         <!-- Campo Pais -->
         <LinearLayout
             android:layout_width="match_parent"

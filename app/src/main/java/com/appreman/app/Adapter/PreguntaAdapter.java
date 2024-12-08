@@ -20,7 +20,10 @@ import com.appreman.app.Models.Pregunta;
 import com.appreman.app.Repository.AppPreferences;
 import com.appreman.appreman.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.MotivosViewHolder> implements OpcionSelectionListener {
 
@@ -66,6 +69,7 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.Motivo
 
             String preguntaNumero = pregunta.getNumero();
             String nombreEmpresa = obtenerNombreEmpresaDesdePreferencias();
+            String fechaRespuesta = obtenerFechaActual(); // Método para obtener la fecha actual
 
             if (!opcionesSeleccionadas.isEmpty()) {
                 Opcion opcionActual = opcionesSeleccionadas.get(0);
@@ -74,7 +78,7 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.Motivo
                 if (isQuestionInDatabase(nombreEmpresa, preguntaNumero)) {
                     dbHelper.updateAnswerInDatabase(nombreEmpresa, preguntaNumero, opcionActual.getNumero(), opcionPotencial.getNumero());
                 } else {
-                    dbHelper.insertarOpcionesEnRespuestas(nombreEmpresa, preguntaNumero, opcionActual.getNumero(), opcionPotencial.getNumero());
+                    dbHelper.insertarOpcionesEnRespuestas(nombreEmpresa, preguntaNumero, opcionActual.getNumero(), opcionPotencial.getNumero(), fechaRespuesta);
                 }
 
                 preguntaOpcionAdapter.notifyDataSetChanged();
@@ -88,6 +92,11 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.Motivo
                 Log.e(TAG, "No se pudieron obtener opciones seleccionadas.");
             }
         });
+    }
+
+    private String obtenerFechaActual() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        return sdf.format(new Date());
     }
 
     @Override

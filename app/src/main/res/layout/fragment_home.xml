@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    android:background="@drawable/degradado_bar"
+
+    tools:context="com.appreman.app.Activity.MainActivity">
 
     <!-- Header with image and text -->
     <LinearLayout
@@ -19,15 +21,16 @@
             android:layout_height="40dp"
             android:layout_gravity="center"
             android:padding="10dp"
-            android:src="@drawable/menu" />
+            android:src="@drawable/menu2" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Dashboard"
+            android:text="REMAN"
             android:textAlignment="center"
+            android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -38,17 +41,8 @@
             android:layout_height="40dp"
             android:layout_gravity="center"
             android:padding="10dp"
-            android:src="@drawable/notifi" />
+            android:src="@drawable/notifi2" />
 
-        <TextView
-            android:id="@+id/notification_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:padding="10dp"
-            android:text="0"
-            android:textColor="#FFF"
-            android:textSize="16sp" />
 
 
     </LinearLayout>
@@ -300,7 +294,7 @@
         android:layout_margin="5dp"
         android:gravity="center">
 
-        <com.github.mikephil.charting.charts.BarChart
+        <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/chart1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

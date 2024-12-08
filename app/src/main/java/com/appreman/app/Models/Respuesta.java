@@ -27,17 +27,21 @@ public class Respuesta {
     @ColumnInfo(name = "elemento")
     private String elemento;
 
+    @ColumnInfo(name = "fechaRespuesta")
+    private String fechaRespuesta;
+
     // Constructor sin parámetros requerido por Room
     public Respuesta() {
     }
 
     // Constructor con parámetros
-    public Respuesta(String nombreEmpresa, String pregunta, String opcionActual, String opcionPotencial, String elemento) {
+    public Respuesta(String nombreEmpresa, String pregunta, String opcionActual, String opcionPotencial, String elemento, String fechaRespuesta) {
         this.nombreEmpresa = nombreEmpresa;
         this.pregunta = pregunta;
         this.opcionActual = opcionActual;
         this.opcionPotencial = opcionPotencial;
         this.elemento = elemento;
+        this.fechaRespuesta = fechaRespuesta;
     }
 
     // Getters y Setters
@@ -87,5 +91,13 @@ public class Respuesta {
 
     public void setElemento(String elemento) {
         this.elemento = elemento;
+    }
+
+    public String getFechaRespuesta() {
+        return fechaRespuesta;
+    }
+
+    public void setFechaRespuesta(String fechaRespuesta) {
+        this.fechaRespuesta = fechaRespuesta;
     }
 }

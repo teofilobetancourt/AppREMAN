@@ -24,20 +24,18 @@ import com.appreman.app.Models.Pregunta;
 import com.appreman.app.Models.Respuesta;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class DBHelper extends SQLiteAssetHelper {
 
@@ -315,37 +313,7 @@ public class DBHelper extends SQLiteAssetHelper {
         return empresas;
     }
 
-    public List<Opcion> getAllOpciones(){
-
-        List<Opcion> v_opciones = new ArrayList<>();
-
-        try (SQLiteDatabase v_db = this.getReadableDatabase()) {
-
-            Cursor v_cursor = v_db.rawQuery("select numero, nombre, pregunta from opcion order by numero desc", null);
-
-            if (null != v_cursor) {
-                while (v_cursor.moveToNext()) {
-
-                    Opcion v_opcion = new Opcion();
-
-                    v_opcion.setNumero(v_cursor.getString(0));
-                    v_opcion.setNombre(v_cursor.getString(1));
-                    v_opcion.setPregunta(v_cursor.getString(2));
-
-                    v_opciones.add(v_opcion);
-                }
-                v_cursor.close();
-            }
-
-        } catch (SQLException e) {
-            Log.e(TAG, e.toString());
-            e.printStackTrace();
-        }
-
-        return v_opciones;
-    }
-
-    public void insertarOpcionesEnRespuestas(String nombreEmpresa, String numeroPregunta, String opcionActual, String opcionPotencial) {
+    public void insertarOpcionesEnRespuestas(String nombreEmpresa, String numeroPregunta, String opcionActual, String opcionPotencial, String fechaRespuesta) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         // Recuperar el elemento correspondiente a la pregunta
@@ -362,21 +330,18 @@ public class DBHelper extends SQLiteAssetHelper {
                 numeroPregunta,
                 opcionActual,
                 opcionPotencial,
-                elemento
+                elemento,
+                fechaRespuesta
         );
 
         // Insertar en la base de datos
         ContentValues values = new ContentValues();
-        values.put("empresa", respuesta.getNombreEmpresa());  // Nombre correcto de columna
+        values.put("empresa", respuesta.getNombreEmpresa());
         values.put("pregunta", respuesta.getPregunta());
-        values.put("opcionActual", respuesta.getOpcionActual());  // Nombre correcto de columna
-        values.put("opcionPotencial", respuesta.getOpcionPotencial());  // Nombre correcto de columna
+        values.put("opcionActual", respuesta.getOpcionActual());
+        values.put("opcionPotencial", respuesta.getOpcionPotencial());
         values.put("elemento", respuesta.getElemento());
-
-        Log.d(TAG, "Número de Pregunta: " + respuesta.getPregunta());
-        Log.d(TAG, "Opción Actual: " + respuesta.getOpcionActual());
-        Log.d(TAG, "Opción Potencial: " + respuesta.getOpcionPotencial());
-        Log.d(TAG, "Elemento: " + respuesta.getElemento());  // Log para verificar el elemento
+        values.put("fechaRespuesta", respuesta.getFechaRespuesta());
 
         long insertResult = db.insert("respuestas", null, values);
 
@@ -741,7 +706,6 @@ public class DBHelper extends SQLiteAssetHelper {
     }
 
 
-
     public Map<String, Double> obtenerContadoresYPorcentajes(String nombreEmpresa) {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -903,10 +867,125 @@ public class DBHelper extends SQLiteAssetHelper {
         return grupo;
     }
 
+    public int getEmpresasCompletamenteEncuestadasCount() {
+        int count = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
 
+        try {
+            // Query to count the number of companies that have completed all their surveys
+            String query = "SELECT COUNT(DISTINCT empresa) FROM respuestas r " +
+                    "JOIN (SELECT empresa, COUNT(DISTINCT pregunta) as total_preguntas " +
+                    "FROM respuestas GROUP BY empresa) t " +
+                    "ON r.empresa = t.empresa " +
+                    "WHERE t.total_preguntas = (SELECT COUNT(*) FROM pregunta)";
+            Cursor cursor = db.rawQuery(query, null);
 
+            if (cursor.moveToFirst()) {
+                count = cursor.getInt(0);
+            }
+            cursor.close();
+        } catch (SQLException e) {
+            Log.e(TAG, e.toString());
+            e.printStackTrace();
+        } finally {
+            db.close();
+        }
 
+        return count;
+    }
 
+    public void insertarTiempoInicio(String nombreEmpresa, String fechaInicio) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Log.d("DBHelper", "Base de datos abierta para escritura");
+        ContentValues values = new ContentValues();
+        values.put("nombreEmpresa", nombreEmpresa);
+        values.put("fechaInicio", fechaInicio);
+        long result = db.insert("fecha", null, values);
+        if (result == -1) {
+            Log.e("DBHelper", "Error al insertar tiempo de inicio");
+        } else {
+            Log.d("DBHelper", "Tiempo de inicio insertado correctamente: " + fechaInicio);
+        }
+        db.close();
+    }
+
+    public void insertarTiempoFin(String nombreEmpresa, String fechaInicio, String fechaFin) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Log.d("DBHelper", "Base de datos abierta para escritura");
+        ContentValues values = new ContentValues();
+        values.put("fechaFin", fechaFin);
+        int rowsAffected = db.update("fecha", values, "nombreEmpresa=? AND fechaInicio=?", new String[]{nombreEmpresa, fechaInicio});
+        if (rowsAffected == 0) {
+            Log.e("DBHelper", "Error al actualizar tiempo de fin");
+        } else {
+            Log.d("DBHelper", "Tiempo de fin actualizado correctamente: " + fechaFin);
+        }
+        db.close();
+    }
+
+    public Map<String, Long> getTiempoPorDia() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Map<String, Long> tiempoPorDia = new HashMap<>();
+
+        String query = "SELECT fechaInicio, fechaFin FROM fecha";
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                @SuppressLint("Range") String fechaInicio = cursor.getString(cursor.getColumnIndex("fechaInicio"));
+                @SuppressLint("Range") String fechaFin = cursor.getString(cursor.getColumnIndex("fechaFin"));
+
+                Log.d("DBHelper", "Fecha de inicio: " + fechaInicio + ", Fecha de fin: " + fechaFin);
+
+                if (fechaFin != null) {
+                    try {
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                        Date inicio = format.parse(fechaInicio);
+                        Date fin = format.parse(fechaFin);
+
+                        long diff = fin.getTime() - inicio.getTime();
+                        long diffHours = TimeUnit.MILLISECONDS.toHours(diff);
+
+                        String dia = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(inicio);
+
+                        if (tiempoPorDia.containsKey(dia)) {
+                            tiempoPorDia.put(dia, tiempoPorDia.get(dia) + diffHours);
+                        } else {
+                            tiempoPorDia.put(dia, diffHours);
+                        }
+                    } catch (ParseException e) {
+                        Log.e("DBHelper", "Error al parsear fechas", e);
+                    }
+                }
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return tiempoPorDia;
+    }
+
+    public Map<String, Integer> obtenerRespuestasPorDia(String empresa) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Map<String, Integer> respuestasPorDia = new HashMap<>();
+
+        String query = "SELECT fechaRespuesta, COUNT(*) as cantidad FROM respuestas WHERE empresa = ? GROUP BY fechaRespuesta";
+        Cursor cursor = db.rawQuery(query, new String[]{empresa});
+
+        if (cursor.moveToFirst()) {
+            do {
+                @SuppressLint("Range") String fecha = cursor.getString(cursor.getColumnIndex("fechaRespuesta"));
+                @SuppressLint("Range") int cantidad = cursor.getInt(cursor.getColumnIndex("cantidad"));
+                respuestasPorDia.put(fecha, cantidad);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return respuestasPorDia;
+    }
 
 
 }

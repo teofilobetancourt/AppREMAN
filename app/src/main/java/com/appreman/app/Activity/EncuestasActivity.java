@@ -22,12 +22,17 @@ import com.appreman.appreman.databinding.ActivityEncuestasBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class EncuestasActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
     private DBHelper dbHelper;
+    private String nombreEmpresa;
+    private String fechaInicio;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, EncuestasActivity.class);
@@ -85,6 +90,27 @@ public class EncuestasActivity extends AppCompatActivity {
 
         // Configura el listener para el FloatingActionButton
         fabNotification.setOnClickListener(v -> showGroupInfoDialog());
+
+        // Obtén el nombre de la empresa desde AppPreferences
+        AppPreferences appPreferences = new AppPreferences(this);
+        nombreEmpresa = appPreferences.getNombreEmpresa();
+
+        // Registrar la fecha y hora de inicio
+        fechaInicio = obtenerFechaActual();
+        dbHelper.insertarTiempoInicio(nombreEmpresa, fechaInicio);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Registrar la fecha y hora de fin
+        String fechaFin = obtenerFechaActual();
+        dbHelper.insertarTiempoFin(nombreEmpresa, fechaInicio, fechaFin);
+    }
+
+    private String obtenerFechaActual() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        return sdf.format(new Date());
     }
 
     private void showGroupInfoDialog() {
@@ -95,10 +121,6 @@ public class EncuestasActivity extends AppCompatActivity {
             Log.e("EncuestasActivity", "Grupo no encontrado para la posición: " + currentItem);
             return;
         }
-
-        // Obtén el nombre de la empresa desde AppPreferences
-        AppPreferences appPreferences = new AppPreferences(this);
-        String nombreEmpresa = appPreferences.getNombreEmpresa();
 
         // Aquí obtén los datos reales basados en currentItem
         int totalQuestions = dbHelper.getTotalQuestionsForGrupo(currentGrupo.getNumero(), nombreEmpresa);
@@ -128,6 +150,4 @@ public class EncuestasActivity extends AppCompatActivity {
                 .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
                 .show();
     }
-
-
 }

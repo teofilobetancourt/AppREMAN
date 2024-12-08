@@ -26,25 +26,34 @@
             android:text="Nombre Empresa"
             tools:ignore="HardcodedText" />
 
-        <TextView
-            android:id="@+id/textViewPais"
-            style="@style/Widget.MaterialComponents.TextView"
+        <!-- LinearLayout horizontal para País y Región -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/colorPrimary"
-            android:text="Pais"
-            tools:ignore="HardcodedText" />
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/textViewRegion"
-            style="@style/Widget.MaterialComponents.TextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/colorPrimary"
-            android:text="Región"
-            tools:ignore="HardcodedText" />
+            <TextView
+                android:id="@+id/textViewPais"
+                style="@style/Widget.MaterialComponents.TextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:textColor="@color/colorPrimary"
+                android:text="Pais"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/textViewRegion"
+                style="@style/Widget.MaterialComponents.TextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:textColor="@color/colorPrimary"
+                android:text="Región"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/textViewSitio"

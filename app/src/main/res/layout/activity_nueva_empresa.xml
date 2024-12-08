@@ -5,39 +5,52 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context="NuevaEmpresaActivity">
+    tools:context="com.appreman.app.Activity.NuevaEmpresaActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:elevation="8dp"
+        app:contentInsetStart="0dp"
+        app:titleTextColor="@color/white"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
+        android:layout_margin="16dp"
         android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@drawable/degradado_bar"
         tools:ignore="UselessParent">
 
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="logo"
-            android:scaleType="fitCenter"
-            android:src="@drawable/eman2"
-            tools:ignore="HardcodedText" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            android:textColorHint="@color/white"
             style="@style/AppTheme.TextInputLayout"
             app:boxCornerRadiusTopStart="8dp"
             app:boxCornerRadiusTopEnd="8dp"
             app:boxCornerRadiusBottomStart="8dp"
             app:boxCornerRadiusBottomEnd="8dp"
             app:hintEnabled="true"
-            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
+            app:hintTextColor="@color/white"
+            app:startIconDrawable="@drawable/ic_person2"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel"
+            app:boxStrokeColor="@color/colorPrimaryDark"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"> <!-- Ajusta el padding aquí -->
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtNombre"
@@ -47,6 +60,7 @@
                 android:inputType="textPersonName"
                 android:textColorHint="#757575"
                 android:textSize="16sp"
+                android:textStyle="bold"
                 tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -54,13 +68,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            android:textColorHint="@color/white"
             style="@style/AppTheme.TextInputLayout"
             app:boxCornerRadiusTopStart="8dp"
             app:boxCornerRadiusTopEnd="8dp"
             app:boxCornerRadiusBottomStart="8dp"
             app:boxCornerRadiusBottomEnd="8dp"
             app:hintEnabled="true"
-            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
+            app:hintTextColor="@color/white"
+            android:paddingStart="16sp"
+            android:paddingEnd="16sp"
+            app:startIconDrawable="@drawable/ic_location"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel"
+            app:boxStrokeColor="@color/colorPrimaryDark">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtPais"
@@ -70,21 +90,27 @@
                 android:inputType="textPersonName"
                 android:textColorHint="#757575"
                 android:textSize="16sp"
+                android:textStyle="bold"
                 tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
         </com.google.android.material.textfield.TextInputLayout>
-
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            android:textColorHint="@color/white"
             style="@style/AppTheme.TextInputLayout"
             app:boxCornerRadiusTopStart="8dp"
             app:boxCornerRadiusTopEnd="8dp"
             app:boxCornerRadiusBottomStart="8dp"
             app:boxCornerRadiusBottomEnd="8dp"
+            app:hintTextColor="@color/white"
             app:hintEnabled="true"
-            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
+            android:paddingStart="16sp"
+            android:paddingEnd="16sp"
+            app:startIconDrawable="@drawable/ic_location"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel"
+            app:boxStrokeColor="@color/colorPrimaryDark">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtRegion"
@@ -94,6 +120,7 @@
                 android:inputType="textPersonName"
                 android:textColorHint="#757575"
                 android:textSize="16sp"
+                android:textStyle="bold"
                 tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -101,13 +128,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            android:textColorHint="@color/white"
             style="@style/AppTheme.TextInputLayout"
             app:boxCornerRadiusTopStart="8dp"
             app:boxCornerRadiusTopEnd="8dp"
             app:boxCornerRadiusBottomStart="8dp"
             app:boxCornerRadiusBottomEnd="8dp"
             app:hintEnabled="true"
-            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
+            app:hintTextColor="@color/white"
+            android:paddingStart="16sp"
+            android:paddingEnd="16sp"
+            app:startIconDrawable="@drawable/ic_location"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel"
+            app:boxStrokeColor="@color/colorPrimaryDark">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtSitio"
@@ -117,21 +150,27 @@
                 android:inputType="textPersonName"
                 android:textColorHint="#757575"
                 android:textSize="16sp"
+                android:textStyle="bold"
                 tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
         </com.google.android.material.textfield.TextInputLayout>
-
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            android:textColorHint="@color/white"
             style="@style/AppTheme.TextInputLayout"
             app:boxCornerRadiusTopStart="8dp"
             app:boxCornerRadiusTopEnd="8dp"
             app:boxCornerRadiusBottomStart="8dp"
             app:boxCornerRadiusBottomEnd="8dp"
+            app:hintTextColor="@color/white"
             app:hintEnabled="true"
-            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
+            android:paddingStart="16sp"
+            android:paddingEnd="16sp"
+            app:startIconDrawable="@drawable/ic_industry"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel"
+            app:boxStrokeColor="@color/colorPrimaryDark">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtSector"
@@ -141,21 +180,27 @@
                 android:inputType="textPersonName"
                 android:textColorHint="#757575"
                 android:textSize="16sp"
+                android:textStyle="bold"
                 tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
         </com.google.android.material.textfield.TextInputLayout>
-
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            android:textColorHint="@color/white"
             style="@style/AppTheme.TextInputLayout"
+            app:hintTextColor="@color/white"
             app:boxCornerRadiusTopStart="8dp"
             app:boxCornerRadiusTopEnd="8dp"
             app:boxCornerRadiusBottomStart="8dp"
             app:boxCornerRadiusBottomEnd="8dp"
             app:hintEnabled="true"
-            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
+            android:paddingStart="16sp"
+            android:paddingEnd="16sp"
+            app:startIconDrawable="@drawable/ic_factory"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel"
+            app:boxStrokeColor="@color/colorPrimaryDark">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtPlanta"
@@ -165,6 +210,7 @@
                 android:inputType="textPersonName"
                 android:textColorHint="#757575"
                 android:textSize="16sp"
+                android:textStyle="bold"
                 tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -172,13 +218,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            android:textColorHint="@color/white"
             style="@style/AppTheme.TextInputLayout"
+            app:hintTextColor="@color/white"
             app:boxCornerRadiusTopStart="8dp"
             app:boxCornerRadiusTopEnd="8dp"
             app:boxCornerRadiusBottomStart="8dp"
             app:boxCornerRadiusBottomEnd="8dp"
             app:hintEnabled="true"
-            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
+            android:paddingStart="16sp"
+            android:paddingEnd="16sp"
+            app:startIconDrawable="@drawable/ic_person"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel"
+            app:boxStrokeColor="@color/colorPrimaryDark">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtRepresentanteEmpresa"
@@ -188,21 +240,27 @@
                 android:inputType="textPersonName"
                 android:textColorHint="#757575"
                 android:textSize="16sp"
+                android:textStyle="bold"
                 tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
         </com.google.android.material.textfield.TextInputLayout>
-
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            android:textColorHint="@color/white"
             style="@style/AppTheme.TextInputLayout"
+            app:hintTextColor="@color/white"
             app:boxCornerRadiusTopStart="8dp"
             app:boxCornerRadiusTopEnd="8dp"
             app:boxCornerRadiusBottomStart="8dp"
             app:boxCornerRadiusBottomEnd="8dp"
             app:hintEnabled="true"
-            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
+            android:paddingStart="16sp"
+            android:paddingEnd="16sp"
+            app:startIconDrawable="@drawable/ic_phone"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel"
+            app:boxStrokeColor="@color/colorPrimaryDark">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtTelefono"
@@ -212,21 +270,27 @@
                 android:inputType="number"
                 android:textColorHint="#757575"
                 android:textSize="16sp"
+                android:textStyle="bold"
                 tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
         </com.google.android.material.textfield.TextInputLayout>
-
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            android:textColorHint="@color/white"
             style="@style/AppTheme.TextInputLayout"
+            app:hintTextColor="@color/white"
             app:boxCornerRadiusTopStart="8dp"
             app:boxCornerRadiusTopEnd="8dp"
             app:boxCornerRadiusBottomStart="8dp"
             app:boxCornerRadiusBottomEnd="8dp"
             app:hintEnabled="true"
-            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
+            android:paddingStart="16sp"
+            android:paddingEnd="16sp"
+            app:startIconDrawable="@drawable/ic_email"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel"
+            app:boxStrokeColor="@color/colorPrimaryDark">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtEmail"
@@ -236,22 +300,27 @@
                 android:inputType="textEmailAddress"
                 android:textColorHint="#757575"
                 android:textSize="16sp"
+                android:textStyle="bold"
                 tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
         </com.google.android.material.textfield.TextInputLayout>
-
-
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            android:textColorHint="@color/white"
             style="@style/AppTheme.TextInputLayout"
+            app:hintTextColor="@color/white"
             app:boxCornerRadiusTopStart="8dp"
             app:boxCornerRadiusTopEnd="8dp"
             app:boxCornerRadiusBottomStart="8dp"
             app:boxCornerRadiusBottomEnd="8dp"
             app:hintEnabled="true"
-            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
+            android:paddingStart="16sp"
+            android:paddingEnd="16sp"
+            app:startIconDrawable="@drawable/ic_person"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel"
+            app:boxStrokeColor="@color/colorPrimaryDark">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtClienteActual"
@@ -261,6 +330,7 @@
                 android:inputType="textPersonName"
                 android:textColorHint="#757575"
                 android:textSize="16sp"
+                android:textStyle="bold"
                 tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -268,13 +338,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            android:textColorHint="@color/white"
             style="@style/AppTheme.TextInputLayout"
+            app:hintTextColor="@color/white"
             app:boxCornerRadiusTopStart="8dp"
             app:boxCornerRadiusTopEnd="8dp"
             app:boxCornerRadiusBottomStart="8dp"
             app:boxCornerRadiusBottomEnd="8dp"
             app:hintEnabled="true"
-            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
+            android:paddingStart="16sp"
+            android:paddingEnd="16sp"
+            app:startIconDrawable="@drawable/ic_plant"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel"
+            app:boxStrokeColor="@color/colorPrimaryDark">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtNumeroPlantas"
@@ -283,21 +359,27 @@
                 android:inputType="number"
                 android:hint="@string/hint_numero_plantas"
                 android:textSize="16sp"
+                android:textStyle="bold"
                 tools:ignore="VisualLintTextFieldSize" />
         </com.google.android.material.textfield.TextInputLayout>
-
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            android:textColorHint="@color/white"
             style="@style/AppTheme.TextInputLayout"
+            app:hintTextColor="@color/white"
             app:boxCornerRadiusTopStart="8dp"
             app:boxCornerRadiusTopEnd="8dp"
             app:boxCornerRadiusBottomStart="8dp"
             app:boxCornerRadiusBottomEnd="8dp"
             app:hintEnabled="true"
-            app:hintTextAppearance="@style/AppTheme.FloatingLabel">
+            android:paddingStart="16sp"
+            android:paddingEnd="16sp"
+            app:startIconDrawable="@drawable/ic_plant"
+            app:hintTextAppearance="@style/AppTheme.FloatingLabel"
+            app:boxStrokeColor="@color/colorPrimaryDark">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtPlantasImplementar"
@@ -306,9 +388,9 @@
                 android:inputType="number"
                 android:hint="@string/hint_plantas_implementar"
                 android:textSize="16sp"
+                android:textStyle="bold"
                 tools:ignore="VisualLintTextFieldSize" />
         </com.google.android.material.textfield.TextInputLayout>
-
 
         <Button
             android:id="@+id/btnGuarda"
@@ -316,8 +398,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/btn_guarda"
+            android:textStyle="bold"
             android:textSize="18sp" />
 
+        </LinearLayout>
     </LinearLayout>
+
 
 </androidx.core.widget.NestedScrollView>
