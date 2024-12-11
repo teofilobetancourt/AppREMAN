@@ -1,5 +1,7 @@
 package com.appreman.app.Adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.appreman.app.Activity.MainActivity;
 import com.appreman.app.Models.Empresa;
 import com.appreman.appreman.R;
 
@@ -16,9 +19,10 @@ import java.util.List;
 public class EmpresaEncuestadaAdapter extends RecyclerView.Adapter<EmpresaEncuestadaAdapter.EmpresaViewHolder> {
 
     private final List<Empresa> empresasEncuestadas;
-    private EncuestaClickListener encuestaClickListener;
+    private final Context context;
 
-    public EmpresaEncuestadaAdapter(List<Empresa> empresasEncuestadas) {
+    public EmpresaEncuestadaAdapter(Context context, List<Empresa> empresasEncuestadas) {
+        this.context = context;
         this.empresasEncuestadas = empresasEncuestadas;
     }
 
@@ -33,7 +37,6 @@ public class EmpresaEncuestadaAdapter extends RecyclerView.Adapter<EmpresaEncues
     public void onBindViewHolder(@NonNull EmpresaViewHolder holder, int position) {
         Empresa empresa = empresasEncuestadas.get(position);
         holder.bindData(empresa);
-
     }
 
     @Override
@@ -41,7 +44,7 @@ public class EmpresaEncuestadaAdapter extends RecyclerView.Adapter<EmpresaEncues
         return empresasEncuestadas.size();
     }
 
-    public class EmpresaViewHolder extends RecyclerView.ViewHolder {
+    public class EmpresaViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView textViewNombre, textViewPais, textViewRegion, textViewSitio;
 
         public EmpresaViewHolder(@NonNull View itemView) {
@@ -50,21 +53,28 @@ public class EmpresaEncuestadaAdapter extends RecyclerView.Adapter<EmpresaEncues
             textViewPais = itemView.findViewById(R.id.textViewPais);
             textViewRegion = itemView.findViewById(R.id.textViewRegion);
             textViewSitio = itemView.findViewById(R.id.textViewSitio);
+            itemView.setOnClickListener(this);
         }
 
         public void bindData(Empresa empresa) {
             textViewNombre.setText(empresa.getNombre());
-            textViewPais.setText("País: " + empresa.getPais());
-            textViewRegion.setText("Región: " + empresa.getRegion());
-            textViewSitio.setText("Sitio: " + empresa.getSitio());
+            textViewPais.setText(empresa.getPais());
+            textViewRegion.setText(empresa.getRegion());
+            textViewSitio.setText(empresa.getSitio());
         }
-    }
 
-    public interface EncuestaClickListener {
-        void onEncuestaClick(int position);
-    }
-
-    public void setEncuestaClickListener(EncuestaClickListener listener) {
-        this.encuestaClickListener = listener;
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            if (position != RecyclerView.NO_POSITION) {
+                Empresa empresa = empresasEncuestadas.get(position);
+                Intent intent = new Intent(context, MainActivity.class);
+                intent.putExtra("empresa_nombre", empresa.getNombre());
+                intent.putExtra("pais", empresa.getPais());
+                intent.putExtra("region", empresa.getRegion());
+                intent.putExtra("sitio", empresa.getSitio());
+                context.startActivity(intent);
+            }
+        }
     }
 }

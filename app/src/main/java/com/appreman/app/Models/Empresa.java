@@ -21,6 +21,7 @@ public class Empresa {
     public String numeroDePlantIm;
     public String fechaRegistro;
     public String horaRegistro;
+    public String idOperador; // Nuevo campo
 
     // Nuevas variables para gestionar la visibilidad de los campos adicionales
     private boolean camposAdicionalesVisible = false;
@@ -153,6 +154,14 @@ public class Empresa {
 
     public void setHoraRegistro(String horaRegistro) {
         this.horaRegistro = horaRegistro;
+    }
+
+    public String getIdOperador() {
+        return idOperador;
+    }
+
+    public void setIdOperador(String idOperador) {
+        this.idOperador = idOperador;
     }
 
     // Función para cambiar la visibilidad de los campos adicionales

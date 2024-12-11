@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:background="@color/colorAmarillo"
-    app:cardElevation="12dp"
+    android:layout_margin="4dp"
+    android:background="@color/primaryDarkColor"
+    app:cardElevation="6dp"
     app:cardUseCompatPadding="true"
     layout_height="">
 
@@ -21,7 +21,7 @@
             android:id="@+id/textViewNombre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="20dp"
             android:textStyle="bold"
             android:textColor="@color/colorPrimaryDark"
             android:layout_marginBottom="8dp"
@@ -33,7 +33,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_below="@id/imageView"
             android:layout_marginTop="8dp"
             android:gravity="center_vertical">
 
@@ -43,8 +42,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="País:"
+                android:textStyle="bold"
                 android:textColor="@color/colorPrimary"
-                android:textSize="14sp"
+                android:textSize="18dp"
                 android:layout_marginEnd="8dp"
                 tools:ignore="HardcodedText" />
 
@@ -53,18 +53,19 @@
                 android:id="@+id/textViewPais"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textColor="@android:color/black"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:paddingTop="6dp"
-                android:paddingBottom="6dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
                 android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="4dp"
+                android:paddingStart="8dp"
+                android:paddingTop="6dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="6dp"
                 android:text="Valor País"
-                tools:ignore="HardcodedText" />
+                android:textColor="@android:color/black"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText,TextSizeCheck" />
         </LinearLayout>
 
         <!-- Campo Región -->
@@ -72,7 +73,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_below="@id/imageView"
             android:layout_marginTop="8dp"
             android:gravity="center_vertical">
 
@@ -82,8 +82,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Región:"
+                android:textStyle="bold"
                 android:textColor="@color/colorPrimary"
-                android:textSize="14sp"
+                android:textSize="18dp"
                 android:layout_marginEnd="8dp"
                 tools:ignore="HardcodedText" />
 
@@ -92,18 +93,19 @@
                 android:id="@+id/textViewRegion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textColor="@android:color/black"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:paddingTop="6dp"
-                android:paddingBottom="6dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
                 android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="4dp"
+                android:paddingStart="8dp"
+                android:paddingTop="6dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="6dp"
                 android:text="Valor Región"
-                tools:ignore="HardcodedText" />
+                android:textColor="@android:color/black"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText,TextSizeCheck" />
         </LinearLayout>
 
         <!-- Campo Sitio -->
@@ -111,7 +113,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_below="@id/imageView"
             android:layout_marginTop="8dp"
             android:gravity="center_vertical">
 
@@ -121,8 +122,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Sitio:"
+                android:textStyle="bold"
                 android:textColor="@color/colorPrimary"
-                android:textSize="14sp"
+                android:textSize="18dp"
                 android:layout_marginEnd="8dp"
                 tools:ignore="HardcodedText" />
 
@@ -131,18 +133,19 @@
                 android:id="@+id/textViewSitio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textColor="@android:color/black"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:paddingTop="6dp"
-                android:paddingBottom="6dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
                 android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="4dp"
+                android:paddingStart="8dp"
+                android:paddingTop="6dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="6dp"
                 android:text="Valor Sitio"
-                tools:ignore="HardcodedText" />
+                android:textColor="@android:color/black"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText,TextSizeCheck" />
         </LinearLayout>
 
         <!-- Campo Sector Industrial -->
@@ -150,7 +153,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_below="@id/imageView"
             android:layout_marginTop="8dp"
             android:gravity="center_vertical">
 
@@ -160,8 +162,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Sector Industrial:"
+                android:textStyle="bold"
                 android:textColor="@color/colorPrimary"
-                android:textSize="14sp"
+                android:textSize="18dp"
                 android:layout_marginEnd="8dp"
                 tools:ignore="HardcodedText" />
 
@@ -170,18 +173,19 @@
                 android:id="@+id/textViewSector"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textColor="@android:color/black"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:paddingTop="6dp"
-                android:paddingBottom="6dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
                 android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="4dp"
+                android:paddingStart="8dp"
+                android:paddingTop="6dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="6dp"
                 android:text="Valor Sector Industrial"
-                tools:ignore="HardcodedText" />
+                android:textColor="@android:color/black"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText,TextSizeCheck" />
         </LinearLayout>
 
 
@@ -190,7 +194,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_below="@id/imageView"
             android:layout_marginTop="8dp"
             android:gravity="center_vertical">
 
@@ -200,8 +203,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tipo de Planta:"
+                android:textStyle="bold"
                 android:textColor="@color/colorPrimary"
-                android:textSize="14sp"
+                android:textSize="18dp"
                 android:layout_marginEnd="8dp"
                 android:visibility="gone"
                 tools:ignore="HardcodedText" />
@@ -211,7 +215,8 @@
                 android:id="@+id/textViewPlanta"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                android:textSize="15dp"
+                android:textStyle="bold"
                 android:textColor="@android:color/black"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
@@ -231,7 +236,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_below="@id/imageView"
             android:layout_marginTop="8dp"
             android:gravity="center_vertical">
 
@@ -242,7 +246,8 @@
                 android:layout_height="wrap_content"
                 android:text="Representante de la Empresa:"
                 android:textColor="@color/colorPrimary"
-                android:textSize="14sp"
+                android:textSize="18dp"
+                android:textStyle="bold"
                 android:layout_marginEnd="8dp"
                 android:visibility="gone"
                 tools:ignore="HardcodedText" />
@@ -252,7 +257,8 @@
                 android:id="@+id/textViewRepresentante"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                android:textSize="15dp"
+                android:textStyle="bold"
                 android:textColor="@android:color/black"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
@@ -271,7 +277,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_below="@id/imageView"
             android:layout_marginTop="8dp"
             android:gravity="center_vertical">
 
@@ -282,7 +287,8 @@
                 android:layout_height="wrap_content"
                 android:text="Teléfono:"
                 android:textColor="@color/colorPrimary"
-                android:textSize="14sp"
+                android:textSize="18dp"
+                android:textStyle="bold"
                 android:layout_marginEnd="8dp"
                 android:visibility="gone"
                 tools:ignore="HardcodedText" />
@@ -292,7 +298,8 @@
                 android:id="@+id/textViewTelefono"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                android:textSize="15dp"
+                android:textStyle="bold"
                 android:textColor="@android:color/black"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
@@ -313,7 +320,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_below="@id/imageView"
             android:layout_marginTop="8dp"
             android:gravity="center_vertical">
 
@@ -323,8 +329,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Correo Electrónico:"
+                android:textStyle="bold"
                 android:textColor="@color/colorPrimary"
-                android:textSize="14sp"
+                android:textSize="18dp"
                 android:layout_marginEnd="8dp"
                 android:visibility="gone"
                 tools:ignore="HardcodedText" />
@@ -334,7 +341,8 @@
                 android:id="@+id/textViewEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                android:textSize="15dp"
+                android:textStyle="bold"
                 android:textColor="@android:color/black"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
@@ -355,7 +363,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_below="@id/imageView"
             android:layout_marginTop="8dp"
             android:gravity="center_vertical">
 
@@ -366,7 +373,8 @@
                 android:layout_height="wrap_content"
                 android:text="Cliente Actual:"
                 android:textColor="@color/colorPrimary"
-                android:textSize="14sp"
+                android:textSize="18dp"
+                android:textStyle="bold"
                 android:layout_marginEnd="8dp"
                 android:visibility="gone"
                 tools:ignore="HardcodedText" />
@@ -376,7 +384,8 @@
                 android:id="@+id/textViewClienteActual"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                android:textSize="15dp"
+                android:textStyle="bold"
                 android:textColor="@android:color/black"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
@@ -396,7 +405,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_below="@id/imageView"
             android:layout_marginTop="8dp"
             android:gravity="center_vertical">
 
@@ -407,7 +415,8 @@
                 android:layout_height="wrap_content"
                 android:text="Número de Plantas:"
                 android:textColor="@color/colorPrimary"
-                android:textSize="14sp"
+                android:textSize="18dp"
+                android:textStyle="bold"
                 android:layout_marginEnd="8dp"
                 android:visibility="gone"
                 tools:ignore="HardcodedText" />
@@ -417,7 +426,8 @@
                 android:id="@+id/textViewNumeroDePlantas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                android:textSize="15dp"
+                android:textStyle="bold"
                 android:textColor="@android:color/black"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
@@ -438,7 +448,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_below="@id/imageView"
             android:layout_marginTop="8dp"
             android:gravity="center_vertical">
 
@@ -449,7 +458,8 @@
                 android:layout_height="wrap_content"
                 android:text="Plantas a Implementar:"
                 android:textColor="@color/colorPrimary"
-                android:textSize="14sp"
+                android:textSize="18dp"
+                android:textStyle="bold"
                 android:layout_marginEnd="8dp"
                 android:visibility="gone"
                 tools:ignore="HardcodedText" />
@@ -459,7 +469,8 @@
                 android:id="@+id/textViewPlantasImplementar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                android:textSize="15dp"
+                android:textStyle="bold"
                 android:textColor="@android:color/black"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
@@ -479,7 +490,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_below="@id/imageView"
             android:layout_marginTop="8dp"
             android:gravity="center_vertical">
 
@@ -490,7 +500,8 @@
                 android:layout_height="wrap_content"
                 android:text="Hora de Registro:"
                 android:textColor="@color/colorPrimary"
-                android:textSize="14sp"
+                android:textSize="18dp"
+                android:textStyle="bold"
                 android:layout_marginEnd="8dp"
                 android:visibility="gone"
                 tools:ignore="HardcodedText" />
@@ -500,7 +511,8 @@
                 android:id="@+id/textViewHoraRegistro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                android:textSize="15dp"
+                android:textStyle="bold"
                 android:textColor="@android:color/black"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
@@ -520,7 +532,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_below="@id/imageView"
             android:layout_marginTop="8dp"
             android:gravity="center_vertical">
 
@@ -531,7 +542,8 @@
                 android:layout_height="wrap_content"
                 android:text="Fecha de Registro:"
                 android:textColor="@color/colorPrimary"
-                android:textSize="14sp"
+                android:textSize="18dp"
+                android:textStyle="bold"
                 android:layout_marginEnd="8dp"
                 android:visibility="gone"
                 tools:ignore="HardcodedText" />
@@ -541,7 +553,8 @@
                 android:id="@+id/textViewFechaRegistro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                android:textSize="15dp"
+                android:textStyle="bold"
                 android:textColor="@android:color/black"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
@@ -563,6 +576,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:minHeight="48dp"
+            android:textStyle="bold"
             android:text="Encuestar"
             tools:ignore="HardcodedText,TouchTargetSizeCheck" />
 

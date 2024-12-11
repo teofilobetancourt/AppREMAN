@@ -1,5 +1,7 @@
 package com.appreman.app.Activity;
 
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -7,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+
+import com.appreman.app.Email.NetworkChangeReceiver;
 import com.appreman.app.Fragments.EmpresasFragment;
 import com.appreman.app.Fragments.HomeFragment;
 import com.appreman.app.Fragments.SurveyFragment;
@@ -18,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private BottomNavigationView navigation;
     private GestureDetector gestureDetector;
+    private String nombre_empresa;
+    private NetworkChangeReceiver networkChangeReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,15 +35,21 @@ public class MainActivity extends AppCompatActivity {
 
         navigation = findViewById(R.id.navigation);
 
+        // Obtener el nombre de la empresa desde el Intent
+        nombre_empresa = getIntent().getStringExtra("empresa_nombre");
+        if (nombre_empresa == null) {
+            nombre_empresa = ""; // Valor por defecto
+        }
+
         // Configurar el fragmento inicial
-        displayFragment(new HomeFragment(), false);
+        displayFragment(HomeFragment.newInstance(nombre_empresa), false);
 
         navigation.setOnItemSelectedListener(item -> {
             Fragment fragment = null;
             int id = item.getItemId();
 
             if (id == R.id.navigation_home) {
-                fragment = new HomeFragment();
+                fragment = HomeFragment.newInstance(nombre_empresa);
             } else if (id == R.id.navigation_empresa) {
                 fragment = new EmpresasFragment();
             } else if (id == R.id.navigation_survey) {
@@ -63,6 +75,18 @@ public class MainActivity extends AppCompatActivity {
                 updateNavigationSelection(currentFragment);
             }
         });
+
+        // Registro dinámico del BroadcastReceiver
+        networkChangeReceiver = new NetworkChangeReceiver();
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(networkChangeReceiver, filter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Desregistrar el BroadcastReceiver
+        unregisterReceiver(networkChangeReceiver);
     }
 
     public void displayFragment(Fragment fragment, boolean addToBackStack) {
@@ -139,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (currentFragment instanceof EmpresasFragment) {
                 displayFragment(new SurveyFragment(), true);
             } else if (currentFragment instanceof SurveyFragment) {
-                displayFragment(new HomeFragment(), true); // Volver al primer fragmento
+                displayFragment(HomeFragment.newInstance(nombre_empresa), true); // Volver al primer fragmento
             }
         }
 
@@ -148,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
             if (currentFragment instanceof SurveyFragment) {
                 displayFragment(new EmpresasFragment(), true);
             } else if (currentFragment instanceof EmpresasFragment) {
-                displayFragment(new HomeFragment(), true);
+                displayFragment(HomeFragment.newInstance(nombre_empresa), true);
             } else if (currentFragment instanceof HomeFragment) {
                 displayFragment(new SurveyFragment(), true); // Volver al último fragmento
             }

@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/degradado_bar"
-
     tools:context="com.appreman.app.Activity.MainActivity">
 
     <!-- Header with image and text -->
@@ -28,12 +27,11 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="REMAN"
+            android:text="DASHBOARD"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold" />
-
 
         <ImageView
             android:id="@+id/notification_icon"
@@ -42,9 +40,6 @@
             android:layout_gravity="center"
             android:padding="10dp"
             android:src="@drawable/notifi2" />
-
-
-
     </LinearLayout>
 
     <!-- Financial Summary -->
@@ -226,7 +221,6 @@
                 android:textStyle="bold"
                 android:textColor="#FFF"
                 android:textAlignment="center" />
-
         </LinearLayout>
     </LinearLayout>
 

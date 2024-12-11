@@ -5,27 +5,32 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.util.Locale; // Importar la clase Locale
 
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.appreman.app.Activity.EncuestasActivity;
 import com.appreman.app.Database.DBHelper;
+import com.appreman.app.Email.MailSender;
+import com.appreman.app.Email.PendingEmail;
 import com.appreman.app.Repository.AppPreferences;
 import com.appreman.app.Repository.WebSocketManager;
 import com.appreman.appreman.R;
@@ -40,9 +45,13 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.card.MaterialCardView;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import android.widget.ProgressBar;
 
 public class HomeFragment extends Fragment implements WebSocketManager.NotificationListener {
 
@@ -61,8 +70,21 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
     private ImageView menuIcon;
     private ImageView notifi;
     private TextView notificationText;
+    private ProgressBar progressBar;
+    private AlertDialog progressDialog;
+    private boolean primerIntentoSinConexion = true;
+
+
 
     private WebSocketManager webSocketManager;
+
+    public static HomeFragment newInstance(String nombre_empresa) {
+        HomeFragment fragment = new HomeFragment();
+        Bundle args = new Bundle();
+        args.putString("empresa_nombre", nombre_empresa);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -88,12 +110,22 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
         menuIcon = view.findViewById(R.id.menu_icon);
         notifi = view.findViewById(R.id.notification_icon);
 
+        // Recuperar el nombre de la empresa del Bundle
+        Bundle args = getArguments();
+        if (args != null) {
+            String empresaName = args.getString("empresa_nombre");
+            if (empresaName != null) {
+                appPreferences.setNombreEmpresa(empresaName);
+                updateFinancialData(view, empresaName); // Pasar la vista al método
+            }
+        }
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 String selectedEmpresa = (String) parentView.getItemAtPosition(position);
                 appPreferences.setNombreEmpresa(selectedEmpresa);
-                updateFinancialData(selectedEmpresa);
+                updateFinancialData(view, selectedEmpresa); // Pasar la vista al método
             }
 
             @Override
@@ -135,19 +167,76 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
         super.onResume();
         String selectedEmpresa = appPreferences.getNombreEmpresa();
         if (selectedEmpresa != null && !selectedEmpresa.isEmpty()) {
-            updateFinancialData(selectedEmpresa);
+            View view = getView(); // Obtener la vista actual del fragmento
+            if (view != null) {
+                updateFinancialData(view, selectedEmpresa); // Pasar la vista y la empresa al método
+            }
+        }
+        // Reintentar el envío de correos pendientes
+        MailSender mailSender = new MailSender("appremanpro@gmail.com", "nwsd wiec tpno iruo");
+        Log.d("HomeFragment", "Llamando a retryPendingEmails");
+        mailSender.retryPendingEmails(requireContext());
+    }
+
+    private void showProgressDialog() {
+        // Crear un LinearLayout programáticamente
+        LinearLayout layout = new LinearLayout(requireContext());
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(50, 50, 50, 50);
+        layout.setGravity(Gravity.CENTER);
+
+        // Crear un ProgressBar programáticamente
+        ProgressBar progressBar = new ProgressBar(requireContext());
+        progressBar.setIndeterminate(true);
+        progressBar.setVisibility(View.VISIBLE);
+
+        // Crear un TextView programáticamente
+        TextView textView = new TextView(requireContext());
+        textView.setText("Enviando 0%");
+        textView.setTextSize(18);
+        textView.setPadding(0, 20, 0, 0);
+        textView.setGravity(Gravity.CENTER);
+
+        // Añadir el ProgressBar y el TextView al LinearLayout
+        layout.addView(progressBar);
+        layout.addView(textView);
+
+        // Crear el AlertDialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setCancelable(false); // Evitar que el diálogo se cierre al tocar fuera de él
+        builder.setView(layout); // Establecer el LinearLayout como la vista del diálogo
+
+        progressDialog = builder.create();
+        progressDialog.show();
+
+        // Simular progreso
+        new Thread(() -> {
+            for (int i = 0; i <= 100; i++) {
+                int progress = i;
+                requireActivity().runOnUiThread(() -> textView.setText("Enviando " + progress + "%"));
+                try {
+                    Thread.sleep(50); // Simular tiempo de envío
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            requireActivity().runOnUiThread(this::hideProgressDialog);
+        }).start();
+    }
+
+    private void hideProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
         }
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (webSocketManager != null) {
-            webSocketManager.close();
-        }
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("HomeFragment", "onDestroy called");
     }
 
-    private void updateFinancialData(String empresa) {
+    private void updateFinancialData(View view, String empresa) {
         Map<String, Double> resultados = dbHelper.obtenerContadoresYPorcentajes(empresa);
 
         // Obtener el número de respuestas respondidas para la empresa
@@ -169,23 +258,13 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
             contadorAmbas = resultados.getOrDefault("Ambas", 0.0);
         }
 
-        // Agregar logs para verificar los valores obtenidos
-        Log.d("HomeFragment", "contadorActual: " + contadorActual);
-        Log.d("HomeFragment", "contadorPotencial: " + contadorPotencial);
-        Log.d("HomeFragment", "contadorAmbas: " + contadorAmbas);
-
         double porcentajeActual = (contadorActual / totalPreguntas) * 100;
         double porcentajePotencial = (contadorPotencial / totalPreguntas) * 100;
         double porcentajeAmbas = (contadorAmbas / totalPreguntas) * 100;
 
-        // Agregar logs para verificar los porcentajes calculados
-        Log.d("HomeFragment", "porcentajeActual: " + porcentajeActual);
-        Log.d("HomeFragment", "porcentajePotencial: " + porcentajePotencial);
-        Log.d("HomeFragment", "porcentajeAmbas: " + porcentajeAmbas);
-
-        TextView textActual = cardActual.findViewById(R.id.text_actual);
-        TextView textPotencial = cardPotencial.findViewById(R.id.text_potencial);
-        TextView textAmbas = cardAmbas.findViewById(R.id.text_ambas);
+        TextView textActual = view.findViewById(R.id.text_actual);
+        TextView textPotencial = view.findViewById(R.id.text_potencial);
+        TextView textAmbas = view.findViewById(R.id.text_ambas);
 
         textActual.setText(String.format("S/ %.2f (%.2f%%)", contadorActual, porcentajeActual));
         textPotencial.setText(String.format("S/ %.2f (%.2f%%)", contadorPotencial, porcentajePotencial));
@@ -194,14 +273,10 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
         double total = contadorActual + contadorPotencial + contadorAmbas;
         double totalPorcentaje = (total / totalPreguntas) * 100;
 
-        // Agregar logs para verificar el total y el porcentaje total
-        Log.d("HomeFragment", "total: " + total);
-        Log.d("HomeFragment", "totalPorcentaje: " + totalPorcentaje);
-
         textBalanceTotal.setText(String.format("S/ %.2f (%.2f%%)", total, totalPorcentaje));
 
         // Actualiza el TextView con la cantidad de preguntas respondidas y el total
-        TextView textViewPreguntas = getView().findViewById(R.id.text_view_preguntas);
+        TextView textViewPreguntas = view.findViewById(R.id.text_view_preguntas);
         textViewPreguntas.setText(String.format("%d de %d", respuestasCount, totalPreguntas));
 
         setupChart(lineChart, dbHelper.obtenerRespuestasPorDia(empresa), totalPreguntas);
@@ -257,23 +332,92 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
         chart.invalidate();
     }
 
+    private void sendEmail(String subject, String messageBody) {
+        String username = "appremanpro@gmail.com";
+        String password = "nwsd wiec tpno iruo";
+        String recipient = "teoedmundo@gmail.com,tbetancourt@theatgroup.net,jrodriguez@theatgroup.net";
+
+        new Thread(() -> {
+            try {
+                MailSender mailSender = new MailSender(username, password);
+                mailSender.sendMail(recipient, subject, messageBody, requireContext());
+                Log.d("sendEmail", "Correo enviado exitosamente a: " + recipient);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("sendEmail", "Error al enviar el correo: " + e.getMessage());
+            }
+        }).start();
+    }
+
+    @SuppressLint("LongLogTag")
     private void iniciarEncuestasActivity() {
         String selectedEmpresa = (String) spinner.getSelectedItem();
         if (selectedEmpresa != null && !selectedEmpresa.isEmpty()) {
+            // Obtener la fecha y hora actual
+            String fechaInicio = obtenerFechaActual();
+            String horaInicio = obtenerHoraActual();
+
+            // Enviar correo electrónico al iniciar la encuesta
+            String subject = "Inicio de Encuesta";
+            String messageBody = "Se ha iniciado una nueva encuesta para: " + selectedEmpresa +
+                    "\nFecha de inicio: " + fechaInicio +
+                    "\nHora de inicio: " + horaInicio;
+            sendEmail(subject, messageBody);
+
+            Log.d("iniciarEncuestasActivity", "Correo de inicio de encuesta enviado para la empresa: " + selectedEmpresa);
+
+            // Iniciar la actividad de encuestas
             Intent intent = new Intent(getActivity(), EncuestasActivity.class);
             intent.putExtra("empresa_nombre", selectedEmpresa);
             startActivity(intent);
+        } else {
+            Log.w("iniciarEncuestasActivity", "No se seleccionó ninguna empresa.");
         }
     }
 
-    private void sendEmail() {
-        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", "teoedmundo@gmail.com", null));
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Asunto del correo");
-        emailIntent.putExtra(Intent.EXTRA_TEXT, "Contenido del correo");
+    @SuppressLint("LongLogTag")
+    private void finalizarEncuestasActivity() {
+        Log.d("finalizarEncuestasActivity", "Método llamado");
+        String selectedEmpresa = (String) spinner.getSelectedItem();
+        if (selectedEmpresa != null && !selectedEmpresa.isEmpty()) {
+            // Obtener la fecha y hora actual
+            String fechaFin = obtenerFechaActual();
+            String horaFin = obtenerHoraActual();
 
-        if (emailIntent.resolveActivity(requireActivity().getPackageManager()) != null) {
-            startActivity(Intent.createChooser(emailIntent, "Enviar correo..."));
+            // Obtener el número de preguntas respondidas
+            int respuestasCount = dbHelper.getRespuestasCount(selectedEmpresa);
+
+            // Enviar correo electrónico al finalizar la encuesta
+            String subject = "Fin de Encuesta";
+            String messageBody = "Se ha finalizado la encuesta para la empresa: " + selectedEmpresa +
+                    "\nFecha de fin: " + fechaFin +
+                    "\nHora de fin: " + horaFin +
+                    "\nNúmero de preguntas respondidas: " + respuestasCount;
+            Log.d("finalizarEncuestasActivity", "Enviando correo de fin de encuesta para la empresa: " + selectedEmpresa);
+
+            try {
+                sendEmail(subject, messageBody);
+                Log.d("finalizarEncuestasActivity", "Correo de fin de encuesta enviado para la empresa: " + selectedEmpresa);
+            } catch (Exception e) {
+                Log.e("finalizarEncuestasActivity", "Error al enviar el correo: " + e.getMessage());
+            }
+        } else {
+            Log.w("finalizarEncuestasActivity", "No se seleccionó ninguna empresa.");
         }
+    }
+
+    private String obtenerFechaActual() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String fechaActual = sdf.format(new Date());
+        Log.d("obtenerFechaActual", "Fecha actual: " + fechaActual);
+        return fechaActual;
+    }
+
+    private String obtenerHoraActual() {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+        String horaActual = sdf.format(new Date());
+        Log.d("obtenerHoraActual", "Hora actual: " + horaActual);
+        return horaActual;
     }
 
     private void showPopupMenu(View view) {
@@ -289,13 +433,21 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
                     if (selectedEmpresa != null && !selectedEmpresa.isEmpty()) {
                         File file = dbHelper.guardarRespuestasEnArchivo(selectedEmpresa, requireContext());
                         dbHelper.descargarArchivo(file, requireContext());
+                        finalizarEncuestasActivity(); // Llamar al método finalizarEncuestasActivity
                     } else {
                         Toast.makeText(requireContext(), "No se ha seleccionado ninguna empresa", Toast.LENGTH_SHORT).show();
                     }
                 }
                 return true;
             } else if (itemId == R.id.menu_send_email) {
-                sendEmail();
+                String selectedEmpresa = appPreferences.getNombreEmpresa();
+                if (selectedEmpresa != null && !selectedEmpresa.isEmpty()) {
+                    File file = dbHelper.guardarRespuestasEnArchivo(selectedEmpresa, requireContext());
+                    enviarCorreoConArchivoAdjunto(file);
+                    finalizarEncuestasActivity(); // Llamar al método finalizarEncuestasActivity
+                } else {
+                    Toast.makeText(requireContext(), "No se ha seleccionado ninguna empresa", Toast.LENGTH_SHORT).show();
+                }
                 return true;
             } else {
                 return false;
@@ -304,6 +456,50 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
         popupMenu.show();
     }
 
+    @SuppressLint("LongLogTag")
+    private void enviarCorreoConArchivoAdjunto(File file) {
+        String username = "appremanpro@gmail.com";
+        String password = "nwsd wiec tpno iruo";
+        String recipient = "teoedmundo@gmail.com, jrodriguez@theatgroup.net,tbetancourt@theatgroup.net";
+        String selectedEmpresa = appPreferences.getNombreEmpresa();
+        String subject = "Exportación de Respuestas : " + selectedEmpresa;
+        String messageBody = "Respuestas  " + selectedEmpresa;
+
+        requireActivity().runOnUiThread(this::showProgressDialog);
+
+        new Thread(() -> {
+            MailSender mailSender = new MailSender(username, password);
+            if (mailSender.isConnectedToInternet(requireContext())) {
+                try {
+                    mailSender.sendMailWithAttachment(recipient, subject, messageBody, file, requireContext());
+                    Log.d("enviarCorreoConArchivoAdjunto", "Correo enviado exitosamente con el archivo adjunto a: " + recipient);
+                    requireActivity().runOnUiThread(() -> {
+                        hideProgressDialog();
+                        Toast.makeText(requireContext(), "Correo enviado exitosamente", Toast.LENGTH_SHORT).show();
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e("enviarCorreoConArchivoAdjunto", "Error al enviar el correo: " + e.getMessage());
+                    requireActivity().runOnUiThread(() -> {
+                        hideProgressDialog();
+                        Toast.makeText(requireContext(), "Error al enviar el correo", Toast.LENGTH_SHORT).show();
+                    });
+                }
+            } else {
+                Log.e("enviarCorreoConArchivoAdjunto", "No hay conexión a Internet. El correo se enviará más tarde.");
+                mailSender.addPendingEmail(new PendingEmail(recipient, subject, messageBody, file));
+                requireActivity().runOnUiThread(() -> {
+                    hideProgressDialog();
+                    if (primerIntentoSinConexion) {
+                        Toast.makeText(requireContext(), "No hay conexión a Internet, verifique e intente nuevamente", Toast.LENGTH_LONG).show();
+                        primerIntentoSinConexion = false;
+                    } else {
+                        Toast.makeText(requireContext(), "El correo se enviará automaticamente al restablecer la conexión con el servidor", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }).start();
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

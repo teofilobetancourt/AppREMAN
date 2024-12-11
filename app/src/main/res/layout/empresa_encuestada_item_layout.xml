@@ -1,12 +1,13 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    app:cardCornerRadius="12dp"
+    app:cardElevation="6dp"
+    app:cardBackgroundColor="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,17 +21,102 @@
             style="@style/Widget.MaterialComponents.TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
+            android:textSize="25dp"
             android:textStyle="bold"
             android:textColor="@color/colorPrimaryDark"
             android:text="Nombre Empresa"
             tools:ignore="HardcodedText" />
 
-        <!-- LinearLayout horizontal para País y Región -->
+        <!-- LinearLayout horizontal para Representante y Sitio -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:textColor="@color/colorPrimary"
+                android:text="Representante: "
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/textViewRepresentante"
+                style="@style/Widget.MaterialComponents.TextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="18dp"
+                android:textColor="@android:color/black"
+                android:text=""
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Sitio: "
+                android:textColor="@color/colorPrimary"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText,VisualLintBounds" />
+
+            <TextView
+                android:id="@+id/textViewSitio"
+                style="@style/Widget.MaterialComponents.TextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:text=""
+                tools:ignore="HardcodedText,VisualLintBounds" />
+        </LinearLayout>
+
+        <!-- LinearLayout horizontal para Tipo de Planta y País -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:textColor="@color/colorPrimary"
+                android:text="Tipo de Planta: "
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/textViewTipoPlanta"
+                style="@style/Widget.MaterialComponents.TextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:text=""
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="País: "
+                android:textColor="@color/colorPrimary"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/textViewPais"
@@ -38,10 +124,51 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="16sp"
-                android:textColor="@color/colorPrimary"
-                android:text="Pais"
+                android:textSize="18dp"
+                android:textColor="@android:color/black"
+                android:text=""
+                android:textStyle="bold"
                 tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+        <!-- LinearLayout horizontal para Encuestado y Región -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:textColor="@color/colorPrimary"
+                android:text="Encuestado Por: "
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/textViewEncuestadoPor"
+                style="@style/Widget.MaterialComponents.TextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:text=""
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Región: "
+                android:textColor="@color/colorPrimary"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText,VisualLintBounds" />
 
             <TextView
                 android:id="@+id/textViewRegion"
@@ -49,21 +176,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="16sp"
-                android:textColor="@color/colorPrimary"
-                android:text="Región"
-                tools:ignore="HardcodedText" />
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:text=""
+                tools:ignore="HardcodedText,VisualLintBounds" />
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/textViewSitio"
-            style="@style/Widget.MaterialComponents.TextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/colorPrimary"
-            android:text="Sitio"
-            tools:ignore="HardcodedText,VisualLintBounds" />
-
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

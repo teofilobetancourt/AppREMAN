@@ -40,11 +40,15 @@ public class LoginActivity extends AppCompatActivity {
                 if (password.isEmpty()) {
                     etPass.setError("Campo requerido");
                 }
-            } else {
-                // Si los campos no están vacíos, iniciar la siguiente actividad
+            } else if (username.equals("admin") && password.equals("admin")) {
+                // Si los campos no están vacíos y son "admin", iniciar la siguiente actividad
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish(); // Cerrar la actividad de inicio de sesión para que no se pueda volver atrás
+            } else {
+                // Mostrar error si las credenciales no son correctas
+                etUser.setError("Usuario o contraseña incorrectos");
+                etPass.setError("Usuario o contraseña incorrectos");
             }
         });
     }

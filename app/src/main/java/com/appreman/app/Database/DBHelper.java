@@ -873,7 +873,7 @@ public class DBHelper extends SQLiteAssetHelper {
 
         try {
             // Query to count the number of companies that have completed all their surveys
-            String query = "SELECT COUNT(DISTINCT empresa) FROM respuestas r " +
+            String query = "SELECT COUNT(DISTINCT r.empresa) FROM respuestas r " +
                     "JOIN (SELECT empresa, COUNT(DISTINCT pregunta) as total_preguntas " +
                     "FROM respuestas GROUP BY empresa) t " +
                     "ON r.empresa = t.empresa " +

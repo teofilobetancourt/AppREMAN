@@ -1,5 +1,6 @@
 package com.appreman.app.Activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -133,11 +134,13 @@ public class EncuestasActivity extends AppCompatActivity {
         View dialogView = inflater.inflate(R.layout.dialog_group_info, null);
 
         // Configura los valores en los TextViews
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView empresaNameView = dialogView.findViewById(R.id.text_empresa_name);
         TextView totalQuestionsView = dialogView.findViewById(R.id.text_total_questions);
         TextView elementQuestionsView = dialogView.findViewById(R.id.text_element_questions);
         TextView answeredQuestionsView = dialogView.findViewById(R.id.text_answered_questions);
         TextView unansweredQuestionsView = dialogView.findViewById(R.id.text_unanswered_questions);
 
+        empresaNameView.setText("Nombre de la Empresa: " + nombreEmpresa);
         totalQuestionsView.setText("Total de Preguntas: " + totalQuestions);
         elementQuestionsView.setText("Numero de Elementos: " + questionsPerElement);
         answeredQuestionsView.setText("Preguntas Respondidas: " + answeredQuestions);

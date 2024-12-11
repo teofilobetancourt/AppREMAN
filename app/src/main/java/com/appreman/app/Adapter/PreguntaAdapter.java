@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -62,6 +63,15 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.Motivo
         OpcionAdapter opcionAdapter = new OpcionAdapter(opciones, this);
         holder.recycler.setAdapter(opcionAdapter);
 
+        // Verificar si la pregunta ha sido respondida
+        if (isQuestionInDatabase(nombreEmpresa, pregunta.getNumero())) {
+            // Cambiar el color del botón a su color normal si la pregunta ha sido respondida
+            holder.btnPreguntas.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
+        } else {
+            // Cambiar el color del botón a rojo si la pregunta no ha sido respondida
+            holder.btnPreguntas.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
+        }
+
         holder.btnPreguntas.setOnClickListener(v -> {
             OpcionAdapter preguntaOpcionAdapter = (OpcionAdapter) holder.recycler.getAdapter();
             assert preguntaOpcionAdapter != null;
@@ -88,6 +98,8 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.Motivo
                 Log.d(TAG, "Pregunta seleccionada: " + preguntaNumero);
                 Log.d(TAG, "Nombre de la empresa seleccionada: " + nombreEmpresa);
 
+                // Restaurar el color del botón después de guardar
+                holder.btnPreguntas.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
             } else {
                 Log.e(TAG, "No se pudieron obtener opciones seleccionadas.");
             }
