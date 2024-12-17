@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,16 +16,12 @@ import androidx.appcompat.widget.Toolbar;
 import com.appreman.app.Database.DBHelper;
 import com.appreman.appreman.R;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.TimeZone;
-
 public class NuevaEmpresaActivity extends AppCompatActivity {
 
     EditText txtNombre, txtPais, txtRegion, txtSitio, txtSector, txtPlanta, txtRepresentante, txtTelefono, txtEmail, txtClienteAct, txtNumeroDePlant, txtNumeroDePlantIm;
     Button btnGuarda;
     DBHelper dbHelper;
+    String operadorEmail; // Email del operador
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +37,9 @@ public class NuevaEmpresaActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             toolbar.setNavigationIcon(R.drawable.arrow_back);
         }
+
+        // Obtener el email del Intent
+        operadorEmail = getIntent().getStringExtra("email");
 
         dbHelper = new DBHelper(this);
 
@@ -69,32 +69,39 @@ public class NuevaEmpresaActivity extends AppCompatActivity {
     private void guardarEmpresa() {
         String nombre = txtNombre.getText().toString();
         String pais = txtPais.getText().toString();
+        String emailEncuestado = txtEmail.getText().toString(); // Email de la persona encuestada
 
-        if (!nombre.isEmpty() && !pais.isEmpty()) {
-            String fechaActual = obtenerFechaActual();
-            String horaActual = obtenerHoraActual();
+        if (operadorEmail != null && !operadorEmail.isEmpty()) {
+            int id_operador = dbHelper.getOperadorIdPorEmail(operadorEmail);
 
-            dbHelper.insertEmpresa(
-                    txtNombre.getText().toString(),
-                    txtPais.getText().toString(),
-                    txtRegion.getText().toString(),
-                    txtSitio.getText().toString(),
-                    txtSector.getText().toString(),
-                    txtPlanta.getText().toString(),
-                    txtRepresentante.getText().toString(),
-                    txtTelefono.getText().toString(),
-                    txtEmail.getText().toString(),
-                    txtClienteAct.getText().toString(),
-                    txtNumeroDePlant.getText().toString(),
-                    txtNumeroDePlantIm.getText().toString(),
-                    fechaActual,
-                    horaActual
-            );
+            if (!nombre.isEmpty() && !pais.isEmpty() && !emailEncuestado.isEmpty()) {
+                String fechaActual = dbHelper.insertarTiempo(String.valueOf(txtNombre), true);
 
-            Toast.makeText(this, "REGISTRO GUARDADO", Toast.LENGTH_LONG).show();
-            limpiar();
+                dbHelper.insertEmpresa(
+                        nombre,
+                        pais,
+                        txtRegion.getText().toString(),
+                        txtSitio.getText().toString(),
+                        txtSector.getText().toString(),
+                        txtPlanta.getText().toString(),
+                        txtRepresentante.getText().toString(),
+                        txtTelefono.getText().toString(),
+                        emailEncuestado,
+                        txtClienteAct.getText().toString(),
+                        txtNumeroDePlant.getText().toString(),
+                        txtNumeroDePlantIm.getText().toString(),
+                        fechaActual,
+                        String.valueOf(id_operador) // Pasar el ID del operador
+                );
+
+                Toast.makeText(this, "REGISTRO GUARDADO", Toast.LENGTH_LONG).show();
+                limpiar();
+            } else {
+                Toast.makeText(this, "DEBE LLENAR LOS CAMPOS OBLIGATORIOS", Toast.LENGTH_LONG).show();
+            }
         } else {
-            Toast.makeText(this, "DEBE LLENAR LOS CAMPOS OBLIGATORIOS", Toast.LENGTH_LONG).show();
+            Log.e("NuevaEmpresaActivity", "El valor del email del operador no puede ser nulo o vacío");
+            // Muestra un mensaje al usuario o toma alguna acción apropiada
         }
     }
 
@@ -111,21 +118,6 @@ public class NuevaEmpresaActivity extends AppCompatActivity {
         txtClienteAct.setText("");
         txtNumeroDePlant.setText("");
         txtNumeroDePlantIm.setText("");
-    }
-
-    private String obtenerFechaActual() {
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        return dateFormat.format(calendar.getTime());
-    }
-
-    private String obtenerHoraActual() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.HOUR_OF_DAY, -4);
-
-        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
-        timeFormat.setTimeZone(TimeZone.getDefault());
-        return timeFormat.format(calendar.getTime());
     }
 
     @Override

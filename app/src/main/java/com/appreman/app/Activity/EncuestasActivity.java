@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Spinner;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.appreman.app.Adapter.ViewPagerAdapter;
 import com.appreman.app.Database.DBHelper;
+import com.appreman.app.Email.MailSender;
 import com.appreman.app.Fragments.ElementosFragment;
 import com.appreman.app.Models.Grupo;
 import com.appreman.app.Repository.AppPreferences;
@@ -33,7 +35,7 @@ public class EncuestasActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private DBHelper dbHelper;
     private String nombreEmpresa;
-    private String fechaInicio;
+    private Spinner spinner;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, EncuestasActivity.class);
@@ -97,21 +99,27 @@ public class EncuestasActivity extends AppCompatActivity {
         nombreEmpresa = appPreferences.getNombreEmpresa();
 
         // Registrar la fecha y hora de inicio
-        fechaInicio = obtenerFechaActual();
-        dbHelper.insertarTiempoInicio(nombreEmpresa, fechaInicio);
+        dbHelper.insertarTiempo(nombreEmpresa, true);
+
+        // Enviar correo electrónico al iniciar la encuesta
+        String subject = "Inicio de Encuesta";
+        String messageBody = "Se ha iniciado una nueva encuesta para: " + nombreEmpresa +
+                "\nFecha y hora de inicio: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+        sendEmail(subject, messageBody);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         // Registrar la fecha y hora de fin
-        String fechaFin = obtenerFechaActual();
-        dbHelper.insertarTiempoFin(nombreEmpresa, fechaInicio, fechaFin);
-    }
-
-    private String obtenerFechaActual() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        return sdf.format(new Date());
+        String fechaFin = dbHelper.insertarTiempo(nombreEmpresa, false);
+        int respuestasCount = dbHelper.getRespuestasCount(nombreEmpresa);
+        // Enviar correo electrónico al finalizar la encuesta
+        String subject = "Fin de Encuesta";
+        String messageBody = "Se ha finalizado la encuesta para la empresa: " + nombreEmpresa +
+                "\nFecha y hora de fin: " + fechaFin +
+                "\nNúmero de preguntas respondidas: " + respuestasCount;
+        sendEmail(subject, messageBody);
     }
 
     private void showGroupInfoDialog() {
@@ -152,5 +160,22 @@ public class EncuestasActivity extends AppCompatActivity {
                 .setView(dialogView)
                 .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
                 .show();
+    }
+
+    private void sendEmail(String subject, String messageBody) {
+        String username = "appremanpro@gmail.com";
+        String password = "nwsd wiec tpno iruo";
+        String recipient = "teoedmundo@gmail.com,tbetancourt@theatgroup.net"; //jrodriguez@theatgroup.net
+
+        new Thread(() -> {
+            try {
+                MailSender mailSender = new MailSender(username, password);
+                mailSender.sendMail(recipient, subject, messageBody, this); // Cambiado requireContext() por this
+                Log.d("sendEmail", "Correo enviado exitosamente a: " + recipient);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("sendEmail", "Error al enviar el correo: " + e.getMessage());
+            }
+        }).start();
     }
 }

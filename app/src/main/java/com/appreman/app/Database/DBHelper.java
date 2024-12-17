@@ -246,7 +246,7 @@ public class DBHelper extends SQLiteAssetHelper {
     /* -TODO .- Opciones ------------------------------------------------------------------------------------------- */
 
 
-    public void insertEmpresa(String nombre, String pais, String region, String sitio, String sector, String planta, String representante, String telefono, String email, String clienteAct, String numeroDePlant, String numeroDePlantIm, String fecha, String hora) {
+    public void insertEmpresa(String nombre, String pais, String region, String sitio, String sector, String planta, String representante, String telefono, String email, String clienteAct, String numeroDePlant, String numeroDePlantIm, String fecha, String operadorId) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("nombre", nombre);
@@ -262,7 +262,7 @@ public class DBHelper extends SQLiteAssetHelper {
         contentValues.put("numero_plantas", numeroDePlant);
         contentValues.put("plantas_implementar", numeroDePlantIm);
         contentValues.put("fecha_registro", fecha);
-        contentValues.put("hora_registro", hora);
+        contentValues.put("id_operador", operadorId); // Agregar el campo id_operador
 
         long result = db.insert("empresa", null, contentValues);
 
@@ -302,7 +302,6 @@ public class DBHelper extends SQLiteAssetHelper {
                 empresa.setNumeroDePlantIm(cursor.getString(cursor.getColumnIndex("plantas_implementar")));
 
                 empresa.setFechaRegistro(cursor.getString(cursor.getColumnIndex("fecha_registro")));
-                empresa.setHoraRegistro(cursor.getString(cursor.getColumnIndex("hora_registro")));
 
                 empresas.add(empresa);
             } while (cursor.moveToNext());
@@ -894,33 +893,36 @@ public class DBHelper extends SQLiteAssetHelper {
         return count;
     }
 
-    public void insertarTiempoInicio(String nombreEmpresa, String fechaInicio) {
+    public String insertarTiempo(String nombreEmpresa, boolean esInicio) {
         SQLiteDatabase db = this.getWritableDatabase();
         Log.d("DBHelper", "Base de datos abierta para escritura");
+
+        // Obtener la fecha actual
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String fecha = sdf.format(new Date());
+
         ContentValues values = new ContentValues();
         values.put("nombreEmpresa", nombreEmpresa);
-        values.put("fechaInicio", fechaInicio);
-        long result = db.insert("fecha", null, values);
-        if (result == -1) {
-            Log.e("DBHelper", "Error al insertar tiempo de inicio");
+        if (esInicio) {
+            values.put("fechaInicio", fecha);
+            long result = db.insert("fecha", null, values);
+            if (result == -1) {
+                Log.e("DBHelper", "Error al insertar tiempo de inicio");
+            } else {
+                Log.d("DBHelper", "Tiempo de inicio insertado correctamente: " + fecha);
+            }
         } else {
-            Log.d("DBHelper", "Tiempo de inicio insertado correctamente: " + fechaInicio);
+            values.put("fechaFin", fecha);
+            int result = db.update("fecha", values, "nombreEmpresa = ? AND fechaFin IS NULL", new String[]{nombreEmpresa});
+            if (result == 0) {
+                Log.e("DBHelper", "Error al actualizar tiempo de fin");
+            } else {
+                Log.d("DBHelper", "Tiempo de fin actualizado correctamente: " + fecha);
+            }
         }
         db.close();
-    }
 
-    public void insertarTiempoFin(String nombreEmpresa, String fechaInicio, String fechaFin) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        Log.d("DBHelper", "Base de datos abierta para escritura");
-        ContentValues values = new ContentValues();
-        values.put("fechaFin", fechaFin);
-        int rowsAffected = db.update("fecha", values, "nombreEmpresa=? AND fechaInicio=?", new String[]{nombreEmpresa, fechaInicio});
-        if (rowsAffected == 0) {
-            Log.e("DBHelper", "Error al actualizar tiempo de fin");
-        } else {
-            Log.d("DBHelper", "Tiempo de fin actualizado correctamente: " + fechaFin);
-        }
-        db.close();
+        return fecha;
     }
 
     public Map<String, Long> getTiempoPorDia() {
@@ -935,7 +937,6 @@ public class DBHelper extends SQLiteAssetHelper {
                 @SuppressLint("Range") String fechaInicio = cursor.getString(cursor.getColumnIndex("fechaInicio"));
                 @SuppressLint("Range") String fechaFin = cursor.getString(cursor.getColumnIndex("fechaFin"));
 
-                Log.d("DBHelper", "Fecha de inicio: " + fechaInicio + ", Fecha de fin: " + fechaFin);
 
                 if (fechaFin != null) {
                     try {
@@ -987,8 +988,59 @@ public class DBHelper extends SQLiteAssetHelper {
         return respuestasPorDia;
     }
 
+    public boolean verificarOperador(String email, String password) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM operador WHERE email = ? AND password = ?", new String[]{email, password});
+        boolean existe = cursor.getCount() > 0;
+        cursor.close();
+        db.close();
+        return existe;
+    }
 
+    @SuppressLint("Range")
+    public Map<String, String> getNombreApellidoPorEmail(String email) {
+        if (email == null) {
+            throw new IllegalArgumentException("El valor del email no puede ser nulo");
+        }
+
+        Map<String, String> nombreApellido = null;
+        String query = "SELECT nombre, apellido FROM operador WHERE email = ?";
+
+        try (SQLiteDatabase db = this.getReadableDatabase();
+             Cursor cursor = db.rawQuery(query, new String[]{email})) {
+
+            if (cursor != null && cursor.moveToFirst()) {
+                nombreApellido = new HashMap<>();
+                nombreApellido.put("nombre", cursor.getString(cursor.getColumnIndex("nombre")));
+                nombreApellido.put("apellido", cursor.getString(cursor.getColumnIndex("apellido")));
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, e.toString());
+            e.printStackTrace();
+        }
+
+        return nombreApellido;
+    }
+
+    @SuppressLint("Range")
+    public int getOperadorIdPorEmail(String email) {
+        if (email == null) {
+            throw new IllegalArgumentException("El valor del email no puede ser nulo");
+        }
+
+        String query = "SELECT id FROM operador WHERE email = ?";
+        try (SQLiteDatabase db = this.getReadableDatabase();
+             Cursor cursor = db.rawQuery(query, new String[]{email})) {
+
+            if (cursor != null && cursor.moveToFirst()) {
+                int id = cursor.getInt(cursor.getColumnIndex("id"));
+                return id;
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, e.toString());
+            e.printStackTrace();
+        }
+
+        return -1; // o cualquier valor que indique que no se encontró el operador
+    }
 }
-
-
-

@@ -30,6 +30,7 @@ public class SurveyFragment extends Fragment {
 
     private BarChart barChart1, barChart2, barChart3, barChart4, barChart5, barChart6;
     private DBHelper dbHelper;
+    private String email;
 
     @SuppressLint("MissingInflatedId")
     @Nullable
@@ -37,12 +38,17 @@ public class SurveyFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_survey, container, false);
 
+        // Obtener el email del Bundle
+        if (getArguments() != null) {
+            email = getArguments().getString("email");
+        }
+
         barChart1 = view.findViewById(R.id.barChart1);
         barChart2 = view.findViewById(R.id.barChart2);
         barChart3 = view.findViewById(R.id.barChart3);
         barChart4 = view.findViewById(R.id.barChart4);
         barChart5 = view.findViewById(R.id.barChart5);
-        barChart6 = view.findViewById(R.id.barChart6); // Añadir esta línea
+        barChart6 = view.findViewById(R.id.barChart6);
         dbHelper = new DBHelper(getContext());
 
         setupBarCharts();
@@ -51,6 +57,7 @@ public class SurveyFragment extends Fragment {
         MaterialCardView cardNuevaEmpresa = view.findViewById(R.id.cardNuevaEmpresa);
         cardNuevaEmpresa.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), NuevaEmpresaActivity.class);
+            intent.putExtra("email", email); // Pasar el email a NuevaEmpresaActivity
             startActivity(intent);
         });
 
@@ -66,7 +73,7 @@ public class SurveyFragment extends Fragment {
         setupBarChart3();
         setupBarChart4();
         setupBarChart5();
-        setupBarChart6(); // Añadir esta línea
+        setupBarChart6();
     }
 
     private void setupBarChart1() {

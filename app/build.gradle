@@ -18,7 +18,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true // Habilita la ofuscación
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -59,7 +59,6 @@ dependencies {
     implementation 'androidx.room:room-runtime:2.5.0'
     implementation 'com.sun.mail:android-mail:1.6.7'
     implementation 'com.sun.mail:android-activation:1.6.7'
-
 
     // Versiones antiguas de Apache POI
     implementation ('org.apache.poi:poi:3.17') {

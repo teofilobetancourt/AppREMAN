@@ -20,7 +20,6 @@ public class Empresa {
     public String numeroDePlant;
     public String numeroDePlantIm;
     public String fechaRegistro;
-    public String horaRegistro;
     public String idOperador; // Nuevo campo
 
     // Nuevas variables para gestionar la visibilidad de los campos adicionales
@@ -146,14 +145,6 @@ public class Empresa {
 
     public void setFechaRegistro(String fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
-    }
-
-    public String getHoraRegistro() {
-        return horaRegistro;
-    }
-
-    public void setHoraRegistro(String horaRegistro) {
-        this.horaRegistro = horaRegistro;
     }
 
     public String getIdOperador() {

@@ -56,7 +56,6 @@ import android.widget.ProgressBar;
 public class HomeFragment extends Fragment implements WebSocketManager.NotificationListener {
 
     private static final int REQUEST_WRITE_STORAGE = 112;
-    private static final int TOTAL_PREGUNTAS = 377;
 
     private Spinner spinner;
     private DBHelper dbHelper;
@@ -332,37 +331,10 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
         chart.invalidate();
     }
 
-    private void sendEmail(String subject, String messageBody) {
-        String username = "appremanpro@gmail.com";
-        String password = "nwsd wiec tpno iruo";
-        String recipient = "teoedmundo@gmail.com,tbetancourt@theatgroup.net,jrodriguez@theatgroup.net";
-
-        new Thread(() -> {
-            try {
-                MailSender mailSender = new MailSender(username, password);
-                mailSender.sendMail(recipient, subject, messageBody, requireContext());
-                Log.d("sendEmail", "Correo enviado exitosamente a: " + recipient);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.e("sendEmail", "Error al enviar el correo: " + e.getMessage());
-            }
-        }).start();
-    }
-
     @SuppressLint("LongLogTag")
     private void iniciarEncuestasActivity() {
         String selectedEmpresa = (String) spinner.getSelectedItem();
         if (selectedEmpresa != null && !selectedEmpresa.isEmpty()) {
-            // Obtener la fecha y hora actual
-            String fechaInicio = obtenerFechaActual();
-            String horaInicio = obtenerHoraActual();
-
-            // Enviar correo electrónico al iniciar la encuesta
-            String subject = "Inicio de Encuesta";
-            String messageBody = "Se ha iniciado una nueva encuesta para: " + selectedEmpresa +
-                    "\nFecha de inicio: " + fechaInicio +
-                    "\nHora de inicio: " + horaInicio;
-            sendEmail(subject, messageBody);
 
             Log.d("iniciarEncuestasActivity", "Correo de inicio de encuesta enviado para la empresa: " + selectedEmpresa);
 
@@ -373,51 +345,6 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
         } else {
             Log.w("iniciarEncuestasActivity", "No se seleccionó ninguna empresa.");
         }
-    }
-
-    @SuppressLint("LongLogTag")
-    private void finalizarEncuestasActivity() {
-        Log.d("finalizarEncuestasActivity", "Método llamado");
-        String selectedEmpresa = (String) spinner.getSelectedItem();
-        if (selectedEmpresa != null && !selectedEmpresa.isEmpty()) {
-            // Obtener la fecha y hora actual
-            String fechaFin = obtenerFechaActual();
-            String horaFin = obtenerHoraActual();
-
-            // Obtener el número de preguntas respondidas
-            int respuestasCount = dbHelper.getRespuestasCount(selectedEmpresa);
-
-            // Enviar correo electrónico al finalizar la encuesta
-            String subject = "Fin de Encuesta";
-            String messageBody = "Se ha finalizado la encuesta para la empresa: " + selectedEmpresa +
-                    "\nFecha de fin: " + fechaFin +
-                    "\nHora de fin: " + horaFin +
-                    "\nNúmero de preguntas respondidas: " + respuestasCount;
-            Log.d("finalizarEncuestasActivity", "Enviando correo de fin de encuesta para la empresa: " + selectedEmpresa);
-
-            try {
-                sendEmail(subject, messageBody);
-                Log.d("finalizarEncuestasActivity", "Correo de fin de encuesta enviado para la empresa: " + selectedEmpresa);
-            } catch (Exception e) {
-                Log.e("finalizarEncuestasActivity", "Error al enviar el correo: " + e.getMessage());
-            }
-        } else {
-            Log.w("finalizarEncuestasActivity", "No se seleccionó ninguna empresa.");
-        }
-    }
-
-    private String obtenerFechaActual() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        String fechaActual = sdf.format(new Date());
-        Log.d("obtenerFechaActual", "Fecha actual: " + fechaActual);
-        return fechaActual;
-    }
-
-    private String obtenerHoraActual() {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
-        String horaActual = sdf.format(new Date());
-        Log.d("obtenerHoraActual", "Hora actual: " + horaActual);
-        return horaActual;
     }
 
     private void showPopupMenu(View view) {
@@ -433,7 +360,6 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
                     if (selectedEmpresa != null && !selectedEmpresa.isEmpty()) {
                         File file = dbHelper.guardarRespuestasEnArchivo(selectedEmpresa, requireContext());
                         dbHelper.descargarArchivo(file, requireContext());
-                        finalizarEncuestasActivity(); // Llamar al método finalizarEncuestasActivity
                     } else {
                         Toast.makeText(requireContext(), "No se ha seleccionado ninguna empresa", Toast.LENGTH_SHORT).show();
                     }
@@ -444,7 +370,6 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
                 if (selectedEmpresa != null && !selectedEmpresa.isEmpty()) {
                     File file = dbHelper.guardarRespuestasEnArchivo(selectedEmpresa, requireContext());
                     enviarCorreoConArchivoAdjunto(file);
-                    finalizarEncuestasActivity(); // Llamar al método finalizarEncuestasActivity
                 } else {
                     Toast.makeText(requireContext(), "No se ha seleccionado ninguna empresa", Toast.LENGTH_SHORT).show();
                 }
@@ -460,7 +385,7 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
     private void enviarCorreoConArchivoAdjunto(File file) {
         String username = "appremanpro@gmail.com";
         String password = "nwsd wiec tpno iruo";
-        String recipient = "teoedmundo@gmail.com, jrodriguez@theatgroup.net,tbetancourt@theatgroup.net";
+        String recipient = "teoedmundo@gmail.com,tbetancourt@theatgroup.net"; //jrodriguez@theatgroup.net
         String selectedEmpresa = appPreferences.getNombreEmpresa();
         String subject = "Exportación de Respuestas : " + selectedEmpresa;
         String messageBody = "Respuestas  " + selectedEmpresa;

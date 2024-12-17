@@ -111,15 +111,17 @@ public class EmpresasFragment extends Fragment {
             Fragment currentFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_content);
             Log.d("EmpresasFragment", "navigateToNextFragment: Current Fragment = " + currentFragment);
 
+            Bundle bundle = new Bundle(); // Crear un Bundle vacío
+
             if (currentFragment instanceof HomeFragment) {
                 Log.d("EmpresasFragment", "Navigating to EmpresasFragment");
-                ((MainActivity) getActivity()).displayFragment(new EmpresasFragment(), true);
+                ((MainActivity) getActivity()).displayFragment(new EmpresasFragment(), true, bundle);
             } else if (currentFragment instanceof EmpresasFragment) {
                 Log.d("EmpresasFragment", "Navigating to SurveyFragment");
-                ((MainActivity) getActivity()).displayFragment(new SurveyFragment(), true);
+                ((MainActivity) getActivity()).displayFragment(new SurveyFragment(), true, bundle);
             } else if (currentFragment instanceof SurveyFragment) {
                 Log.d("EmpresasFragment", "Navigating back to HomeFragment");
-                ((MainActivity) getActivity()).displayFragment(new HomeFragment(), true); // Volver al primer fragmento
+                ((MainActivity) getActivity()).displayFragment(new HomeFragment(), true, bundle); // Volver al primer fragmento
             }
         }
 
@@ -127,12 +129,14 @@ public class EmpresasFragment extends Fragment {
             Fragment currentFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_content);
             Log.d("EmpresasFragment", "navigateToPreviousFragment: Current Fragment = " + currentFragment);
 
+            Bundle bundle = new Bundle(); // Crear un Bundle vacío
+
             if (currentFragment instanceof SurveyFragment) {
                 Log.d("EmpresasFragment", "Navigating to EmpresasFragment");
-                ((MainActivity) getActivity()).displayFragment(new EmpresasFragment(), true);
+                ((MainActivity) getActivity()).displayFragment(new EmpresasFragment(), true, bundle);
             } else if (currentFragment instanceof EmpresasFragment) {
                 Log.d("EmpresasFragment", "Navigating to HomeFragment");
-                ((MainActivity) getActivity()).displayFragment(new HomeFragment(), true);
+                ((MainActivity) getActivity()).displayFragment(new HomeFragment(), true, bundle);
             } else if (currentFragment instanceof HomeFragment) {
                 Log.d("EmpresasFragment", "No action for HomeFragment on back");
                 // Aquí puedes agregar lógica si necesitas manejar el desplazamiento desde HomeFragment

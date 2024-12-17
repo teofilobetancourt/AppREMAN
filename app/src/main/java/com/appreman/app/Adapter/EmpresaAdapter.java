@@ -65,8 +65,6 @@ public class EmpresaAdapter extends RecyclerView.Adapter<EmpresaAdapter.EmpresaV
             textViewClienteAct = itemView.findViewById(R.id.textViewClienteActual);
             textViewNumeroDePlant = itemView.findViewById(R.id.textViewNumeroDePlantas);
             textViewNumeroDePlantIm = itemView.findViewById(R.id.textViewPlantasImplementar);
-            textViewFechaRegistro = itemView.findViewById(R.id.textViewFechaRegistro);
-            textViewHoraRegistro = itemView.findViewById(R.id.textViewHoraRegistro);
 
             textViewPlantaLabel = itemView.findViewById(R.id.textViewPlantaLabel);
             textViewRepresentanteLabel = itemView.findViewById(R.id.textViewRepresentanteLabel);
@@ -75,8 +73,6 @@ public class EmpresaAdapter extends RecyclerView.Adapter<EmpresaAdapter.EmpresaV
             textViewClienteActLabel = itemView.findViewById(R.id.textViewClienteActualLabel);
             textViewNumeroDePlantLabel = itemView.findViewById(R.id.textViewNumeroDePlantasLabel);
             textViewNumeroDePlantImLabel = itemView.findViewById(R.id.textViewPlantasImplementarLabel);
-            textViewFechaRegistroLabel = itemView.findViewById(R.id.textViewFechaRegistroLabel);
-            textViewHoraRegistroLabel = itemView.findViewById(R.id.textViewHoraRegistroLabel);
 
             buttonEncuesta = itemView.findViewById(R.id.buttonEncuesta);
             buttonEncuesta.setOnClickListener(new View.OnClickListener() {
@@ -116,8 +112,6 @@ public class EmpresaAdapter extends RecyclerView.Adapter<EmpresaAdapter.EmpresaV
             textViewClienteAct.setText(empresa.getClienteAct());
             textViewNumeroDePlant.setText(empresa.getNumeroDePlant());
             textViewNumeroDePlantIm.setText(empresa.getNumeroDePlantIm());
-            textViewFechaRegistro.setText("Fecha: " + empresa.getFechaRegistro());
-            textViewHoraRegistro.setText("Hora: " + empresa.getHoraRegistro());
 
             updateVisibility(empresa);
         }
@@ -145,11 +139,6 @@ public class EmpresaAdapter extends RecyclerView.Adapter<EmpresaAdapter.EmpresaV
             textViewNumeroDePlantIm.setVisibility(visibility);
             textViewNumeroDePlantImLabel.setVisibility(visibility);
 
-            textViewFechaRegistro.setVisibility(visibility);
-            textViewFechaRegistroLabel.setVisibility(visibility);
-
-            textViewHoraRegistro.setVisibility(visibility);
-            textViewHoraRegistroLabel.setVisibility(visibility);
         }
     }
 
