@@ -76,7 +76,7 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
     private AlertDialog progressDialog;
     private boolean primerIntentoSinConexion = true;
     private View notificationBadge;
-    private String notificationMessage = "CSV ha sido enviado exitosamente ";
+    private String notificationMessage;
     // Variable para almacenar las notificaciones
     private List<String> notificationMessages = new ArrayList<>();
     private String email; // Variable para almacenar el email
@@ -130,6 +130,9 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
                 // Inflar el layout del popup
                 View popupView = LayoutInflater.from(requireContext()).inflate(R.layout.popup_notifications, null);
                 PopupWindow popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+
+                // Llamar al método para actualizar el mensaje de notificación
+                actualizarMensajeNotificacion(email);
 
                 // Configurar el contenido del popup con el mensaje actualizado
                 TextView notificationText = popupView.findViewById(R.id.notification_text);
@@ -201,6 +204,11 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
         if (count > 0) {
             notificationBadge.setVisibility(View.VISIBLE);
         }
+    }
+
+    // Método para actualizar el mensaje de notificación
+    public void actualizarMensajeNotificacion(String email) {
+        notificationMessage = "Archivo csv enviado a \n" + email;
     }
 
     @Override
