@@ -1043,4 +1043,15 @@ public class DBHelper extends SQLiteAssetHelper {
 
         return -1; // o cualquier valor que indique que no se encontró el operador
     }
+
+    public String getOperadorEmailPorId(int idOperador) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String email = null;
+        Cursor cursor = db.rawQuery("SELECT email FROM operador WHERE id = ?", new String[]{String.valueOf(idOperador)});
+        if (cursor.moveToFirst()) {
+            email = cursor.getString(cursor.getColumnIndexOrThrow("email"));
+        }
+        cursor.close();
+        return email;
+    }
 }

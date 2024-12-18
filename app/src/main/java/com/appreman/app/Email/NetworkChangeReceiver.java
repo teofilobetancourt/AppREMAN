@@ -14,7 +14,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (isConnectedToInternet(context)) {
             Log.d("NetworkChangeReceiver", "Conexión a Internet restablecida");
-            MailSender mailSender = new MailSender("appremanpro@gmail.com", "nwsd wiec tpno iruo");
+            MailSender mailSender = new MailSender();
             mailSender.retryPendingEmails(context);
         } else {
             Log.d("NetworkChangeReceiver", "Conexión a Internet perdida");

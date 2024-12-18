@@ -16,6 +16,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.appreman.app.Adapter.ViewPagerAdapter;
 import com.appreman.app.Database.DBHelper;
+import com.appreman.app.Email.Credentials;
 import com.appreman.app.Email.MailSender;
 import com.appreman.app.Fragments.ElementosFragment;
 import com.appreman.app.Models.Grupo;
@@ -36,6 +37,8 @@ public class EncuestasActivity extends AppCompatActivity {
     private DBHelper dbHelper;
     private String nombreEmpresa;
     private Spinner spinner;
+    private String email;
+
 
     public static void start(Context context) {
         Intent intent = new Intent(context, EncuestasActivity.class);
@@ -52,6 +55,10 @@ public class EncuestasActivity extends AppCompatActivity {
         // Configura la barra de herramientas
         setSupportActionBar(binding.toolbar);
         binding.toolbar.setTitle(getTitle());
+
+        // Obtener el email desde el Intent
+        email = getIntent().getStringExtra("email");
+        Log.d("EncuestasActivity", "Email obtenido en EncuestasActivity es: " + email);
 
         // Inicializa los componentes de la vista
         viewPager = binding.viewPager;
@@ -105,7 +112,8 @@ public class EncuestasActivity extends AppCompatActivity {
         String subject = "Inicio de Encuesta";
         String messageBody = "Se ha iniciado una nueva encuesta para: " + nombreEmpresa +
                 "\nFecha y hora de inicio: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
-        sendEmail(subject, messageBody);
+        String emailOperador = email; // Obtén el email del operador
+        sendEmail(subject, messageBody, emailOperador);
     }
 
     @Override
@@ -119,7 +127,8 @@ public class EncuestasActivity extends AppCompatActivity {
         String messageBody = "Se ha finalizado la encuesta para la empresa: " + nombreEmpresa +
                 "\nFecha y hora de fin: " + fechaFin +
                 "\nNúmero de preguntas respondidas: " + respuestasCount;
-        sendEmail(subject, messageBody);
+        String emailOperador = email; // Obtén el email del operador
+        sendEmail(subject, messageBody, emailOperador);
     }
 
     private void showGroupInfoDialog() {
@@ -162,15 +171,11 @@ public class EncuestasActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void sendEmail(String subject, String messageBody) {
-        String username = "appremanpro@gmail.com";
-        String password = "nwsd wiec tpno iruo";
-        String recipient = "teoedmundo@gmail.com,tbetancourt@theatgroup.net"; //jrodriguez@theatgroup.net
-
+    private void sendEmail(String subject, String messageBody, String recipient) {
         new Thread(() -> {
             try {
-                MailSender mailSender = new MailSender(username, password);
-                mailSender.sendMail(recipient, subject, messageBody, this); // Cambiado requireContext() por this
+                MailSender mailSender = new MailSender();
+                mailSender.sendMail(recipient, subject, messageBody, this); // Asegúrate de que sendMail acepte estos parámetros
                 Log.d("sendEmail", "Correo enviado exitosamente a: " + recipient);
             } catch (Exception e) {
                 e.printStackTrace();

@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -16,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +31,7 @@ import androidx.fragment.app.Fragment;
 
 import com.appreman.app.Activity.EncuestasActivity;
 import com.appreman.app.Database.DBHelper;
+import com.appreman.app.Email.Credentials;
 import com.appreman.app.Email.MailSender;
 import com.appreman.app.Email.PendingEmail;
 import com.appreman.app.Repository.AppPreferences;
@@ -72,7 +75,11 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
     private ProgressBar progressBar;
     private AlertDialog progressDialog;
     private boolean primerIntentoSinConexion = true;
-
+    private View notificationBadge;
+    private String notificationMessage = "CSV ha sido enviado exitosamente ";
+    // Variable para almacenar las notificaciones
+    private List<String> notificationMessages = new ArrayList<>();
+    private String email; // Variable para almacenar el email
 
 
     private WebSocketManager webSocketManager;
@@ -85,7 +92,6 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
         return fragment;
     }
 
-    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
@@ -97,6 +103,7 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
         List<String> empresaNames = dbHelper.getAllEmpresaNames();
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(requireActivity(), R.layout.spinner_dropdown_item, empresaNames);
         spinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+
         spinner.setAdapter(spinnerAdapter);
 
         cardActual = view.findViewById(R.id.card_actual);
@@ -108,11 +115,41 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
         lineChart = view.findViewById(R.id.chart1);
         menuIcon = view.findViewById(R.id.menu_icon);
         notifi = view.findViewById(R.id.notification_icon);
+        notificationBadge = view.findViewById(R.id.notification_badge);
 
-        // Recuperar el nombre de la empresa del Bundle
+        // Inicializar el punto rojo como invisible
+        notificationBadge.setVisibility(View.GONE);
+
+        notifi.setOnClickListener(v -> {
+            // Verificar si el punto rojo está visible
+            if (notificationBadge.getVisibility() == View.VISIBLE) {
+                // Ocultar el punto rojo al presionar la campana
+                notificationBadge.setVisibility(View.GONE);
+
+                // Inflar el layout del popup
+                View popupView = LayoutInflater.from(requireContext()).inflate(R.layout.popup_notifications, null);
+                PopupWindow popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+
+                // Configurar el contenido del popup con el mensaje actualizado
+                TextView notificationText = popupView.findViewById(R.id.notification_text);
+                notificationText.setText(notificationMessage);
+
+                // Configurar el PopupWindow para que se cierre al presionar fuera de él
+                popupWindow.setOutsideTouchable(true);
+                popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                // Mostrar el popup
+                popupWindow.showAsDropDown(notifi);
+
+                // Borrar la notificación después de mostrarla
+                notificationMessage = "";
+            }
+        });
+
         Bundle args = getArguments();
         if (args != null) {
             String empresaName = args.getString("empresa_nombre");
+            email = args.getString("email"); // Obtener el email del Bundle
             if (empresaName != null) {
                 appPreferences.setNombreEmpresa(empresaName);
                 updateFinancialData(view, empresaName); // Pasar la vista al método
@@ -144,7 +181,6 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
 
         webSocketManager = new WebSocketManager(this);
         webSocketManager.start();
-        webSocketManager.sendNotification("Nueva notificación para todos los dispositivos");
 
         return view;
     }
@@ -159,6 +195,11 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
         if (notifi != null) {
             notifi.setImageResource(R.drawable.notifi);
         }
+
+        // Mostrar el punto rojo cuando haya nuevas notificaciones
+        if (count > 0) {
+            notificationBadge.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -171,10 +212,6 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
                 updateFinancialData(view, selectedEmpresa); // Pasar la vista y la empresa al método
             }
         }
-        // Reintentar el envío de correos pendientes
-        MailSender mailSender = new MailSender("appremanpro@gmail.com", "nwsd wiec tpno iruo");
-        Log.d("HomeFragment", "Llamando a retryPendingEmails");
-        mailSender.retryPendingEmails(requireContext());
     }
 
     private void showProgressDialog() {
@@ -341,6 +378,7 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
             // Iniciar la actividad de encuestas
             Intent intent = new Intent(getActivity(), EncuestasActivity.class);
             intent.putExtra("empresa_nombre", selectedEmpresa);
+            intent.putExtra("email", email);
             startActivity(intent);
         } else {
             Log.w("iniciarEncuestasActivity", "No se seleccionó ninguna empresa.");
@@ -383,9 +421,6 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
 
     @SuppressLint("LongLogTag")
     private void enviarCorreoConArchivoAdjunto(File file) {
-        String username = "appremanpro@gmail.com";
-        String password = "nwsd wiec tpno iruo";
-        String recipient = "teoedmundo@gmail.com,tbetancourt@theatgroup.net"; //jrodriguez@theatgroup.net
         String selectedEmpresa = appPreferences.getNombreEmpresa();
         String subject = "Exportación de Respuestas : " + selectedEmpresa;
         String messageBody = "Respuestas  " + selectedEmpresa;
@@ -393,13 +428,14 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
         requireActivity().runOnUiThread(this::showProgressDialog);
 
         new Thread(() -> {
-            MailSender mailSender = new MailSender(username, password);
+            MailSender mailSender = new MailSender();
             if (mailSender.isConnectedToInternet(requireContext())) {
                 try {
-                    mailSender.sendMailWithAttachment(recipient, subject, messageBody, file, requireContext());
-                    Log.d("enviarCorreoConArchivoAdjunto", "Correo enviado exitosamente con el archivo adjunto a: " + recipient);
+                    mailSender.sendMailWithAttachment(email, subject, messageBody, file, requireContext()); // Usar el email recibido
+                    Log.d("enviarCorreoConArchivoAdjunto", "Correo enviado exitosamente con el archivo adjunto." + file.getName());
                     requireActivity().runOnUiThread(() -> {
                         hideProgressDialog();
+                        notificationBadge.setVisibility(View.VISIBLE); // Hacer visible el círculo rojo
                         Toast.makeText(requireContext(), "Correo enviado exitosamente", Toast.LENGTH_SHORT).show();
                     });
                 } catch (Exception e) {
@@ -412,19 +448,20 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
                 }
             } else {
                 Log.e("enviarCorreoConArchivoAdjunto", "No hay conexión a Internet. El correo se enviará más tarde.");
-                mailSender.addPendingEmail(new PendingEmail(recipient, subject, messageBody, file));
+                mailSender.addPendingEmail(new PendingEmail(email, subject, messageBody, file)); // Usar el email recibido
                 requireActivity().runOnUiThread(() -> {
                     hideProgressDialog();
                     if (primerIntentoSinConexion) {
                         Toast.makeText(requireContext(), "No hay conexión a Internet, verifique e intente nuevamente", Toast.LENGTH_LONG).show();
                         primerIntentoSinConexion = false;
                     } else {
-                        Toast.makeText(requireContext(), "El correo se enviará automaticamente al restablecer la conexión con el servidor", Toast.LENGTH_LONG).show();
+                        Toast.makeText(requireContext(), "El correo se enviará automáticamente al restablecer la conexión con el servidor", Toast.LENGTH_LONG).show();
                     }
                 });
             }
         }).start();
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

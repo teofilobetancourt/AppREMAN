@@ -1,11 +1,9 @@
-// MailSender.java
 package com.appreman.app.Email;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.util.LinkedList;
 import java.util.Properties;
@@ -13,9 +11,12 @@ import java.util.Queue;
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 import javax.mail.Authenticator;
+import javax.mail.Folder;
 import javax.mail.Message;
+import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
+import javax.mail.Store;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
@@ -25,19 +26,20 @@ import java.io.File;
 
 public class MailSender {
 
-    private final String username;
-    private final String password;
     private final Queue<PendingEmail> pendingEmails = new LinkedList<>();
 
-    public MailSender(String username, String password) {
-        this.username = username;
-        this.password = password;
+    public MailSender() {
     }
 
     public void sendMail(String recipient, String subject, String messageBody, Context context) {
+        if (recipient == null || recipient.isEmpty()) {
+            Log.e("MailSender", "El destinatario es nulo o vacío");
+            return;
+        }
         if (isConnectedToInternet(context)) {
             try {
                 sendMailInternal(recipient, subject, messageBody);
+                Log.d("MailSender", "Correo enviado exitosamente a: " + recipient);
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.e("MailSender", "Error al enviar el correo: " + e.getMessage());
@@ -49,9 +51,14 @@ public class MailSender {
     }
 
     public void sendMailWithAttachment(String recipient, String subject, String messageBody, File file, Context context) {
+        if (recipient == null || recipient.isEmpty()) {
+            Log.e("MailSender", "El destinatario es nulo o vacío");
+            return;
+        }
         if (isConnectedToInternet(context)) {
             try {
                 sendMailWithAttachmentInternal(recipient, subject, messageBody, file);
+                Log.d("MailSender", "Correo enviado exitosamente a: " + recipient);
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.e("MailSender", "Error al enviar el correo: " + e.getMessage());
@@ -72,12 +79,12 @@ public class MailSender {
         Session session = Session.getInstance(props, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(username, password);
+                return new PasswordAuthentication(Credentials.USERNAME, Credentials.PASSWORD);
             }
         });
 
         Message message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(username));
+        message.setFrom(new InternetAddress(Credentials.USERNAME));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient));
         message.setSubject(subject);
         message.setText(messageBody);
@@ -95,12 +102,12 @@ public class MailSender {
         Session session = Session.getInstance(props, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(username, password);
+                return new PasswordAuthentication(Credentials.USERNAME, Credentials.PASSWORD);
             }
         });
 
         Message message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(username));
+        message.setFrom(new InternetAddress(Credentials.USERNAME));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient));
         message.setSubject(subject);
 
@@ -151,6 +158,35 @@ public class MailSender {
                 pendingEmails.add(email);
                 break;
             }
+        }
+    }
+
+    public void checkInbox(Context context) {
+        if (isConnectedToInternet(context)) {
+            try {
+                Properties props = new Properties();
+                props.put("mail.store.protocol", "imaps");
+                Session session = Session.getInstance(props, null);
+                Store store = session.getStore();
+                store.connect("imap.gmail.com", Credentials.USERNAME, Credentials.PASSWORD);
+
+                Folder inbox = store.getFolder("INBOX");
+                inbox.open(Folder.READ_ONLY);
+
+                Message[] messages = inbox.getMessages();
+                for (Message message : messages) {
+                    Log.d("MailSender", "Correo recibido de: " + message.getFrom()[0]);
+                    Log.d("MailSender", "Asunto: " + message.getSubject());
+                }
+
+                inbox.close(false);
+                store.close();
+            } catch (MessagingException e) {
+                e.printStackTrace();
+                Log.e("MailSender", "Error al recibir correos: " + e.getMessage());
+            }
+        } else {
+            Log.d("MailSender", "No hay conexión a Internet");
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.appreman.app.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -96,6 +97,12 @@ public class NuevaEmpresaActivity extends AppCompatActivity {
 
                 Toast.makeText(this, "REGISTRO GUARDADO", Toast.LENGTH_LONG).show();
                 limpiar();
+
+                // Pasar el resultado a la actividad que inició esta actividad
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("nombre", nombre);
+                setResult(RESULT_OK, resultIntent);
+                finish(); // Finalizar la actividad
             } else {
                 Toast.makeText(this, "DEBE LLENAR LOS CAMPOS OBLIGATORIOS", Toast.LENGTH_LONG).show();
             }

@@ -1,146 +1,190 @@
 package com.appreman.app.Fragments;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import com.appreman.app.Activity.EncuestasActivity;
+
+import com.appreman.app.Activity.EmpresasEncuestadasActivity;
 import com.appreman.app.Activity.MainActivity;
-import com.appreman.app.Adapter.EmpresaAdapter;
+import com.appreman.app.Activity.NuevaEmpresaActivity;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.appreman.app.Database.DBHelper;
-import com.appreman.app.Models.Empresa;
-import com.appreman.app.Repository.AppPreferences;
 import com.appreman.appreman.R;
-import java.util.Collections;
+import com.google.android.material.card.MaterialCardView;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class EmpresasFragment extends Fragment {
 
-    private RecyclerView recyclerViewEmpresas;
+    private BarChart barChart1, barChart2, barChart3, barChart4, barChart5, barChart6;
     private DBHelper dbHelper;
-    private AppPreferences appPreferences;
-    private GestureDetector gestureDetector;
+    private String email;
 
-    public EmpresasFragment() {
+    @SuppressLint("MissingInflatedId")
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_empresas, container, false);
+
+        // Obtener el email del Bundle
+        if (getArguments() != null) {
+            email = getArguments().getString("email");
+        }
+
+        barChart1 = view.findViewById(R.id.barChart1);
+        barChart2 = view.findViewById(R.id.barChart2);
+        barChart3 = view.findViewById(R.id.barChart3);
+        barChart4 = view.findViewById(R.id.barChart4);
+        barChart5 = view.findViewById(R.id.barChart5);
+        barChart6 = view.findViewById(R.id.barChart6);
+        dbHelper = new DBHelper(getContext());
+
+        setupBarCharts();
+
+        // Encuentra los CardView y configura los OnClickListener
+        MaterialCardView cardNuevaEmpresa = view.findViewById(R.id.cardNuevaEmpresa);
+        cardNuevaEmpresa.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), NuevaEmpresaActivity.class);
+            intent.putExtra("email", email); // Pasar el email a NuevaEmpresaActivity
+            startActivityForResult(intent, 1); // Usar un requestCode, por ejemplo, 1
+        });
+
+        MaterialCardView cardListaEmpresas = view.findViewById(R.id.cardListaEmpresas);
+        cardListaEmpresas.setOnClickListener(v -> listaEmpresasOnClick());
+
+        return view;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d("EmpresasFragment", "onCreateView called");
-
-        View rootView = inflater.inflate(R.layout.fragment_empresas, container, false);
-
-        recyclerViewEmpresas = rootView.findViewById(R.id.recyclerViewEmpresas);
-        dbHelper = new DBHelper(requireActivity());
-        appPreferences = new AppPreferences(requireActivity());
-
-        setupRecyclerView();
-
-        gestureDetector = new GestureDetector(requireActivity(), new GestureListener());
-
-        recyclerViewEmpresas.setOnTouchListener((v, event) -> {
-            gestureDetector.onTouchEvent(event);
-            return false; // Return false to let the RecyclerView handle the event if not consumed
-        });
-
-        // Configurar el título del Toolbar para este Fragmento
-        if (getActivity() instanceof MainActivity) {
-            MainActivity activity = (MainActivity) getActivity();
-            activity.getSupportActionBar().setTitle("Empresas");
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == getActivity().RESULT_OK) {
+            // Redirigir al EmpresasFragment
+            if (getActivity() instanceof MainActivity) {
+                MainActivity activity = (MainActivity) getActivity();
+                activity.displayFragment(new SurveyFragment(), true, new Bundle());
+            }
         }
-
-        return rootView;
     }
 
-    private void setupRecyclerView() {
-        Log.d("EmpresasFragment", "setupRecyclerView called");
-
-        List<Empresa> empresas = dbHelper.getAllEmpresas();
-        Log.d("EmpresasFragment", "Empresas size: " + empresas.size());
-
-        Collections.reverse(empresas);
-
-        EmpresaAdapter adapter = new EmpresaAdapter(empresas);
-        recyclerViewEmpresas.setLayoutManager(new LinearLayoutManager(requireActivity()));
-        recyclerViewEmpresas.setAdapter(adapter);
-
-        adapter.setEncuestaClickListener(position -> {
-            if (position != RecyclerView.NO_POSITION) {
-                Empresa empresa = empresas.get(position);
-                String nombreEmpresaSeleccionada = empresa.getNombre();
-
-                appPreferences.setNombreEmpresa(nombreEmpresaSeleccionada);
-
-                Log.d("EmpresasFragment", "Empresa selected: " + nombreEmpresaSeleccionada);
-                EncuestasActivity.start(requireActivity());
-            }
-        });
+    private void setupBarCharts() {
+        setupBarChart1();
+        setupBarChart2();
+        setupBarChart3();
+        setupBarChart4();
+        setupBarChart5();
+        setupBarChart6();
     }
 
-    private class GestureListener extends GestureDetector.SimpleOnGestureListener {
-        private static final int SWIPE_THRESHOLD = 100;
-        private static final int SWIPE_VELOCITY_THRESHOLD = 100;
+    private void setupBarChart1() {
+        int totalEmpresas = dbHelper.getEmpresasCount();
+        List<BarEntry> entries = new ArrayList<>();
+        entries.add(new BarEntry(0, totalEmpresas));
 
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            Log.d("GestureListener", "onFling: e1 = (" + e1.getX() + ", " + e1.getY() + "), e2 = (" + e2.getX() + ", " + e2.getY() + "), velocityX = " + velocityX + ", velocityY = " + velocityY);
+        BarDataSet dataSet = new BarDataSet(entries, "Total Empresas");
+        dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+        BarData data = new BarData(dataSet);
 
-            if (Math.abs(e1.getY() - e2.getY()) > SWIPE_THRESHOLD) {
-                return false; // Movimiento vertical, no interferir
-            }
-            if (Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD && Math.abs(e1.getX() - e2.getX()) > SWIPE_THRESHOLD) {
-                if (e1.getX() > e2.getX()) {
-                    Log.d("GestureListener", "Swiped left");
-                    navigateToNextFragment();
-                } else {
-                    Log.d("GestureListener", "Swiped right");
-                    navigateToPreviousFragment();
-                }
-                return true;
-            }
-            return false;
+        barChart1.setData(data);
+        barChart1.invalidate(); // refresh
+    }
+
+    private void setupBarChart2() {
+        int empresasEncuestadas = dbHelper.getRespuestasEmpresasCount();
+        List<BarEntry> entries = new ArrayList<>();
+        entries.add(new BarEntry(0, empresasEncuestadas));
+
+        BarDataSet dataSet = new BarDataSet(entries, "Empresas Encuestadas");
+        dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+        BarData data = new BarData(dataSet);
+
+        barChart2.setData(data);
+        barChart2.invalidate(); // refresh
+    }
+
+    private void setupBarChart3() {
+        int empresasCompletamenteEncuestadas = dbHelper.getEmpresasCompletamenteEncuestadasCount();
+        List<BarEntry> entries = new ArrayList<>();
+        entries.add(new BarEntry(0, empresasCompletamenteEncuestadas));
+
+        BarDataSet dataSet = new BarDataSet(entries, "Empresas Completamente Encuestadas");
+        dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+        BarData data = new BarData(dataSet);
+
+        barChart3.setData(data);
+        barChart3.invalidate(); // refresh
+    }
+
+    private void setupBarChart4() {
+        int totalEmpresas = dbHelper.getEmpresasCount();
+        int empresasEncuestadas = dbHelper.getRespuestasEmpresasCount();
+        int empresasPorEncuestar = totalEmpresas - empresasEncuestadas;
+        List<BarEntry> entries = new ArrayList<>();
+        entries.add(new BarEntry(0, empresasPorEncuestar));
+
+        BarDataSet dataSet = new BarDataSet(entries, "Empresas por Encuestar");
+        dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+        BarData data = new BarData(dataSet);
+
+        barChart4.setData(data);
+        barChart4.invalidate(); // refresh
+    }
+
+    private void setupBarChart5() {
+        Map<String, Long> tiempoPorDia = dbHelper.getTiempoPorDia();
+        List<BarEntry> entries = new ArrayList<>();
+        String[] dias = {"Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"};
+
+        for (int i = 0; i < dias.length; i++) {
+            long tiempo = tiempoPorDia.containsKey(dias[i]) ? tiempoPorDia.get(dias[i]) : 0L;
+            entries.add(new BarEntry(i, tiempo));
+            Log.d("BarChart5", "Día: " + dias[i] + ", Tiempo: " + tiempo); // Log para verificar los datos
         }
 
-        private void navigateToNextFragment() {
-            Fragment currentFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_content);
-            Log.d("EmpresasFragment", "navigateToNextFragment: Current Fragment = " + currentFragment);
+        BarDataSet dataSet = new BarDataSet(entries, "Tiempo dedicado por día");
+        dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+        BarData data = new BarData(dataSet);
 
-            Bundle bundle = new Bundle(); // Crear un Bundle vacío
+        barChart5.setData(data);
+        barChart5.invalidate(); // refresh
+        Log.d("BarChart5", "Datos enviados al BarChart: " + entries.toString()); // Log para verificar los datos enviados
+    }
 
-            if (currentFragment instanceof HomeFragment) {
-                Log.d("EmpresasFragment", "Navigating to EmpresasFragment");
-                ((MainActivity) getActivity()).displayFragment(new EmpresasFragment(), true, bundle);
-            } else if (currentFragment instanceof EmpresasFragment) {
-                Log.d("EmpresasFragment", "Navigating to SurveyFragment");
-                ((MainActivity) getActivity()).displayFragment(new SurveyFragment(), true, bundle);
-            } else if (currentFragment instanceof SurveyFragment) {
-                Log.d("EmpresasFragment", "Navigating back to HomeFragment");
-                ((MainActivity) getActivity()).displayFragment(new HomeFragment(), true, bundle); // Volver al primer fragmento
-            }
+    private void setupBarChart6() {
+        int totalPreguntas = dbHelper.getTotalPreguntasCount();
+        Map<String, Long> tiempoPorDia = dbHelper.getTiempoPorDia();
+        long totalMinutos = 0;
+        for (Long horas : tiempoPorDia.values()) {
+            totalMinutos += horas * 60; // Convertir horas a minutos
         }
+        double preguntasPorMinuto = totalMinutos > 0 ? (double) totalPreguntas / totalMinutos : 0;
 
-        private void navigateToPreviousFragment() {
-            Fragment currentFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_content);
-            Log.d("EmpresasFragment", "navigateToPreviousFragment: Current Fragment = " + currentFragment);
+        List<BarEntry> entries = new ArrayList<>();
+        entries.add(new BarEntry(0, (float) preguntasPorMinuto));
 
-            Bundle bundle = new Bundle(); // Crear un Bundle vacío
+        BarDataSet dataSet = new BarDataSet(entries, "Promedio de Preguntas por Minuto");
+        dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+        BarData data = new BarData(dataSet);
 
-            if (currentFragment instanceof SurveyFragment) {
-                Log.d("EmpresasFragment", "Navigating to EmpresasFragment");
-                ((MainActivity) getActivity()).displayFragment(new EmpresasFragment(), true, bundle);
-            } else if (currentFragment instanceof EmpresasFragment) {
-                Log.d("EmpresasFragment", "Navigating to HomeFragment");
-                ((MainActivity) getActivity()).displayFragment(new HomeFragment(), true, bundle);
-            } else if (currentFragment instanceof HomeFragment) {
-                Log.d("EmpresasFragment", "No action for HomeFragment on back");
-                // Aquí puedes agregar lógica si necesitas manejar el desplazamiento desde HomeFragment
-            }
-        }
+        barChart6.setData(data);
+        barChart6.invalidate(); // refresh
+    }
+
+    private void listaEmpresasOnClick() {
+        Intent intent = new Intent(getActivity(), EmpresasEncuestadasActivity.class);
+        startActivity(intent);
     }
 }
