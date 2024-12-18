@@ -2,10 +2,13 @@ package com.appreman.app.Fragments;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -132,7 +135,7 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
                 PopupWindow popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
 
                 // Llamar al método para actualizar el mensaje de notificación
-                actualizarMensajeNotificacion(email);
+                actualizarMensajeNotificacion(email, requireContext());
 
                 // Configurar el contenido del popup con el mensaje actualizado
                 TextView notificationText = popupView.findViewById(R.id.notification_text);
@@ -207,8 +210,19 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
     }
 
     // Método para actualizar el mensaje de notificación
-    public void actualizarMensajeNotificacion(String email) {
-        notificationMessage = "Archivo csv enviado a \n" + email;
+    public void actualizarMensajeNotificacion(String email, Context context) {
+        if (isConnectedToInternet(context)) {
+            notificationMessage = "Archivo csv enviado a \n" + email;
+        } else {
+            notificationMessage = "No se pudo enviar el archivo csv \nverifique su conexion e intente nuevamente";
+        }
+    }
+
+    // Método para verificar la conexión a Internet
+    private boolean isConnectedToInternet(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnected();
     }
 
     @Override
@@ -440,11 +454,12 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
             MailSender mailSender = new MailSender();
             if (mailSender.isConnectedToInternet(requireContext())) {
                 try {
-                    mailSender.sendMailWithAttachment(email, subject, messageBody, file, requireContext()); // Usar el email recibido
+                    mailSender.sendMailWithAttachment(email, subject, messageBody, file, requireContext());
                     Log.d("enviarCorreoConArchivoAdjunto", "Correo enviado exitosamente con el archivo adjunto." + file.getName());
                     requireActivity().runOnUiThread(() -> {
                         hideProgressDialog();
-                        notificationBadge.setVisibility(View.VISIBLE); // Hacer visible el círculo rojo
+                        notificationBadge.setVisibility(View.VISIBLE);
+                        actualizarMensajeNotificacion(email, requireContext());
                         Toast.makeText(requireContext(), "Correo enviado exitosamente", Toast.LENGTH_SHORT).show();
                     });
                 } catch (Exception e) {
@@ -457,15 +472,12 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
                 }
             } else {
                 Log.e("enviarCorreoConArchivoAdjunto", "No hay conexión a Internet. El correo se enviará más tarde.");
-                mailSender.addPendingEmail(new PendingEmail(email, subject, messageBody, file)); // Usar el email recibido
+                mailSender.addPendingEmail(new PendingEmail(email, subject, messageBody, file));
                 requireActivity().runOnUiThread(() -> {
                     hideProgressDialog();
-                    if (primerIntentoSinConexion) {
-                        Toast.makeText(requireContext(), "No hay conexión a Internet, verifique e intente nuevamente", Toast.LENGTH_LONG).show();
-                        primerIntentoSinConexion = false;
-                    } else {
-                        Toast.makeText(requireContext(), "El correo se enviará automáticamente al restablecer la conexión con el servidor", Toast.LENGTH_LONG).show();
-                    }
+                    notificationBadge.setVisibility(View.VISIBLE);
+                    actualizarMensajeNotificacion(email, requireContext());
+                    Toast.makeText(requireContext(), "No hay conexión a Internet, verifique e intente nuevamente", Toast.LENGTH_LONG).show();
                 });
             }
         }).start();
