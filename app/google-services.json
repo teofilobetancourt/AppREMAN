@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "836706486703",
+    "project_id": "reman-ff771",
+    "storage_bucket": "reman-ff771.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:836706486703:android:e2e288208e4dd7509ac75a",
+        "android_client_info": {
+          "package_name": "com.appreman.appreman"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKOziX0oqX8dOUGJWRpP4aIpfztSIYV4o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
