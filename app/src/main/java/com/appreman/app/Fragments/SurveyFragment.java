@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.appreman.app.Activity.EmpresasEncuestadasActivity;
+import com.appreman.app.Activity.MainActivity;
 import com.appreman.app.Activity.NuevaEmpresaActivity;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
@@ -58,13 +59,25 @@ public class SurveyFragment extends Fragment {
         cardNuevaEmpresa.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), NuevaEmpresaActivity.class);
             intent.putExtra("email", email); // Pasar el email a NuevaEmpresaActivity
-            startActivity(intent);
+            startActivityForResult(intent, 1); // Usar un requestCode, por ejemplo, 1
         });
 
         MaterialCardView cardListaEmpresas = view.findViewById(R.id.cardListaEmpresas);
         cardListaEmpresas.setOnClickListener(v -> listaEmpresasOnClick());
 
         return view;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == getActivity().RESULT_OK) {
+            // Redirigir al EmpresasFragment
+            if (getActivity() instanceof MainActivity) {
+                MainActivity activity = (MainActivity) getActivity();
+                activity.displayFragment(new EmpresasFragment(), true, new Bundle());
+            }
+        }
     }
 
     private void setupBarCharts() {
