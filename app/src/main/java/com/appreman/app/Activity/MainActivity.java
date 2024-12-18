@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private String nombre_empresa;
     private NetworkChangeReceiver networkChangeReceiver;
     private android.app.AlertDialog alertDialog;
+    private String email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Obtener el email desde el Intent
-        String email = getIntent().getStringExtra("email");
+        email = getIntent().getStringExtra("email");
 
         // Obtener el nombre y apellido usando el email
         DBHelper dbHelper = new DBHelper(this);
@@ -67,25 +68,25 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Configurar el fragmento inicial
-        displayFragment(HomeFragment.newInstance(nombre_empresa), false, null);
+        displayFragment(HomeFragment.newInstance(nombre_empresa, email), false, null);
 
-        navigation.setOnItemSelectedListener(item -> {
-            Fragment fragment = null;
-            int id = item.getItemId();
-            Bundle bundle = new Bundle();
-            bundle.putString("email", email); // Pasar el email
+            navigation.setOnItemSelectedListener(item -> {
+                Fragment fragment = null;
+                int id = item.getItemId();
+                Bundle bundle = new Bundle();
+                bundle.putString("email", email); // Pasar el email
 
-            if (id == R.id.navigation_home) {
-                fragment = HomeFragment.newInstance(nombre_empresa);
-            } else if (id == R.id.navigation_empresa) {
-                fragment = new EmpresasFragment();
-            } else if (id == R.id.navigation_survey) {
-                fragment = new SurveyFragment();
-            }
+                if (id == R.id.navigation_home) {
+                    fragment = HomeFragment.newInstance(nombre_empresa, email);
+                } else if (id == R.id.navigation_empresa) {
+                    fragment = new EmpresasFragment();
+                } else if (id == R.id.navigation_survey) {
+                    fragment = SurveyFragment.newInstance(email);
+                }
 
-            displayFragment(fragment, true, bundle);
-            return true;
-        });
+                displayFragment(fragment, true, bundle);
+                return true;
+            });
 
         // Configurar el GestureDetector
         gestureDetector = new GestureDetector(this, new GestureListener());
@@ -203,9 +204,9 @@ public class MainActivity extends AppCompatActivity {
             if (currentFragment instanceof HomeFragment) {
                 displayFragment(new EmpresasFragment(), true, null);
             } else if (currentFragment instanceof EmpresasFragment) {
-                displayFragment(new SurveyFragment(), true, null);
+                displayFragment(SurveyFragment.newInstance(email), true, null);
             } else if (currentFragment instanceof SurveyFragment) {
-                displayFragment(HomeFragment.newInstance(nombre_empresa), true, null); // Volver al primer fragmento
+                displayFragment(HomeFragment.newInstance(nombre_empresa, email), true, null); // Volver al primer fragmento
             }
         }
 
@@ -214,9 +215,9 @@ public class MainActivity extends AppCompatActivity {
             if (currentFragment instanceof SurveyFragment) {
                 displayFragment(new EmpresasFragment(), true, null);
             } else if (currentFragment instanceof EmpresasFragment) {
-                displayFragment(HomeFragment.newInstance(nombre_empresa), true, null);
+                displayFragment(HomeFragment.newInstance(nombre_empresa, email), true, null);
             } else if (currentFragment instanceof HomeFragment) {
-                displayFragment(new SurveyFragment(), true, null); // Volver al último fragmento
+                displayFragment(SurveyFragment.newInstance(email), true, null); // Volver al último fragmento
             }
         }
     }

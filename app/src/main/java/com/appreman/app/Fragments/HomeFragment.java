@@ -84,10 +84,11 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
 
     private WebSocketManager webSocketManager;
 
-    public static HomeFragment newInstance(String nombre_empresa) {
+    public static HomeFragment newInstance(String nombre_empresa, String email) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
         args.putString("empresa_nombre", nombre_empresa);
+        args.putString("email", email); // Pasar el email al Bundle
         fragment.setArguments(args);
         return fragment;
     }

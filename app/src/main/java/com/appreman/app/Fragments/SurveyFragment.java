@@ -29,7 +29,12 @@ public class SurveyFragment extends Fragment {
     private GestureDetector gestureDetector;
     private String email;
 
-    public SurveyFragment() {
+    public static SurveyFragment newInstance(String email) {
+        SurveyFragment fragment = new SurveyFragment();
+        Bundle args = new Bundle();
+        args.putString("email", email);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
