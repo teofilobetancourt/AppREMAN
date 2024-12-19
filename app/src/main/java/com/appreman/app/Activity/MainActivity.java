@@ -70,23 +70,23 @@ public class MainActivity extends AppCompatActivity {
         // Configurar el fragmento inicial
         displayFragment(HomeFragment.newInstance(nombre_empresa, email), false, null);
 
-            navigation.setOnItemSelectedListener(item -> {
-                Fragment fragment = null;
-                int id = item.getItemId();
-                Bundle bundle = new Bundle();
-                bundle.putString("email", email); // Pasar el email
+        navigation.setOnItemSelectedListener(item -> {
+            Fragment fragment = null;
+            int id = item.getItemId();
+            Bundle bundle = new Bundle();
+            bundle.putString("email", email); // Pasar el email
 
-                if (id == R.id.navigation_home) {
-                    fragment = HomeFragment.newInstance(nombre_empresa, email);
-                } else if (id == R.id.navigation_empresa) {
-                    fragment = new EmpresasFragment();
-                } else if (id == R.id.navigation_survey) {
-                    fragment = SurveyFragment.newInstance(email);
-                }
+            if (id == R.id.navigation_home) {
+                fragment = HomeFragment.newInstance(nombre_empresa, email);
+            } else if (id == R.id.navigation_empresa) {
+                fragment = new EmpresasFragment();
+            } else if (id == R.id.navigation_survey) {
+                fragment = SurveyFragment.newInstance(email);
+            }
 
-                displayFragment(fragment, true, bundle);
-                return true;
-            });
+            displayFragment(fragment, true, bundle);
+            return true;
+        });
 
         // Configurar el GestureDetector
         gestureDetector = new GestureDetector(this, new GestureListener());

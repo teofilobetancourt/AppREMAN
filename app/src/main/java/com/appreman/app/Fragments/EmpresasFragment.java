@@ -54,7 +54,7 @@ public class EmpresasFragment extends Fragment {
 
         setupBarCharts();
 
-        // Encuentra los CardView y configura los OnClickListener
+        /// Encuentra los CardView y configura los OnClickListener
         MaterialCardView cardNuevaEmpresa = view.findViewById(R.id.cardNuevaEmpresa);
         cardNuevaEmpresa.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), NuevaEmpresaActivity.class);
@@ -63,7 +63,11 @@ public class EmpresasFragment extends Fragment {
         });
 
         MaterialCardView cardListaEmpresas = view.findViewById(R.id.cardListaEmpresas);
-        cardListaEmpresas.setOnClickListener(v -> listaEmpresasOnClick());
+        cardListaEmpresas.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), EmpresasEncuestadasActivity.class);
+            intent.putExtra("email", email); // Pasar el email a EmpresasEncuestadasActivity
+            startActivity(intent);
+        });
 
         return view;
     }

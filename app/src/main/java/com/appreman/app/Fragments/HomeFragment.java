@@ -338,8 +338,11 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
         TextView textViewPreguntas = view.findViewById(R.id.text_view_preguntas);
         textViewPreguntas.setText(String.format("%d de %d", respuestasCount, totalPreguntas));
 
-        setupChart(lineChart, dbHelper.obtenerRespuestasPorDia(empresa), totalPreguntas);
-    }
+        Log.d("HomeFragment", "setupChart: lineChart = " + lineChart);
+        Log.d("HomeFragment", "setupChart: respuestasPorDia = " + dbHelper.obtenerRespuestasPorDia(empresa));
+        Log.d("HomeFragment", "setupChart: totalPreguntas = " + totalPreguntas);
+
+        setupChart(lineChart, dbHelper.obtenerRespuestasPorDia(empresa), totalPreguntas);    }
 
     private void setupChart(LineChart chart, Map<String, Integer> respuestasPorDia, int totalPreguntas) {
         List<Entry> entriesRespuestas = new ArrayList<>();
@@ -348,15 +351,19 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
         int index = 0;
         int preguntasPorDia = totalPreguntas / dias.length;
 
+        Log.d("setupChart", "Total Preguntas: " + totalPreguntas);
+        Log.d("setupChart", "Preguntas por Día: " + preguntasPorDia);
+
         for (String dia : dias) {
             int respuestas = respuestasPorDia.containsKey(dia) ? respuestasPorDia.get(dia) : 0;
+            Log.d("setupChart", "Día: " + dia + ", Respuestas: " + respuestas);
             entriesRespuestas.add(new Entry(index, respuestas));
             entriesObjetivo.add(new Entry(index, preguntasPorDia));
             index++;
         }
 
         LineDataSet dataSetRespuestas = new LineDataSet(entriesRespuestas, "Respuestas por día");
-        dataSetRespuestas.setColor(Color.BLUE); // Cambiar el color de la línea a rojo
+        dataSetRespuestas.setColor(Color.BLUE);
         dataSetRespuestas.setLineWidth(2.5f);
         dataSetRespuestas.setCircleColor(ColorTemplate.getHoloBlue());
         dataSetRespuestas.setCircleRadius(5f);
@@ -365,7 +372,7 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
         dataSetRespuestas.setDrawValues(true);
 
         LineDataSet dataSetObjetivo = new LineDataSet(entriesObjetivo, "Objetivo diario");
-        dataSetObjetivo.setColor(Color.RED); // Cambiar el color de la línea a verde
+        dataSetObjetivo.setColor(Color.RED);
         dataSetObjetivo.setLineWidth(2.5f);
         dataSetObjetivo.setCircleColor(ColorTemplate.getHoloBlue());
         dataSetObjetivo.setCircleRadius(5f);
@@ -388,7 +395,11 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
 
         chart.getAxisRight().setEnabled(false);
         chart.getDescription().setEnabled(false);
-        chart.invalidate();
+        chart.setTouchEnabled(true);
+        chart.setDragEnabled(true);
+        chart.setScaleEnabled(true);
+        chart.setPinchZoom(true);
+        chart.invalidate(); // Refresca el gráfico
     }
 
     @SuppressLint("LongLogTag")

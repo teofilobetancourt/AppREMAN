@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -507,9 +508,14 @@ public class DBHelper extends SQLiteAssetHelper {
                 String pais = cursor.getString(cursor.getColumnIndex("pais"));
                 String region = cursor.getString(cursor.getColumnIndex("region"));
                 String sitio = cursor.getString(cursor.getColumnIndex("sitio"));
+                String representante = cursor.getString(cursor.getColumnIndex("representante_empresa"));
+                String tipo_planta = cursor.getString(cursor.getColumnIndex("tipo_planta"));
+                String id_operador = cursor.getString(cursor.getColumnIndex("id_operador"));
+
+
 
                 // Crear un objeto Empresa y agrégalo a la lista
-                Empresa empresa = new Empresa(nombre, pais, region, sitio);
+                Empresa empresa = new Empresa(nombre, pais, region, sitio, representante, tipo_planta, id_operador);
                 empresas.add(empresa);
             } while (cursor.moveToNext());
         }
@@ -971,14 +977,25 @@ public class DBHelper extends SQLiteAssetHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Map<String, Integer> respuestasPorDia = new HashMap<>();
 
-        String query = "SELECT fechaRespuesta, COUNT(*) as cantidad FROM respuestas WHERE empresa = ? GROUP BY fechaRespuesta";
-        Cursor cursor = db.rawQuery(query, new String[]{empresa});
+        // Obtener el día de la semana actual
+        Calendar calendar = Calendar.getInstance();
+        int diaSemanaActual = calendar.get(Calendar.DAY_OF_WEEK);
+
+        // Inicializar el mapa con todos los días de la semana en 0
+        String[] diasSemana = {"Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"};
+        for (String dia : diasSemana) {
+            respuestasPorDia.put(dia, 0);
+        }
+
+        // Consulta para obtener las respuestas del día actual
+        String query = "SELECT fechaRespuesta, COUNT(*) as cantidad FROM respuestas WHERE empresa = ? AND strftime('%w', fechaRespuesta) = ? GROUP BY fechaRespuesta";
+        Cursor cursor = db.rawQuery(query, new String[]{empresa, String.valueOf(diaSemanaActual - 1)});
 
         if (cursor.moveToFirst()) {
             do {
                 @SuppressLint("Range") String fecha = cursor.getString(cursor.getColumnIndex("fechaRespuesta"));
                 @SuppressLint("Range") int cantidad = cursor.getInt(cursor.getColumnIndex("cantidad"));
-                respuestasPorDia.put(fecha, cantidad);
+                respuestasPorDia.put(diasSemana[diaSemanaActual - 1], cantidad);
             } while (cursor.moveToNext());
         }
 
@@ -1008,6 +1025,31 @@ public class DBHelper extends SQLiteAssetHelper {
 
         try (SQLiteDatabase db = this.getReadableDatabase();
              Cursor cursor = db.rawQuery(query, new String[]{email})) {
+
+            if (cursor != null && cursor.moveToFirst()) {
+                nombreApellido = new HashMap<>();
+                nombreApellido.put("nombre", cursor.getString(cursor.getColumnIndex("nombre")));
+                nombreApellido.put("apellido", cursor.getString(cursor.getColumnIndex("apellido")));
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, e.toString());
+            e.printStackTrace();
+        }
+
+        return nombreApellido;
+    }
+
+    @SuppressLint("Range")
+    public Map<String, String> getNombreApellidoPorIdOperador(String idOperador) {
+        if (idOperador == null) {
+            throw new IllegalArgumentException("El valor del idOperador no puede ser nulo");
+        }
+
+        Map<String, String> nombreApellido = null;
+        String query = "SELECT nombre, apellido FROM operador WHERE id = ?";
+
+        try (SQLiteDatabase db = this.getReadableDatabase();
+             Cursor cursor = db.rawQuery(query, new String[]{idOperador})) {
 
             if (cursor != null && cursor.moveToFirst()) {
                 nombreApellido = new HashMap<>();

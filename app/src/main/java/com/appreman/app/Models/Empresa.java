@@ -35,6 +35,17 @@ public class Empresa {
         this.sitio = sitio;
     }
 
+    // Nuevo constructor
+    public Empresa(String nombre, String pais, String region, String sitio, String representante, String planta, String idOperador) {
+        this.nombre = nombre;
+        this.pais = pais;
+        this.region = region;
+        this.sitio = sitio;
+        this.representante = representante;
+        this.planta = planta;
+        this.idOperador = idOperador;
+    }
+
     public int getId() {
         return id;
     }
