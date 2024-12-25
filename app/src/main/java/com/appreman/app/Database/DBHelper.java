@@ -1096,4 +1096,18 @@ public class DBHelper extends SQLiteAssetHelper {
         cursor.close();
         return email;
     }
+
+    @SuppressLint("Range")
+    public String getRepresentanteEmpresa(String nombreEmpresa) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String representante = null;
+        String query = "SELECT representante_empresa FROM empresa WHERE nombre = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{nombreEmpresa});
+        if (cursor.moveToFirst()) {
+            representante = cursor.getString(cursor.getColumnIndex("representante_empresa"));
+        }
+        cursor.close();
+        db.close();
+        return representante;
+    }
 }

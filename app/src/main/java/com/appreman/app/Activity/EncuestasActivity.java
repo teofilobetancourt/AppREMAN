@@ -105,12 +105,16 @@ public class EncuestasActivity extends AppCompatActivity {
         AppPreferences appPreferences = new AppPreferences(this);
         nombreEmpresa = appPreferences.getNombreEmpresa();
 
+        // Obtén el nombre del representante de la empresa
+        String representanteEmpresa = dbHelper.getRepresentanteEmpresa(nombreEmpresa);
+
         // Registrar la fecha y hora de inicio
         dbHelper.insertarTiempo(nombreEmpresa, true);
 
         // Enviar correo electrónico al iniciar la encuesta
         String subject = "Inicio de Encuesta";
         String messageBody = "Se ha iniciado una nueva encuesta para: " + nombreEmpresa +
+                "\nRepresentante de la Empresa: " + representanteEmpresa +
                 "\nFecha y hora de inicio: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
         String emailOperador = email; // Obtén el email del operador
         sendEmail(subject, messageBody, emailOperador);
@@ -122,9 +126,12 @@ public class EncuestasActivity extends AppCompatActivity {
         // Registrar la fecha y hora de fin
         String fechaFin = dbHelper.insertarTiempo(nombreEmpresa, false);
         int respuestasCount = dbHelper.getRespuestasCount(nombreEmpresa);
+        // Obtén el nombre del representante de la empresa
+        String representanteEmpresa = dbHelper.getRepresentanteEmpresa(nombreEmpresa);
         // Enviar correo electrónico al finalizar la encuesta
         String subject = "Fin de Encuesta";
         String messageBody = "Se ha finalizado la encuesta para la empresa: " + nombreEmpresa +
+                "\nRepresentante de la Empresa: " + representanteEmpresa +
                 "\nFecha y hora de fin: " + fechaFin +
                 "\nNúmero de preguntas respondidas: " + respuestasCount;
         String emailOperador = email; // Obtén el email del operador
