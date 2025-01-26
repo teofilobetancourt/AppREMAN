@@ -17,11 +17,13 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.appreman.app.Database.DBHelper;
 import com.appreman.app.Email.NetworkChangeReceiver;
+import com.appreman.app.Fragments.AsignarFragment;
 import com.appreman.app.Fragments.EmpresasFragment;
 import com.appreman.app.Fragments.HomeFragment;
 import com.appreman.app.Fragments.SurveyFragment;
 import com.appreman.appreman.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Map;
 
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private NetworkChangeReceiver networkChangeReceiver;
     private android.app.AlertDialog alertDialog;
     private String email;
+    private Fragment previousFragment; // Variable para almacenar el fragmento anterior
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,20 +48,16 @@ public class MainActivity extends AppCompatActivity {
 
         navigation = findViewById(R.id.navigation);
 
-        // Obtener el nombre de la empresa desde el Intent
         nombre_empresa = getIntent().getStringExtra("empresa_nombre");
         if (nombre_empresa == null) {
             nombre_empresa = ""; // Valor por defecto
         }
 
-        // Obtener el email desde el Intent
         email = getIntent().getStringExtra("email");
 
-        // Obtener el nombre y apellido usando el email
         DBHelper dbHelper = new DBHelper(this);
         Map<String, String> nombreApellido = dbHelper.getNombreApellidoPorEmail(email);
 
-        // Configurar el TextView con el nombre y apellido
         TextView userNameTextView = findViewById(R.id.user_name);
         if (nombreApellido != null) {
             String nombreCompleto = nombreApellido.get("nombre") + " " + nombreApellido.get("apellido");
@@ -67,14 +66,13 @@ public class MainActivity extends AppCompatActivity {
             userNameTextView.setText("Usuario");
         }
 
-        // Configurar el fragmento inicial
         displayFragment(HomeFragment.newInstance(nombre_empresa, email), false, null);
 
         navigation.setOnItemSelectedListener(item -> {
             Fragment fragment = null;
             int id = item.getItemId();
             Bundle bundle = new Bundle();
-            bundle.putString("email", email); // Pasar el email
+            bundle.putString("email", email);
 
             if (id == R.id.navigation_home) {
                 fragment = HomeFragment.newInstance(nombre_empresa, email);
@@ -88,14 +86,12 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
-        // Configurar el GestureDetector
         gestureDetector = new GestureDetector(this, new GestureListener());
         findViewById(R.id.fragment_content).setOnTouchListener((v, event) -> {
             gestureDetector.onTouchEvent(event);
             return true;
         });
 
-        // Añadir un listener para manejar los cambios en la pila de retroceso
         getSupportFragmentManager().addOnBackStackChangedListener(() -> {
             Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_content);
             if (currentFragment != null) {
@@ -104,17 +100,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Registro dinámico del BroadcastReceiver
         networkChangeReceiver = new NetworkChangeReceiver();
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(networkChangeReceiver, filter);
-    }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // Desregistrar el BroadcastReceiver
-        unregisterReceiver(networkChangeReceiver);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) FloatingActionButton fab = findViewById(R.id.asignar);
+        fab.setOnClickListener(v -> {
+            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_content);
+            if (currentFragment instanceof AsignarFragment) {
+                // Regresar al fragmento anterior
+                displayFragment(previousFragment, false, null);
+            } else {
+                // Guardar el fragmento actual como el anterior
+                previousFragment = currentFragment;
+                // Cargar el fragmento AsignarFragment
+                displayFragment(AsignarFragment.newInstance(), true, null);
+            }
+        });
     }
 
     public void displayFragment(Fragment fragment, boolean addToBackStack, Bundle bundle) {
@@ -135,6 +137,12 @@ public class MainActivity extends AppCompatActivity {
         updateToolbarTitle(fragment); // Asegurar que el título se actualice al cambiar de fragmento
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(networkChangeReceiver);
+    }
+
     private void updateToolbarTitle(Fragment fragment) {
         if (fragment instanceof HomeFragment) {
             toolbar.setTitle("Inicio");
@@ -142,6 +150,8 @@ public class MainActivity extends AppCompatActivity {
             toolbar.setTitle("Empresas");
         } else if (fragment instanceof SurveyFragment) {
             toolbar.setTitle("Survey");
+        } else if (fragment instanceof AsignarFragment) {
+            toolbar.setTitle("Asignación de encuestas");
         }
     }
 
@@ -163,17 +173,15 @@ public class MainActivity extends AppCompatActivity {
                 .setTitle("Salir")
                 .setMessage("¿Deseas cerrar sesión?")
                 .setPositiveButton("Sí", (dialog, which) -> {
-                    // Redirigir a la pantalla de inicio de sesión
                     Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
-                    finish(); // Finalizar la actividad actual
+                    finish();
                 })
                 .setNegativeButton("No", (dialog, which) -> {
-                    // Cerrar el diálogo y no hacer nada
                     dialog.dismiss();
                 })
-                .setCancelable(false) // Evitar que se cierre al hacer clic fuera del diálogo
+                .setCancelable(false)
                 .show();
     }
 
@@ -188,10 +196,8 @@ public class MainActivity extends AppCompatActivity {
             }
             if (Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD && Math.abs(e1.getX() - e2.getX()) > SWIPE_THRESHOLD) {
                 if (e1.getX() > e2.getX()) {
-                    // Deslizar a la izquierda (ir hacia adelante)
                     navigateToNextFragment();
                 } else {
-                    // Deslizar a la derecha (ir hacia atrás)
                     navigateToPreviousFragment();
                 }
                 return true;
@@ -206,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (currentFragment instanceof EmpresasFragment) {
                 displayFragment(SurveyFragment.newInstance(email), true, null);
             } else if (currentFragment instanceof SurveyFragment) {
-                displayFragment(HomeFragment.newInstance(nombre_empresa, email), true, null); // Volver al primer fragmento
+                displayFragment(HomeFragment.newInstance(nombre_empresa, email), true, null);
             }
         }
 
@@ -217,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (currentFragment instanceof EmpresasFragment) {
                 displayFragment(HomeFragment.newInstance(nombre_empresa, email), true, null);
             } else if (currentFragment instanceof HomeFragment) {
-                displayFragment(SurveyFragment.newInstance(email), true, null); // Volver al último fragmento
+                displayFragment(SurveyFragment.newInstance(email), true, null);
             }
         }
     }

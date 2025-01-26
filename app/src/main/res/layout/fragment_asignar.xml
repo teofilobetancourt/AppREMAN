@@ -1,26 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/degradado_bar"
+    android:background="@drawable/gradientone"
     tools:context="com.appreman.app.Activity.MainActivity">
 
-    <!-- Header with image and text -->
+    <!-- Encabezado con imagen y texto -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/menu_icon"
+            android:id="@+id/icono_menu"
             android:layout_width="50dp"
             android:layout_height="40dp"
             android:layout_gravity="center"
             android:padding="10dp"
-            android:src="@drawable/menu2" />
+            android:src="@drawable/menu2"
+            android:tint="#FFFFFF"
+            tools:ignore="UseAppTint" />
 
         <TextView
             android:layout_width="0dp"
@@ -29,7 +30,7 @@
             android:gravity="center"
             android:text="DASHBOARD"
             android:textAlignment="center"
-            android:textColor="@color/white"
+            android:textColor="#FFFFFF"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -38,15 +39,17 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/notification_icon"
+                android:id="@+id/icono_notificacion"
                 android:layout_width="50dp"
-                android:layout_height="match_parent"
+                android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:padding="10dp"
-                android:src="@drawable/notifi2" />
+                android:src="@drawable/notifi2"
+                android:tint="#FFFFFF"
+                tools:ignore="UseAppTint" />
 
             <View
-                android:id="@+id/notification_badge"
+                android:id="@+id/insignia_notificacion"
                 android:layout_width="10dp"
                 android:layout_height="10dp"
                 android:layout_gravity="end|top"
@@ -57,22 +60,22 @@
         </FrameLayout>
     </LinearLayout>
 
-    <!-- Financial Summary -->
+    <!-- Resumen Financiero -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <!-- First Financial Item -->
+        <!-- Primer Item Financiero -->
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_actual"
+            android:id="@+id/tarjeta_actual"
             android:layout_width="0dp"
             android:layout_height="120dp"
             android:layout_margin="5dp"
             android:layout_weight="1"
             app:cardCornerRadius="8dp"
             app:cardElevation="10dp"
-            android:background="@drawable/gradientblue"
+            android:background="#87CEFA"
             android:padding="10dp"
             android:clickable="true"
             android:focusable="true">
@@ -81,7 +84,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:background="@drawable/gradientblue"
+                android:background="#87CEFA"
                 android:gravity="center">
 
                 <TextView
@@ -89,12 +92,12 @@
                     android:layout_height="wrap_content"
                     android:text="ACTUAL"
                     android:textAlignment="center"
-                    android:textColor="#FFF"
+                    android:textColor="#FFFFFF"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/text_actual"
+                    android:id="@+id/texto_actual"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -102,20 +105,20 @@
                     android:textStyle="bold"
                     android:textAlignment="center"
                     android:textSize="25sp"
-                    android:textColor="#63B041" />
+                    android:textColor="#006400" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Second Financial Item -->
+        <!-- Segundo Item Financiero -->
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_potencial"
+            android:id="@+id/tarjeta_potencial"
             android:layout_width="0dp"
             android:layout_height="120dp"
             android:layout_margin="5dp"
             android:layout_weight="1"
             app:cardCornerRadius="8dp"
             app:cardElevation="10dp"
-            android:background="@drawable/gradientblue"
+            android:background="#87CEFA"
             android:padding="10dp"
             android:clickable="true"
             android:focusable="true">
@@ -124,7 +127,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:background="@drawable/gradientblue"
+                android:background="#87CEFA"
                 android:gravity="center">
 
                 <TextView
@@ -132,12 +135,12 @@
                     android:layout_height="wrap_content"
                     android:text="POTENCIAL"
                     android:textAlignment="center"
-                    android:textColor="#FFF"
+                    android:textColor="#FFFFFF"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/text_potencial"
+                    android:id="@+id/texto_potencial"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -145,20 +148,20 @@
                     android:text="S/ 10.368"
                     android:textAlignment="center"
                     android:textSize="25sp"
-                    android:textColor="#63B041" />
+                    android:textColor="#006400" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Third Financial Item -->
+        <!-- Tercer Item Financiero -->
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_ambas"
+            android:id="@+id/tarjeta_ambas"
             android:layout_width="0dp"
             android:layout_height="120dp"
             android:layout_margin="5dp"
             android:layout_weight="1"
             app:cardCornerRadius="8dp"
             app:cardElevation="10dp"
-            android:background="@drawable/gradientblue"
+            android:background="#87CEFA"
             android:padding="10dp"
             android:clickable="true"
             android:focusable="true">
@@ -167,7 +170,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:background="@drawable/gradientblue"
+                android:background="#87CEFA"
                 android:gravity="center">
 
                 <TextView
@@ -175,12 +178,12 @@
                     android:layout_height="wrap_content"
                     android:text="AMBAS"
                     android:textAlignment="center"
-                    android:textColor="#FFF"
+                    android:textColor="#FFFFFF"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/text_ambas"
+                    android:id="@+id/texto_ambas"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -188,12 +191,12 @@
                     android:textStyle="bold"
                     android:textAlignment="center"
                     android:textSize="25sp"
-                    android:textColor="#63B041" />
+                    android:textColor="#006400" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
-    <!-- Total Balance -->
+    <!-- Balance Total -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="150dp"
@@ -203,7 +206,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="@drawable/gradientblue"
+            android:background="#87CEFA"
             android:orientation="vertical"
             android:padding="10dp"
             android:gravity="center">
@@ -213,17 +216,17 @@
                 android:id="@+id/spinner_empresas"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:popupBackground="@drawable/gradientblue"
+                android:popupBackground="#87CEFA"
                 android:spinnerMode="dropdown" />
 
             <!-- Espacio para el balance total debajo del Spinner -->
             <TextView
-                android:id="@+id/text_balance_total"
+                android:id="@+id/texto_balance_total"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="S/. 32.365"
-                android:textColor="#63B041"
+                android:textColor="#006400"
                 android:textSize="25sp"
                 android:textStyle="bold"
                 android:textAlignment="center" />
@@ -234,12 +237,12 @@
                 android:text="BALANCE TOTAL"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="#FFF"
+                android:textColor="#FFFFFF"
                 android:textAlignment="center" />
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Sales Details -->
+    <!-- Detalles de Ventas -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="150dp"
@@ -247,10 +250,10 @@
         android:gravity="center">
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_continuar"
+            android:id="@+id/tarjeta_continuar"
             android:layout_width="350dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/gradientblue"
+            android:background="#87CEFA"
             app:cardCornerRadius="4dp"
             app:cardElevation="10dp"
             android:clickable="true"
@@ -259,7 +262,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="102dp"
-                android:background="@drawable/gradientblue"
+                android:background="#87CEFA"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:padding="10dp">
@@ -269,17 +272,17 @@
                     android:layout_height="wrap_content"
                     android:text="ENCUESTAR"
                     android:textAlignment="center"
-                    android:textColor="#FFF"
+                    android:textColor="#FFFFFF"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/text_view_preguntas"
+                    android:id="@+id/texto_preguntas"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="S/. PRUEBA"
                     android:textAlignment="center"
-                    android:textColor="#63B041"
+                    android:textColor="#006400"
                     android:textSize="25sp"
                     android:textStyle="bold" />
 
@@ -288,14 +291,14 @@
                     android:layout_height="wrap_content"
                     android:text="CONTINUAR"
                     android:textAlignment="center"
-                    android:textColor="#FFF"
+                    android:textColor="#FFFFFF"
                     android:textSize="20sp"
                     android:textStyle="bold" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
-    <!-- Chart Section -->
+    <!-- Sección de Gráficos -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -304,7 +307,7 @@
         android:gravity="center">
 
         <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/chart1"
+            android:id="@+id/grafico1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
