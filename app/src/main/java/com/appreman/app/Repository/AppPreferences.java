@@ -7,7 +7,8 @@ public class AppPreferences {
     public static final String APP_PREFERENCES = "app_preferences";
     public static final String KEY_NOMBRE_EMPRESA = "nombre_empresa";
     public static final String KEY_ID_EMPRESA = "id_empresa";
-
+    public static final String KEY_NOMBRE_ENCUESTADO = "nombre_encuestado";
+    public static final String KEY_CARGO_ENCUESTADO = "cargo_encuestado";
 
     private final SharedPreferences sharedPreferences;
 
@@ -16,7 +17,6 @@ public class AppPreferences {
     }
 
     // Obtener el nombre de la empresa
-
     public String getNombreEmpresa() {
         return sharedPreferences.getString(KEY_NOMBRE_EMPRESA, "");
     }
@@ -36,4 +36,23 @@ public class AppPreferences {
         sharedPreferences.edit().putInt(KEY_ID_EMPRESA, idEmpresa).apply();
     }
 
+    // Obtener el nombre del encuestado
+    public String getNombreEncuestado() {
+        return sharedPreferences.getString(KEY_NOMBRE_ENCUESTADO, "");
+    }
+
+    // Guardar el nombre del encuestado
+    public void setNombreEncuestado(String nombreEncuestado) {
+        sharedPreferences.edit().putString(KEY_NOMBRE_ENCUESTADO, nombreEncuestado).apply();
+    }
+
+    // Obtener el cargo del encuestado
+    public String getCargoEncuestado() {
+        return sharedPreferences.getString(KEY_CARGO_ENCUESTADO, "");
+    }
+
+    // Guardar el cargo del encuestado
+    public void setCargoEncuestado(String cargoEncuestado) {
+        sharedPreferences.edit().putString(KEY_CARGO_ENCUESTADO, cargoEncuestado).apply();
+    }
 }

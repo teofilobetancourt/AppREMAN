@@ -44,13 +44,19 @@ public class ElementoAdapter extends RecyclerView.Adapter<ElementoAdapter.Motivo
 
         String nombreEmpresa = obtenerNombreEmpresaDesdePreferencias();
 
+        // Obtener nombre_encuestado y cargo_encuestado desde SharedPreferences
+        AppPreferences appPreferences = new AppPreferences(context);
+        String nombreEncuestado = appPreferences.getNombreEncuestado();
+        String cargoEncuestado = appPreferences.getCargoEncuestado();
+
         DBHelper v_db_helper = new DBHelper(context);
         List<Pregunta> mPreguntas = v_db_helper.getPreguntasElemento(items.get(i).getNumero());
 
         RecyclerView.LayoutManager lManager = new LinearLayoutManager(context);
         holder.recycler.setLayoutManager(lManager);
 
-        PreguntaAdapter adapter = new PreguntaAdapter(context, mPreguntas, nombreEmpresa);
+        // Pasar nombreEncuestado y cargoEncuestado al constructor de PreguntaAdapter
+        PreguntaAdapter adapter = new PreguntaAdapter(context, mPreguntas, nombreEmpresa, nombreEncuestado, cargoEncuestado);
         holder.recycler.setAdapter(adapter);
     }
 

@@ -6,10 +6,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -17,13 +22,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale; // Importar la clase Locale
 
 
@@ -31,12 +41,19 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.appreman.app.Activity.EncuestasActivity;
+import com.appreman.app.Adapter.ElementosAdapter;
 import com.appreman.app.Database.DBHelper;
 import com.appreman.app.Email.Credentials;
 import com.appreman.app.Email.MailSender;
 import com.appreman.app.Email.PendingEmail;
+import com.appreman.app.Models.Elemento;
+import com.appreman.app.Models.Empresa;
+import com.appreman.app.Models.Grupo;
+import com.appreman.app.Models.Operador;
 import com.appreman.app.Repository.AppPreferences;
 import com.appreman.app.Repository.WebSocketManager;
 import com.appreman.appreman.R;
@@ -56,8 +73,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import android.widget.ProgressBar;
+import android.widget.ViewFlipper;
 
 public class AsignarFragment extends Fragment {
 
@@ -70,22 +89,15 @@ public class AsignarFragment extends Fragment {
     private MaterialCardView cardPotencial;
     private MaterialCardView cardAmbas;
     private MaterialCardView cardContinuar;
-    private TextView textBalanceTotal;
     private LineChart lineChart;
     private ImageView menuIcon;
     private ImageView notifi;
-    private TextView notificationText;
-    private ProgressBar progressBar;
     private AlertDialog progressDialog;
     private boolean primerIntentoSinConexion = true;
     private View notificationBadge;
     private String notificationMessage;
-    // Variable para almacenar las notificaciones
     private List<String> notificationMessages = new ArrayList<>();
     private String email; // Variable para almacenar el email
-
-
-    private WebSocketManager webSocketManager;
 
     public static AsignarFragment newInstance() {
         AsignarFragment fragment = new AsignarFragment();
@@ -102,19 +114,11 @@ public class AsignarFragment extends Fragment {
         dbHelper = new DBHelper(requireActivity());
         appPreferences = new AppPreferences(requireActivity());
 
-        spinner = view.findViewById(R.id.spinner_empresas);
-        List<String> empresaNames = dbHelper.getAllEmpresaNames();
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(requireActivity(), R.layout.spinner_dropdown_item, empresaNames);
-        spinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-
-        spinner.setAdapter(spinnerAdapter);
-
         cardActual = view.findViewById(R.id.text_actual);
         cardPotencial = view.findViewById(R.id.tarjeta_potencial);
         cardAmbas = view.findViewById(R.id.tarjeta_ambas);
         cardContinuar = view.findViewById(R.id.tarjeta_continuar);
 
-        textBalanceTotal = view.findViewById(R.id.texto_balance_total);
         lineChart = view.findViewById(R.id.grafico1);
         menuIcon = view.findViewById(R.id.icono_menu);
         notifi = view.findViewById(R.id.icono_notificacion);
@@ -158,38 +162,14 @@ public class AsignarFragment extends Fragment {
             email = args.getString("email"); // Obtener el email del Bundle
             if (empresaName != null) {
                 appPreferences.setNombreEmpresa(empresaName);
-                updateFinancialData(view, empresaName); // Pasar la vista al método
             }
         }
 
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                String selectedEmpresa = (String) parentView.getItemAtPosition(position);
-                appPreferences.setNombreEmpresa(selectedEmpresa);
-                updateFinancialData(view, selectedEmpresa); // Pasar la vista al método
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // Handle case where nothing is selected
-            }
-        });
-
-        String lastSelectedEmpresa = appPreferences.getNombreEmpresa();
-        if (lastSelectedEmpresa != null && !lastSelectedEmpresa.isEmpty()) {
-            int spinnerPosition = spinnerAdapter.getPosition(lastSelectedEmpresa);
-            spinner.setSelection(spinnerPosition);
-        }
-
-        cardContinuar.setOnClickListener(v -> iniciarEncuestasActivity());
+        cardContinuar.setOnClickListener(v -> mostrarDialogoSeleccionEmpresa());
         menuIcon.setOnClickListener(this::showPopupMenu);
-
 
         return view;
     }
-
-
 
     // Método para actualizar el mensaje de notificación
     public void actualizarMensajeNotificacion(String email, Context context) {
@@ -214,7 +194,6 @@ public class AsignarFragment extends Fragment {
         if (selectedEmpresa != null && !selectedEmpresa.isEmpty()) {
             View view = getView(); // Obtener la vista actual del fragmento
             if (view != null) {
-                updateFinancialData(view, selectedEmpresa); // Pasar la vista y la empresa al método
             }
         }
     }
@@ -274,131 +253,7 @@ public class AsignarFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d("HomeFragment", "onDestroy called");
-    }
-
-    private void updateFinancialData(View view, String empresa) {
-        Map<String, Double> resultados = dbHelper.obtenerContadoresYPorcentajes(empresa);
-
-        // Obtener el número de respuestas respondidas para la empresa
-        int respuestasCount = dbHelper.getRespuestasCount(empresa);
-
-        // Obtener el total de preguntas utilizando el método getTotalPreguntasCount
-        int totalPreguntas = dbHelper.getTotalPreguntasCount();
-
-        double contadorActual = 0;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            contadorActual = resultados.getOrDefault("Actual", 0.0);
-        }
-        double contadorPotencial = 0;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            contadorPotencial = resultados.getOrDefault("Potencial", 0.0);
-        }
-        double contadorAmbas = 0;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            contadorAmbas = resultados.getOrDefault("Ambas", 0.0);
-        }
-
-        double porcentajeActual = (contadorActual / totalPreguntas) * 100;
-        double porcentajePotencial = (contadorPotencial / totalPreguntas) * 100;
-        double porcentajeAmbas = (contadorAmbas / totalPreguntas) * 100;
-
-        TextView textActual = view.findViewById(R.id.texto_actual);
-        TextView textPotencial = view.findViewById(R.id.texto_potencial);
-        TextView textAmbas = view.findViewById(R.id.texto_ambas);
-
-        textActual.setText(String.format("S/ %.2f (%.2f%%)", contadorActual, porcentajeActual));
-        textPotencial.setText(String.format("S/ %.2f (%.2f%%)", contadorPotencial, porcentajePotencial));
-        textAmbas.setText(String.format("S/ %.2f (%.2f%%)", contadorAmbas, porcentajeAmbas));
-
-        double total = contadorActual + contadorPotencial + contadorAmbas;
-        double totalPorcentaje = (total / totalPreguntas) * 100;
-
-        textBalanceTotal.setText(String.format("S/ %.2f (%.2f%%)", total, totalPorcentaje));
-
-        // Actualiza el TextView con la cantidad de preguntas respondidas y el total
-        TextView textViewPreguntas = view.findViewById(R.id.texto_preguntas);
-        textViewPreguntas.setText(String.format("%d de %d", respuestasCount, totalPreguntas));
-
-        Log.d("AsignarFragment", "setupChart: lineChart = " + lineChart);
-        Log.d("AsignarFragment", "setupChart: respuestasPorDia = " + dbHelper.obtenerRespuestasPorDia(empresa));
-        Log.d("AsignarFragment", "setupChart: totalPreguntas = " + totalPreguntas);
-
-        setupChart(lineChart, dbHelper.obtenerRespuestasPorDia(empresa), totalPreguntas);    }
-
-    private void setupChart(LineChart chart, Map<String, Integer> respuestasPorDia, int totalPreguntas) {
-        List<Entry> entriesRespuestas = new ArrayList<>();
-        List<Entry> entriesObjetivo = new ArrayList<>();
-        String[] dias = {"Lunes", "Martes", "Miércoles", "Jueves", "Viernes"};
-        int index = 0;
-        int preguntasPorDia = totalPreguntas / dias.length;
-
-        Log.d("setupChart", "Total Preguntas: " + totalPreguntas);
-        Log.d("setupChart", "Preguntas por Día: " + preguntasPorDia);
-
-        for (String dia : dias) {
-            int respuestas = respuestasPorDia.containsKey(dia) ? respuestasPorDia.get(dia) : 0;
-            Log.d("setupChart", "Día: " + dia + ", Respuestas: " + respuestas);
-            entriesRespuestas.add(new Entry(index, respuestas));
-            entriesObjetivo.add(new Entry(index, preguntasPorDia));
-            index++;
-        }
-
-        LineDataSet dataSetRespuestas = new LineDataSet(entriesRespuestas, "Respuestas por día");
-        dataSetRespuestas.setColor(Color.BLUE);
-        dataSetRespuestas.setLineWidth(2.5f);
-        dataSetRespuestas.setCircleColor(ColorTemplate.getHoloBlue());
-        dataSetRespuestas.setCircleRadius(5f);
-        dataSetRespuestas.setFillColor(ColorTemplate.getHoloBlue());
-        dataSetRespuestas.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
-        dataSetRespuestas.setDrawValues(true);
-
-        LineDataSet dataSetObjetivo = new LineDataSet(entriesObjetivo, "Objetivo diario");
-        dataSetObjetivo.setColor(Color.RED);
-        dataSetObjetivo.setLineWidth(2.5f);
-        dataSetObjetivo.setCircleColor(ColorTemplate.getHoloBlue());
-        dataSetObjetivo.setCircleRadius(5f);
-        dataSetObjetivo.setFillColor(ColorTemplate.getHoloBlue());
-        dataSetObjetivo.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
-        dataSetObjetivo.setDrawValues(true);
-
-        LineData lineData = new LineData(dataSetRespuestas, dataSetObjetivo);
-        chart.setData(lineData);
-
-        XAxis xAxis = chart.getXAxis();
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(dias));
-        xAxis.setGranularity(1f);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-
-        YAxis leftAxis = chart.getAxisLeft();
-        leftAxis.setGranularity(1f);
-        leftAxis.setAxisMinimum(0f);
-        leftAxis.setAxisMaximum(totalPreguntas);
-
-        chart.getAxisRight().setEnabled(false);
-        chart.getDescription().setEnabled(false);
-        chart.setTouchEnabled(true);
-        chart.setDragEnabled(true);
-        chart.setScaleEnabled(true);
-        chart.setPinchZoom(true);
-        chart.invalidate(); // Refresca el gráfico
-    }
-
-    @SuppressLint("LongLogTag")
-    private void iniciarEncuestasActivity() {
-        String selectedEmpresa = (String) spinner.getSelectedItem();
-        if (selectedEmpresa != null && !selectedEmpresa.isEmpty()) {
-
-            Log.d("iniciarEncuestasActivity", "Correo de inicio de encuesta enviado para la empresa: " + selectedEmpresa);
-
-            // Iniciar la actividad de encuestas
-            Intent intent = new Intent(getActivity(), EncuestasActivity.class);
-            intent.putExtra("empresa_nombre", selectedEmpresa);
-            intent.putExtra("email", email);
-            startActivity(intent);
-        } else {
-            Log.w("iniciarEncuestasActivity", "No se seleccionó ninguna empresa.");
-        }
+        Log.d("AsignarFragment", "onDestroy called");
     }
 
     private void showPopupMenu(View view) {
@@ -493,4 +348,324 @@ public class AsignarFragment extends Fragment {
             }
         }
     }
+
+    private void mostrarDialogoSeleccionEmpresa() {
+        // Obtener la lista de empresas desde la base de datos
+        List<Empresa> empresas = dbHelper.getAllEmpresas(); // Suponiendo que tienes un método que devuelve una lista de objetos Empresa
+        String[] empresasArray = new String[empresas.size()];
+        final int[] empresaIds = new int[empresas.size()];
+
+        for (int i = 0; i < empresas.size(); i++) {
+            empresasArray[i] = empresas.get(i).getNombre();
+            empresaIds[i] = empresas.get(i).getId();
+        }
+
+        final String[] empresaSeleccionada = {null};
+        final int[] idEmpresaSeleccionada = {0};
+
+        // Crear un AlertDialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Seleccionar Empresa");
+
+        // Crear un LinearLayout para contener las vistas
+        LinearLayout layoutEmpresas = new LinearLayout(requireContext());
+        layoutEmpresas.setOrientation(LinearLayout.VERTICAL);
+        layoutEmpresas.setPadding(16, 16, 16, 16);
+
+        // ListView para seleccionar empresa con diseño de casillas de verificación
+        ListView listView = new ListView(requireContext());
+        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE); // Permitir selección única
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_checked, empresasArray);
+        listView.setAdapter(adapter);
+        layoutEmpresas.addView(listView);
+
+        // Actualizar el TextView cuando se selecciona una empresa
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            // Marcar la empresa seleccionada
+            listView.setItemChecked(position, true);
+
+            empresaSeleccionada[0] = empresasArray[position];
+            idEmpresaSeleccionada[0] = empresaIds[position];
+            mostrarDialogoSeleccionOperadores(empresaSeleccionada[0], idEmpresaSeleccionada[0]);
+        });
+
+        // Configurar el botón de cancelar
+        builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
+
+        // Mostrar el AlertDialog
+        builder.setView(layoutEmpresas);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void mostrarDialogoSeleccionOperadores(String empresaSeleccionada, int idEmpresaSeleccionada) {
+        // Obtener la lista de operadores desde la base de datos
+        List<Operador> operadores = dbHelper.getAllOperadores();
+        String[] operadoresArray = new String[operadores.size()];
+        boolean[] operadoresSeleccionados = new boolean[operadores.size()];
+        int[] operadoresIds = new int[operadores.size()];
+
+        for (int i = 0; i < operadores.size(); i++) {
+            operadoresArray[i] = operadores.get(i).getNombre() + " " + operadores.get(i).getApellido();
+            operadoresIds[i] = operadores.get(i).getId();
+        }
+
+        // Crear un AlertDialog para seleccionar operadores
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Seleccionar Operadores");
+
+        // Crear un LinearLayout para contener las vistas
+        LinearLayout layoutOperadores = new LinearLayout(requireContext());
+        layoutOperadores.setOrientation(LinearLayout.VERTICAL);
+        layoutOperadores.setPadding(16, 16, 16, 16);
+
+        // ListView para seleccionar operadores con diseño de casillas de verificación
+        ListView listView = new ListView(requireContext());
+        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE); // Permitir selección múltiple
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_multiple_choice, operadoresArray);
+        listView.setAdapter(adapter);
+        layoutOperadores.addView(listView);
+
+        // TextView para mostrar las selecciones del usuario
+        TextView textViewSelecciones = new TextView(requireContext());
+        textViewSelecciones.setPadding(16, 16, 16, 16);
+        textViewSelecciones.setTextSize(18);
+        textViewSelecciones.setTextColor(Color.DKGRAY);
+        textViewSelecciones.setBackgroundColor(Color.LTGRAY);
+        textViewSelecciones.setVisibility(View.VISIBLE); // Mostrar inicialmente
+
+        // Mostrar la selección inicial de la empresa
+        String seleccionInicial = "Empresa seleccionada: " + empresaSeleccionada;
+        SpannableString spannableStringInicial = new SpannableString(seleccionInicial);
+        spannableStringInicial.setSpan(new StyleSpan(Typeface.BOLD), 0, seleccionInicial.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableStringInicial.setSpan(new ForegroundColorSpan(Color.BLUE), seleccionInicial.indexOf(empresaSeleccionada), seleccionInicial.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textViewSelecciones.setText(spannableStringInicial);
+
+        // Añadir el TextView al final del LinearLayout
+        layoutOperadores.addView(textViewSelecciones);
+
+        // Actualizar el TextView cuando se seleccionen operadores
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            operadoresSeleccionados[position] = !operadoresSeleccionados[position];
+            listView.setItemChecked(position, operadoresSeleccionados[position]);
+
+            StringBuilder seleccionados = new StringBuilder("Empresa seleccionada: " + empresaSeleccionada + "\nOperadores seleccionados: ");
+            for (int i = 0; i < operadoresSeleccionados.length; i++) {
+                if (operadoresSeleccionados[i]) {
+                    seleccionados.append(operadoresArray[i]).append(", ");
+                }
+            }
+
+            if (seleccionados.length() > 0) {
+                seleccionados.setLength(seleccionados.length() - 2); // Eliminar la última coma y espacio
+            }
+
+            SpannableString spannableString = new SpannableString(seleccionados.toString());
+            int startIndex = seleccionados.indexOf("Operadores seleccionados: ") + "Operadores seleccionados: ".length();
+            int endIndex = seleccionados.length();
+            spannableString.setSpan(new ForegroundColorSpan(Color.BLUE), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            textViewSelecciones.setText(spannableString);
+            textViewSelecciones.setVisibility(View.VISIBLE); // Mostrar el texto cuando se selecciona algo
+        });
+
+        // Configurar el botón de siguiente
+        builder.setPositiveButton("Siguiente", (dialog, which) -> {
+            List<Integer> operadoresSeleccionadosList = new ArrayList<>();
+            List<String> operadoresNombresSeleccionadosList = new ArrayList<>();
+            for (int i = 0; i < operadoresSeleccionados.length; i++) {
+                if (operadoresSeleccionados[i]) {
+                    operadoresSeleccionadosList.add(operadoresIds[i]);
+                    operadoresNombresSeleccionadosList.add(operadoresArray[i]);
+                }
+            }
+            if (!operadoresSeleccionadosList.isEmpty()) {
+                // Llamar al método mostrarDialogoSeleccionElementos con los IDs de los operadores seleccionados
+                mostrarDialogoSeleccionElementos(idEmpresaSeleccionada, empresaSeleccionada, operadoresSeleccionadosList, operadoresNombresSeleccionadosList);
+            } else {
+                Toast.makeText(requireContext(), "Por favor, seleccione al menos un operador.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Configurar el botón de cancelar
+        builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
+
+        // Mostrar el AlertDialog
+        builder.setView(layoutOperadores);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void mostrarDialogoSeleccionElementos(int idEmpresa, String empresaSeleccionada, List<Integer> idsOperadores, List<String> nombresOperadores) {
+
+        List<Elemento> elementosTotales = dbHelper.getAllElementos(); // Obtener todos los elementos
+        Map<Integer, List<Elemento>> asignaciones = new HashMap<>();  // Mapa para las asignaciones
+        Set<Integer> elementosAsignados = new HashSet<>(); // IDs de elementos ya asignados
+
+        // Llenar el conjunto con IDs de elementos asignados
+        for (List<Elemento> lista : asignaciones.values()) {
+            for (Elemento elemento : lista) {
+                elementosAsignados.add(Integer.valueOf(elemento.getNumero())); // Asume que tienes un método getId()
+            }
+        }
+
+        // Filtrar los elementos disponibles para el primer operador seleccionado
+        int idOperadorInicial = idsOperadores.get(0);
+        List<Elemento> elementosDisponibles = new ArrayList<>();
+        for (Elemento elemento : elementosTotales) {
+            if (!elementosAsignados.contains(elemento.getNumero())) {
+                elementosDisponibles.add(elemento);
+            }
+        }
+
+        ElementosAdapter elementosAdapter = new ElementosAdapter(requireContext(), elementosDisponibles, asignaciones, idOperadorInicial);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Asignar Elementos");
+
+        LinearLayout layoutElementos = new LinearLayout(requireContext());
+        layoutElementos.setOrientation(LinearLayout.VERTICAL);
+        layoutElementos.setPadding(16, 16, 16, 16);
+
+        Spinner spinnerOperadores = new Spinner(requireContext());
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, nombresOperadores);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerOperadores.setAdapter(spinnerAdapter);
+        layoutElementos.addView(spinnerOperadores);
+
+        RecyclerView recyclerView = new RecyclerView(requireContext());
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerView.setAdapter(elementosAdapter);
+        layoutElementos.addView(recyclerView);
+
+        TextView textViewEmpresa = new TextView(requireContext());
+        textViewEmpresa.setPadding(16, 16, 16, 16);
+        textViewEmpresa.setTextSize(18);
+        textViewEmpresa.setTextColor(Color.DKGRAY);
+        textViewEmpresa.setBackgroundColor(Color.LTGRAY);
+        textViewEmpresa.setText("Empresa seleccionada: " + empresaSeleccionada);
+        layoutElementos.addView(textViewEmpresa);
+
+        TextView textViewSelecciones = new TextView(requireContext());
+        textViewSelecciones.setPadding(16, 16, 16, 16);
+        textViewSelecciones.setTextSize(18);
+        textViewSelecciones.setTextColor(Color.DKGRAY);
+        textViewSelecciones.setBackgroundColor(Color.LTGRAY);
+        textViewSelecciones.setVisibility(View.VISIBLE);
+        layoutElementos.addView(textViewSelecciones);
+
+        spinnerOperadores.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                int idOperadorSeleccionado = idsOperadores.get(position);
+                List<Elemento> elementosDisponiblesNuevo = new ArrayList<>();
+
+                for (Elemento elemento : elementosTotales) {
+                    if (!elementosAsignados.contains(elemento.getNumero()) || asignaciones.getOrDefault(idOperadorSeleccionado, new ArrayList<>()).contains(elemento)) {
+                        elementosDisponiblesNuevo.add(elemento);
+                    }
+                }
+
+                elementosAdapter.actualizarLista(elementosDisponiblesNuevo, idOperadorSeleccionado);
+                actualizarTextViewSelecciones(textViewSelecciones, empresaSeleccionada, elementosDisponiblesNuevo, asignaciones.getOrDefault(idOperadorSeleccionado, new ArrayList<>()));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        builder.setPositiveButton("Aceptar", (dialog, which) -> {
+            mostrarDialogoConfirmacionMultiple(idEmpresa, empresaSeleccionada, idsOperadores, nombresOperadores, asignaciones);
+        });
+
+        builder.setNegativeButton("Cancelar", (dialog, which) -> mostrarDialogoSeleccionOperadores(empresaSeleccionada, idEmpresa));
+
+        builder.setView(layoutElementos);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void mostrarDialogoConfirmacionMultiple(int idEmpresa, String empresaSeleccionada, List<Integer> idsOperadores, List<String> nombresOperadores, Map<Integer, List<Elemento>> asignaciones) {
+        Log.d("AsignarFragment", "mostrarDialogoConfirmacionMultiple llamado con: idEmpresa=" + idEmpresa + ", empresaSeleccionada=" + empresaSeleccionada + ", idsOperadores=" + idsOperadores.toString() + ", nombresOperadores=" + nombresOperadores.toString() + ", asignaciones=" + asignaciones.toString());
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Confirmación de Asignación");
+
+        StringBuilder mensaje = new StringBuilder("Empresa: " + empresaSeleccionada + "\n\nAsignaciones:\n");
+
+        for (int i = 0; i < idsOperadores.size(); i++) {
+            int idOperador = idsOperadores.get(i);
+            String nombreOperador = nombresOperadores.get(i);
+            List<Elemento> elementosAsignados = asignaciones.getOrDefault(idOperador, new ArrayList<>());
+
+            mensaje.append("Operador: ").append(nombreOperador).append("\nElementos:\n");
+
+            for (Elemento elemento : elementosAsignados) {
+                mensaje.append(elemento.getNumero()).append(". ").append(elemento.getNombre()).append("\n");
+            }
+            mensaje.append("\n");
+        }
+
+        builder.setMessage(mensaje.toString());
+
+        builder.setPositiveButton("Aceptar", (dialog, which) -> {
+            for (int i = 0; i < idsOperadores.size(); i++) {
+                int idOperador = idsOperadores.get(i);
+                String nombreOperador = nombresOperadores.get(i);
+                List<Elemento> elementosAsignados = asignaciones.getOrDefault(idOperador, new ArrayList<>());
+
+                if (!elementosAsignados.isEmpty()) {
+                    // Obtener los números completos de los elementos asignados (como String)
+                    List<String> numerosElementos = new ArrayList<>();
+                    for (Elemento elemento : elementosAsignados) {
+                        try {
+                            // Guardar el número tal cual como se recibe (incluyendo decimales)
+                            String numeroElemento = elemento.getNumero();  // El número se guarda tal como es
+                            numerosElementos.add(numeroElemento);
+                        } catch (Exception e) {
+                            Log.e("AsignarFragment", "Error al obtener el número del elemento: " + elemento.getNumero(), e);
+                        }
+                    }
+
+                    // Guardamos los números de los elementos (como String)
+                    dbHelper.guardarAsignar(String.valueOf(idEmpresa), nombreOperador, numerosElementos);
+                    Log.d("AsignarFragment", "Se ha guardado correctamente: Empresa: " + idEmpresa + ", Operador: " + idOperador + ", Elementos (números): " + numerosElementos.toString());
+                }
+            }
+            Toast.makeText(requireContext(), "Asignaciones confirmadas.", Toast.LENGTH_SHORT).show();
+        });
+
+        builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+
+
+
+
+    private void actualizarTextViewSelecciones(TextView textViewSelecciones, String empresaSeleccionada, List<Elemento> elementos, List<Elemento> elementosSeleccionados) {
+        StringBuilder seleccionados = new StringBuilder("Empresa seleccionada: " + empresaSeleccionada + "\nElementos seleccionados: ");
+        boolean hayElementosSeleccionados = !elementosSeleccionados.isEmpty();
+
+        for (Elemento elemento : elementosSeleccionados) {
+            seleccionados.append(elemento.getNumero()).append(". ").append(elemento.getNombre()).append(", ");
+        }
+
+        if (seleccionados.length() > 0) {
+            seleccionados.setLength(seleccionados.length() - 2); // Eliminar la última coma y espacio
+        }
+
+        SpannableString spannableString = new SpannableString(seleccionados.toString());
+        if (hayElementosSeleccionados) {
+            int startIndex = seleccionados.indexOf("Elementos seleccionados: ") + "Elementos seleccionados: ".length();
+            int endIndex = seleccionados.length();
+            spannableString.setSpan(new ForegroundColorSpan(Color.BLUE), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        textViewSelecciones.setText(spannableString);
+        textViewSelecciones.setVisibility(View.VISIBLE); // Mostrar el texto cuando se selecciona algo
+    }
+
 }

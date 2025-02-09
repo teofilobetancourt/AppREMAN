@@ -28,6 +28,9 @@ public class Opcion {
     @ColumnInfo(name = "respondida")
     private boolean respondida;
 
+    @ColumnInfo(name = "comentario")
+    private String comentario;  // Nueva columna para el comentario
+
     public Opcion() {
         this.numero = "";
         this.nombre = "";
@@ -35,8 +38,20 @@ public class Opcion {
         this.seleccionada = false;
         this.nombreOpcion = "";
         this.respondida = false;
+        this.comentario = "";  // Inicializar el comentario
     }
 
+    public Opcion(String numero, String nombre, String pregunta, boolean seleccionada, boolean respondida, String nombreOpcion, String comentario) {
+        this.numero = numero;
+        this.nombre = nombre;
+        this.pregunta = pregunta;
+        this.seleccionada = seleccionada;
+        this.respondida = respondida;
+        this.nombreOpcion = nombreOpcion;
+        this.comentario = comentario;  // Inicializar el comentario
+    }
+
+    // Getters y setters
     public String getNumero() {
         return numero;
     }
@@ -83,5 +98,13 @@ public class Opcion {
 
     public void setRespondida(boolean respondida) {
         this.respondida = respondida;
+    }
+
+    public String getComentario() {
+        return comentario;
+    }
+
+    public void setComentario(String comentario) {
+        this.comentario = comentario;
     }
 }

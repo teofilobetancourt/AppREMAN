@@ -1,12 +1,16 @@
 package com.appreman.app.Adapter;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,10 +26,25 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
 
     private final List<Opcion> items;
     private final OpcionSelectionListener opcionSelectionListener;
+    private final Context context;
 
-    public OpcionAdapter(List<Opcion> items, OpcionSelectionListener opcionSelectionListener) {
-        this.items = items != null ? items : new ArrayList<>();
+    public OpcionAdapter(Context context, List<Opcion> items, OpcionSelectionListener opcionSelectionListener) {
+        this.context = context;
+        this.items = items != null ? new ArrayList<>(items) : new ArrayList<>();
         this.opcionSelectionListener = opcionSelectionListener;
+        agregarOpcionComentario();
+    }
+
+    private void agregarOpcionComentario() {
+        Opcion opcionComentario = new Opcion();
+        opcionComentario.setNumero("Comentario");
+        opcionComentario.setNombre("Agregar comentario");
+        opcionComentario.setPregunta("");
+        opcionComentario.setSeleccionada(false);
+        opcionComentario.setNombreOpcion("");
+        opcionComentario.setRespondida(false);
+        opcionComentario.setComentario("");
+        items.add(opcionComentario);
     }
 
     @NonNull
@@ -41,8 +60,9 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
         final Opcion opcion = items.get(position);
 
         // Configurar el texto de la opción dependiendo de si es "Actual" o "Potencial"
-
-        if (opcion.isSeleccionada()) {
+        if (opcion.getNumero().equals("Comentario")) {
+            holder.txtOpcion.setText(opcion.getNombre());
+        } else if (opcion.isSeleccionada()) {
             holder.txtOpcion.setText(opcion.getNombreOpcion() + " : " + opcion.getNumero().concat(".- ").concat(opcion.getNombre()));
         } else {
             holder.txtOpcion.setText(opcion.getNumero().concat(".- ").concat(opcion.getNombre()));
@@ -66,66 +86,90 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
 
         // Manejar la selección al hacer clic en el texto de la opción
         holder.txtOpcion.setOnClickListener(v -> handleOptionSelection(opcion));
-        if (opcion.isRespondida()) {
-            holder.itemView.setBackgroundColor(Color.LTGRAY);
-        } else {
-            holder.itemView.setBackgroundColor(Color.TRANSPARENT);
-        }
-
-        holder.txtOpcion.setOnClickListener(v -> handleOptionSelection(opcion));
-
-        holder.checkBox.setOnCheckedChangeListener(null);
-        holder.checkBox.setChecked(opcion.isSeleccionada());
-
-        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> handleOptionSelection(opcion));
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private void handleOptionSelection(Opcion selectedOption) {
-        int selectedCount = getSelectedCount();
+        if (selectedOption.getNumero().equals("Comentario")) {
+            mostrarDialogoComentario(selectedOption);
+        } else {
+            int selectedCount = getSelectedCount();
 
-        if (selectedCount == 2) {
-            uncheckOldestSelectedOptions(selectedOption.getPregunta());
-        }
-
-        if (!selectedOption.isSeleccionada() || selectedOption.getNombreOpcion().isEmpty()) {
-            selectedOption.setSeleccionada(!selectedOption.isSeleccionada());
-
-            if (selectedOption.isSeleccionada()) {
-                if (selectedCount == 0) {
-                    selectedOption.setNombreOpcion("Actual");
-                } else if (selectedCount == 1) {
-                    selectedOption.setNombreOpcion("Potencial");
-                } else {
-                    Opcion actualAnterior = obtenerOpcionActualSeleccionada();
-                    Opcion potencialAnterior = obtenerOpcionPotencialSeleccionada();
-
-                    if (actualAnterior != null && actualAnterior.isSeleccionada()) {
-                        actualAnterior.setSeleccionada(false);
-                        actualAnterior.setNombreOpcion("");
-                    }
-
-                    if (potencialAnterior != null && potencialAnterior.isSeleccionada()) {
-                        potencialAnterior.setSeleccionada(false);
-                        potencialAnterior.setNombreOpcion("");
-                    }
-
-                    selectedOption.setNombreOpcion("Actual");
-                }
-            } else {
-                selectedOption.setNombreOpcion("");
+            if (selectedCount == 2) {
+                uncheckOldestSelectedOptions(selectedOption.getPregunta());
             }
 
-            notifyDataSetChanged();
+            if (!selectedOption.isSeleccionada() || selectedOption.getNombreOpcion().isEmpty()) {
+                selectedOption.setSeleccionada(!selectedOption.isSeleccionada());
 
-            if (opcionSelectionListener != null) {
-                opcionSelectionListener.onOpcionSelected(
-                        obtenerOpcionActualSeleccionada(),
-                        obtenerOpcionPotencialSeleccionada());
+                if (selectedOption.isSeleccionada()) {
+                    if (selectedCount == 0) {
+                        selectedOption.setNombreOpcion("Actual");
+                    } else if (selectedCount == 1) {
+                        selectedOption.setNombreOpcion("Potencial");
+                    } else {
+                        Opcion actualAnterior = obtenerOpcionActualSeleccionada();
+                        Opcion potencialAnterior = obtenerOpcionPotencialSeleccionada();
+
+                        if (actualAnterior != null && actualAnterior.isSeleccionada()) {
+                            actualAnterior.setSeleccionada(false);
+                            actualAnterior.setNombreOpcion("");
+                        }
+
+                        if (potencialAnterior != null && potencialAnterior.isSeleccionada()) {
+                            potencialAnterior.setSeleccionada(false);
+                            potencialAnterior.setNombreOpcion("");
+                        }
+
+                        selectedOption.setNombreOpcion("Actual");
+                    }
+                } else {
+                    selectedOption.setNombreOpcion("");
+                }
+
+                // Evitar que la palabra "Comentario" se guarde en las opciones "Actual" y "Potencial"
+                if (selectedOption.getNumero().equals("Comentario")) {
+                    selectedOption.setNombreOpcion("");
+                }
+
+                notifyDataSetChanged();
+
+                if (opcionSelectionListener != null) {
+                    opcionSelectionListener.onOpcionSelected(
+                            obtenerOpcionActualSeleccionada(),
+                            obtenerOpcionPotencialSeleccionada());
+                }
             }
         }
     }
 
+    private void mostrarDialogoComentario(Opcion opcion) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Agregar comentario");
+
+        final EditText input = new EditText(context);
+        input.setText(opcion.getComentario());
+        builder.setView(input);
+
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            String comentario = input.getText().toString();
+            opcion.setComentario(comentario);
+            opcion.setNombre("Comentario: " + comentario);
+            opcion.setSeleccionada(true);
+            notifyDataSetChanged();  // Notificar al adaptador que los datos han cambiado
+            Toast.makeText(context, "Comentario guardado", Toast.LENGTH_SHORT).show();
+        });
+
+        builder.setNegativeButton("Cancelar", (dialog, which) -> {
+            opcion.setComentario("");
+            opcion.setNombre("Agregar comentario");
+            opcion.setSeleccionada(false);
+            notifyDataSetChanged();  // Notificar al adaptador que los datos han cambiado
+            dialog.cancel();
+        });
+
+        builder.show();
+    }
 
     private void uncheckOldestSelectedOptions(String pregunta) {
         for (Opcion option : items) {

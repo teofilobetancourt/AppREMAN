@@ -7,8 +7,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +22,7 @@ import com.appreman.app.Database.DBHelper;
 import com.appreman.app.Email.Credentials;
 import com.appreman.app.Email.MailSender;
 import com.appreman.app.Fragments.ElementosFragment;
+import com.appreman.app.Models.Elemento;
 import com.appreman.app.Models.Grupo;
 import com.appreman.app.Repository.AppPreferences;
 import com.appreman.appreman.R;
@@ -27,9 +31,13 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
+
 
 public class EncuestasActivity extends AppCompatActivity {
 
@@ -38,7 +46,6 @@ public class EncuestasActivity extends AppCompatActivity {
     private String nombreEmpresa;
     private Spinner spinner;
     private String email;
-
 
     public static void start(Context context) {
         Intent intent = new Intent(context, EncuestasActivity.class);
@@ -52,37 +59,49 @@ public class EncuestasActivity extends AppCompatActivity {
         ActivityEncuestasBinding binding = ActivityEncuestasBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Configura la barra de herramientas
         setSupportActionBar(binding.toolbar);
         binding.toolbar.setTitle(getTitle());
 
-        // Obtener el email desde el Intent
         email = getIntent().getStringExtra("email");
         Log.d("EncuestasActivity", "Email obtenido en EncuestasActivity es: " + email);
 
-        // Inicializa los componentes de la vista
         viewPager = binding.viewPager;
-        FloatingActionButton fabNotification = binding.fabNotification; // Suponiendo que fabNotification está en el binding
+        FloatingActionButton fabNotification = binding.fabNotification;
 
-        // Configura el adaptador para el ViewPager
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), 0);
         dbHelper = new DBHelper(getApplicationContext());
 
-        // Obtiene la lista de grupos desde la base de datos
-        List<Grupo> grupos = dbHelper.getAllGrupos();
+        // Obtener la lista de elementos desde la base de datos
+        List<Elemento> elementos = dbHelper.getAllElementos();
 
-        // Añade los fragmentos al adaptador
-        for (Grupo grupo : grupos) {
-            ElementosFragment fragment = ElementosFragment.newInstance(grupo.getNumero());
-            viewPagerAdapter.addFragment(fragment, grupo.getNombre());
+        // Usar un TreeMap para agrupar los elementos por su número completo (por ejemplo, "1.1", "1.2", "2.1")
+        Map<String, List<Elemento>> elementosAgrupados = new TreeMap<>();
+
+        for (Elemento elemento : elementos) {
+            String claveGrupo = elemento.getNumero();  // El número completo como String (por ejemplo, "1.1", "1.2")
+            elementosAgrupados.putIfAbsent(claveGrupo, new ArrayList<>());
+            elementosAgrupados.get(claveGrupo).add(elemento);
         }
 
-        // Configura el ViewPager y TabLayout
+        // Agregar los fragmentos por cada grupo de elementos
+        for (Map.Entry<String, List<Elemento>> entry : elementosAgrupados.entrySet()) {
+            String grupo = entry.getKey();  // La clave es el número completo como String (por ejemplo, "1.1")
+            List<Elemento> elementosGrupo = entry.getValue();
+
+            // Obtener el nombre del primer elemento del grupo (si existe)
+            String nombreElemento = elementosGrupo.isEmpty() ? "Sin Nombre" : elementosGrupo.get(0).getNombre();
+
+            // Crear el fragmento pasando el nombre del primer elemento
+            ElementosFragment fragment = ElementosFragment.newInstance(grupo, nombreElemento);
+
+            // Agregar el fragmento al ViewPager con el nombre del primer elemento
+            viewPagerAdapter.addFragment(fragment, nombreElemento);
+        }
+
         viewPager.setAdapter(viewPagerAdapter);
         binding.tabLayoutGrupos.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(0);
 
-        // Configura el listener para cambios en las pestañas
         binding.tabLayoutGrupos.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -98,26 +117,70 @@ public class EncuestasActivity extends AppCompatActivity {
             }
         });
 
-        // Configura el listener para el FloatingActionButton
         fabNotification.setOnClickListener(v -> showGroupInfoDialog());
 
-        // Obtén el nombre de la empresa desde AppPreferences
         AppPreferences appPreferences = new AppPreferences(this);
         nombreEmpresa = appPreferences.getNombreEmpresa();
 
-        // Obtén el nombre del representante de la empresa
         String representanteEmpresa = dbHelper.getRepresentanteEmpresa(nombreEmpresa);
-
-        // Registrar la fecha y hora de inicio
         dbHelper.insertarTiempo(nombreEmpresa, true);
 
-        // Enviar correo electrónico al iniciar la encuesta
         String subject = "Inicio de Encuesta";
         String messageBody = "Se ha iniciado una nueva encuesta para: " + nombreEmpresa +
                 "\nRepresentante de la Empresa: " + representanteEmpresa +
                 "\nFecha y hora de inicio: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
-        String emailOperador = email; // Obtén el email del operador
-        sendEmail(subject, messageBody, emailOperador);
+        sendEmail(subject, messageBody, email);
+
+        showEncuestadoDialog();
+    }
+
+
+
+    private void showEncuestadoDialog() {
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_encuestado, null);
+
+        EditText inputNombre = dialogView.findViewById(R.id.input_nombre_encuestado);
+        EditText inputCargo = dialogView.findViewById(R.id.input_cargo_encuestado);
+
+        // Recuperar los valores almacenados en SharedPreferences
+        AppPreferences appPreferences = new AppPreferences(this);
+        final String nombreEncuestado = appPreferences.getNombreEncuestado();
+        final String cargoEncuestado = appPreferences.getCargoEncuestado();
+
+        // Establecer los valores recuperados en los EditText
+        inputNombre.setText(nombreEncuestado);
+        inputCargo.setText(cargoEncuestado);
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("Información del Encuestado")
+                .setView(dialogView)
+                .setPositiveButton("OK", null) // Pasar null aquí para manejar el clic manualmente
+                .setNegativeButton("Cancelar", (dialogInterface, which) -> {
+                    dialogInterface.dismiss();
+                    finish(); // Cerrar la actividad si se cancela
+                })
+                .setCancelable(false)
+                .create();
+
+        dialog.setOnShowListener(dialogInterface -> {
+            Button button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            button.setOnClickListener(view -> {
+                String nuevoNombreEncuestado = inputNombre.getText().toString();
+                String nuevoCargoEncuestado = inputCargo.getText().toString();
+
+                if (nuevoNombreEncuestado.isEmpty() || nuevoCargoEncuestado.isEmpty()) {
+                    Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Almacenar los valores en SharedPreferences
+                    appPreferences.setNombreEncuestado(nuevoNombreEncuestado);
+                    appPreferences.setCargoEncuestado(nuevoCargoEncuestado);
+                    dialog.dismiss();
+                }
+            });
+        });
+
+        dialog.show();
     }
 
     @Override
@@ -136,6 +199,28 @@ public class EncuestasActivity extends AppCompatActivity {
                 "\nNúmero de preguntas respondidas: " + respuestasCount;
         String emailOperador = email; // Obtén el email del operador
         sendEmail(subject, messageBody, emailOperador);
+    }
+
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setTitle("Confirmación")
+                .setMessage("¿Deseas pausar o finalizar la encuesta?")
+                .setPositiveButton("Finalizar", (dialog, which) -> {
+                    // Limpiar los campos del encuestado
+                    AppPreferences appPreferences = new AppPreferences(this);
+                    appPreferences.setNombreEncuestado("");
+                    appPreferences.setCargoEncuestado("");
+                    finish();
+                })
+                .setNegativeButton("Pausar", (dialog, which) -> {
+                    // No limpiar los campos del encuestado
+                    finish();
+                })
+                .setNeutralButton("Cancelar", (dialog, which) -> dialog.dismiss())
+                .setCancelable(false)
+                .show();
     }
 
     private void showGroupInfoDialog() {

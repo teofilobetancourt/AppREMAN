@@ -60,13 +60,12 @@
         </FrameLayout>
     </LinearLayout>
 
-    <!-- Resumen Financiero -->
+    <!-- spinner empresas -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <!-- Primer Item Financiero -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/tarjeta_actual"
             android:layout_width="0dp"
@@ -90,26 +89,34 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ACTUAL"
+                    android:text="EMPRESA"
                     android:textAlignment="center"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/texto_actual"
+                    android:id="@+id/texto_empresa"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="S/ 25.326"
+                    android:text="Empresas"
                     android:textStyle="bold"
                     android:textAlignment="center"
                     android:textSize="25sp"
-                    android:textColor="#006400" />
+                    android:textColor="#63B041" />
+
+                <!-- Spinner para seleccionar operador -->
+                <Spinner
+                    android:id="@+id/spinner_empresa"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:popupBackground="#87CEFA"
+                    android:spinnerMode="dropdown" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Segundo Item Financiero -->
+        <!-- SPINNER OPERADOR-->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/tarjeta_potencial"
             android:layout_width="0dp"
@@ -133,26 +140,33 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="POTENCIAL"
+                    android:text="OPERADOR"
                     android:textAlignment="center"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/texto_potencial"
+                    android:id="@+id/texto_operador"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
+                    android:text="Operadores"
                     android:textStyle="bold"
-                    android:text="S/ 10.368"
                     android:textAlignment="center"
                     android:textSize="25sp"
-                    android:textColor="#006400" />
+                    android:textColor="#63B041" />
+
+                <Spinner
+                    android:id="@+id/spinner_operador"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:spinnerMode="dropdown"
+                    android:popupBackground="#FFFFFF" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Tercer Item Financiero -->
+        <!-- SPINNER ELEMENTO -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/tarjeta_ambas"
             android:layout_width="0dp"
@@ -176,73 +190,125 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="AMBAS"
+                    android:text="ELEMENTO"
                     android:textAlignment="center"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/texto_ambas"
+                    android:id="@+id/texto_elemento"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="S/ 50.365"
+                    android:text="Elementos"
                     android:textStyle="bold"
                     android:textAlignment="center"
                     android:textSize="25sp"
                     android:textColor="#006400" />
+
+                <!-- Spinner para seleccionar operador -->
+                <Spinner
+                    android:id="@+id/spinner_elemento"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:popupBackground="#87CEFA"
+                    android:spinnerMode="dropdown" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
-    <!-- Balance Total -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_margin="5dp"
-        android:gravity="center">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+        <!-- CardView para EMPRESA -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="10dp"
             android:background="#87CEFA"
-            android:orientation="vertical"
             android:padding="10dp"
-            android:gravity="center">
+            android:clickable="true"
+            android:focusable="true">
 
-            <!-- Spinner para seleccionar empresa -->
-            <Spinner
-                android:id="@+id/spinner_empresas"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:popupBackground="#87CEFA"
-                android:spinnerMode="dropdown" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="#87CEFA"
+                android:gravity="center">
 
-            <!-- Espacio para el balance total debajo del Spinner -->
-            <TextView
-                android:id="@+id/texto_balance_total"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="S/. 32.365"
-                android:textColor="#006400"
-                android:textSize="25sp"
-                android:textStyle="bold"
-                android:textAlignment="center" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="AGREGAR"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"
+                    android:textAlignment="center" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="BALANCE TOTAL"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="#FFFFFF"
-                android:textAlignment="center" />
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/texto_agregar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Empresas"
+                    android:textStyle="bold"
+                    android:textAlignment="center"
+                    android:textSize="25sp"
+                    android:textColor="#63B041" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- CardView para OPERADOR -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="10dp"
+            android:background="#87CEFA"
+            android:padding="10dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="#87CEFA"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="AGREGAR"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/texto_agregar_operador"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Operador"
+                    android:textStyle="bold"
+                    android:textAlignment="center"
+                    android:textSize="25sp"
+                    android:textColor="#63B041" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
-    <!-- Detalles de Ventas -->
+    <!-- ASIGNAR ELEMENTO A OPERADOR -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="150dp"
@@ -270,7 +336,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ENCUESTAR"
+                    android:text="ASIGNAR"
                     android:textAlignment="center"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp"
@@ -280,7 +346,7 @@
                     android:id="@+id/texto_preguntas"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="S/. PRUEBA"
+                    android:text="Elementos"
                     android:textAlignment="center"
                     android:textColor="#006400"
                     android:textSize="25sp"
@@ -289,7 +355,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="CONTINUAR"
+                    android:text="DESPLEGAR"
                     android:textAlignment="center"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp"

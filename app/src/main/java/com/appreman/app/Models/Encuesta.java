@@ -9,12 +9,12 @@ public class Encuesta {
     public int id;
     public String nombreEmpresa;
     public String idOperador;
-    public String fechaRespuesta;
+    public String fecha_respuesta;
 
     public Encuesta(String nombreEmpresa, String idOperador, String fechaRespuesta) {
         this.nombreEmpresa = nombreEmpresa;
         this.idOperador = idOperador;
-        this.fechaRespuesta = fechaRespuesta;
+        this.fecha_respuesta = fechaRespuesta;
     }
 
     // Getters y setters
@@ -43,10 +43,10 @@ public class Encuesta {
     }
 
     public String getFechaRespuesta() {
-        return fechaRespuesta;
+        return fecha_respuesta;
     }
 
     public void setFechaRespuesta(String fechaRespuesta) {
-        this.fechaRespuesta = fechaRespuesta;
+        this.fecha_respuesta = fechaRespuesta;
     }
 }

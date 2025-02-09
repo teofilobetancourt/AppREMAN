@@ -26,6 +26,7 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+        coreLibraryDesugaringEnabled true // Habilita la desugarización
     }
 
     buildFeatures {
@@ -69,4 +70,5 @@ dependencies {
     }
 
     annotationProcessor "androidx.room:room-compiler:2.6.1"
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3' // Agrega esta dependencia
 }

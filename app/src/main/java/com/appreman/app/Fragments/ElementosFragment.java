@@ -9,9 +9,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.appreman.app.Adapter.ElementoAdapter;
+import com.appreman.app.Adapter.PreguntaAdapter;
 import com.appreman.app.Database.DBHelper;
-import com.appreman.app.Models.Elemento;
+import com.appreman.app.Models.Pregunta;
+import com.appreman.app.Repository.AppPreferences;
 import com.appreman.appreman.R;
 
 import java.util.List;
@@ -24,15 +25,18 @@ import java.util.List;
 public class ElementosFragment extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
-    private int mParam1;
+    private static final String ARG_PARAM2 = "param2";
+    private String mParam1;
+    private String elementoNombre;
 
     public ElementosFragment() {
     }
 
-    public static ElementosFragment newInstance(int param1) {
+    public static ElementosFragment newInstance(String param1, String nombreElemento) {
         ElementosFragment fragment = new ElementosFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, nombreElemento);
         fragment.setArguments(args);
         return fragment;
     }
@@ -41,7 +45,8 @@ public class ElementosFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getInt(ARG_PARAM1);
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            elementoNombre = getArguments().getString(ARG_PARAM2, "");
         }
     }
 
@@ -52,16 +57,26 @@ public class ElementosFragment extends Fragment {
 
         RecyclerView recycler = fragment.findViewById(R.id.recyclerview);
 
+        String numeroElemento = String.valueOf(mParam1);
+
         DBHelper v_db_helper = new DBHelper(requireActivity().getApplicationContext());
-        List<Elemento> mElementos = v_db_helper.getElementosGrupo(mParam1);
+
+        List<Pregunta> preguntas = v_db_helper.getPreguntasElemento(numeroElemento);
 
         RecyclerView.LayoutManager lManager = new LinearLayoutManager(getContext());
         recycler.setLayoutManager(lManager);
 
-        ElementoAdapter adapter = new ElementoAdapter(mElementos, getContext());
+        // Obtener valores de SharedPreferences
+        AppPreferences appPreferences = new AppPreferences(requireActivity().getApplicationContext());
+        String nombreEmpresa = appPreferences.getNombreEmpresa();
+        String nombreEncuestado = appPreferences.getNombreEncuestado();
+        String cargoEncuestado = appPreferences.getCargoEncuestado();
+
+        PreguntaAdapter adapter = new PreguntaAdapter(getContext(), preguntas, nombreEmpresa, nombreEncuestado, cargoEncuestado);
         recycler.setAdapter(adapter);
+
+        getActivity().setTitle(elementoNombre);
 
         return fragment;
     }
-
 }

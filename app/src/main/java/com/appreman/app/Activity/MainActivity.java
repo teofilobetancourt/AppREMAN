@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -105,18 +106,22 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(networkChangeReceiver, filter);
 
         @SuppressLint({"MissingInflatedId", "LocalSuppress"}) FloatingActionButton fab = findViewById(R.id.asignar);
-        fab.setOnClickListener(v -> {
-            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_content);
-            if (currentFragment instanceof AsignarFragment) {
-                // Regresar al fragmento anterior
-                displayFragment(previousFragment, false, null);
-            } else {
-                // Guardar el fragmento actual como el anterior
-                previousFragment = currentFragment;
-                // Cargar el fragmento AsignarFragment
-                displayFragment(AsignarFragment.newInstance(), true, null);
-            }
-        });
+        if (!"admin".equals(email)) {
+            fab.setVisibility(View.GONE);
+        } else {
+            fab.setOnClickListener(v -> {
+                Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_content);
+                if (currentFragment instanceof AsignarFragment) {
+                    // Regresar al fragmento anterior
+                    displayFragment(previousFragment, false, null);
+                } else {
+                    // Guardar el fragmento actual como el anterior
+                    previousFragment = currentFragment;
+                    // Cargar el fragmento AsignarFragment
+                    displayFragment(AsignarFragment.newInstance(), true, null);
+                }
+            });
+        }
     }
 
     public void displayFragment(Fragment fragment, boolean addToBackStack, Bundle bundle) {
@@ -151,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (fragment instanceof SurveyFragment) {
             toolbar.setTitle("Survey");
         } else if (fragment instanceof AsignarFragment) {
-            toolbar.setTitle("Asignación de encuestas");
+            toolbar.setTitle("Asignación de encuesta");
         }
     }
 

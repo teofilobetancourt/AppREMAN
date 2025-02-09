@@ -20,6 +20,7 @@ import com.appreman.app.Models.Elemento;
 import com.appreman.app.Models.Empresa;
 import com.appreman.app.Models.Grupo;
 import com.appreman.app.Models.Opcion;
+import com.appreman.app.Models.Operador;
 import com.appreman.app.Models.Pregunta;
 import com.appreman.app.Models.Respuesta;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
@@ -139,7 +140,7 @@ public class DBHelper extends SQLiteAssetHelper {
     }
 
 
-    public List<Elemento> getElementosGrupo(int grupo){
+    public List<Elemento> getElementosGrupo(String grupo){
 
         List<Elemento> v_elementos = new ArrayList<>();
 
@@ -241,6 +242,28 @@ public class DBHelper extends SQLiteAssetHelper {
         return v_preguntas;
     }
 
+    @SuppressLint("Range")
+    public List<Elemento> getElementosAsignados(int idOperador, int idEmpresa) {
+        List<Elemento> elementos = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT e.* FROM elemento e " +
+                        "JOIN asignar a ON e.numero = a.id_elemento " +
+                        "WHERE a.id_operador = ? AND a.id_empresa = ?",
+                new String[]{String.valueOf(idOperador), String.valueOf(idEmpresa)});
+        if (cursor.moveToFirst()) {
+            do {
+                Elemento elemento = new Elemento();
+                elemento.setNumero(cursor.getString(cursor.getColumnIndex("numero")));
+                elemento.setNombre(cursor.getString(cursor.getColumnIndex("nombre")));
+                elemento.setGrupo(cursor.getInt(cursor.getColumnIndex("grupo")));
+                elementos.add(elemento);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return elementos;
+    }
+
 
 
 
@@ -313,7 +336,7 @@ public class DBHelper extends SQLiteAssetHelper {
         return empresas;
     }
 
-    public void insertarOpcionesEnRespuestas(String nombreEmpresa, String numeroPregunta, String opcionActual, String opcionPotencial, String fechaRespuesta) {
+    public void insertarOpcionesEnRespuestas(String nombreEmpresa, String numeroPregunta, String opcionActual, String opcionPotencial, String fechaRespuesta, String comentario, String nombreEncuestado, String cargoEncuestado) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         // Recuperar el elemento correspondiente a la pregunta
@@ -328,22 +351,31 @@ public class DBHelper extends SQLiteAssetHelper {
         Respuesta respuesta = new Respuesta(
                 nombreEmpresa,
                 numeroPregunta,
-                opcionActual,
-                opcionPotencial,
+                opcionActual != null ? opcionActual : "",  // Asegurar que la opción actual no sea nula
+                opcionPotencial != null ? opcionPotencial : "",  // Asegurar que la opción potencial no sea nula
                 elemento,
-                fechaRespuesta
+                fechaRespuesta,
+                comentario != null ? comentario : "",  // Asegurar que el comentario no sea nulo
+                nombreEncuestado != null ? nombreEncuestado : "",  // Asegurar que el nombre encuestado no sea nulo
+                cargoEncuestado != null ? cargoEncuestado : ""  // Asegurar que el cargo encuestado no sea nulo
         );
 
         // Insertar en la base de datos
         ContentValues values = new ContentValues();
         values.put("empresa", respuesta.getNombreEmpresa());
         values.put("pregunta", respuesta.getPregunta());
-        values.put("opcionActual", respuesta.getOpcionActual());
-        values.put("opcionPotencial", respuesta.getOpcionPotencial());
+        values.put("opcion_actual", respuesta.getOpcionActual().isEmpty() ? null : respuesta.getOpcionActual());  // Guardar null si la opción actual está vacía
+        values.put("opcion_potencial", respuesta.getOpcionPotencial().isEmpty() ? null : respuesta.getOpcionPotencial());  // Guardar null si la opción potencial está vacía
         values.put("elemento", respuesta.getElemento());
-        values.put("fechaRespuesta", respuesta.getFechaRespuesta());
+        values.put("fecha_respuesta", respuesta.getFechaRespuesta());
+        values.put("comentario", respuesta.getComentario());  // Guardar el comentario tal cual, incluso si está vacío
+        values.put("nombre_encuestado", respuesta.getNombreEncuestado());  // Guardar el nombre del encuestado
+        values.put("cargo_encuestado", respuesta.getCargoEncuestado());  // Guardar el cargo del encuestado
 
-        long insertResult = db.insert("respuestas", null, values);
+        // Log de los valores que se van a insertar
+        Log.d("DBHelper", "Insertando respuesta con valores: " + values.toString());
+
+        long insertResult = db.insert("respuesta", null, values);
 
         if (insertResult != -1) {
             Log.d("DBHelper", "Inserción exitosa en la tabla respuestas");
@@ -354,6 +386,45 @@ public class DBHelper extends SQLiteAssetHelper {
         db.close();
     }
 
+    public void updateAnswerInDatabase(String nombreEmpresa, String numeroPregunta, String opcionActual, String opcionPotencial, String comentario, String nombreEncuestado, String cargoEncuestado) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        // Verificar si las opciones están vacías
+        if (!opcionActual.equals("Comentario")) {
+            values.put("opcion_actual", opcionActual);
+        } else {
+            values.put("opcion_actual", "");
+        }
+
+        if (!opcionPotencial.equals("Comentario")) {
+            values.put("opcion_potencial", opcionPotencial);
+        } else {
+            values.put("opcion_potencial", "");
+        }
+
+        values.put("comentario", comentario);  // Agregar el comentario
+        values.put("nombre_encuestado", nombreEncuestado);  // Agregar el nombre del encuestado
+        values.put("cargo_encuestado", cargoEncuestado);  // Agregar el cargo del encuestado
+
+        // Log de los valores que se van a actualizar
+        Log.d("DBHelper", "Actualizando respuesta con valores: " + values.toString());
+
+        // Actualizar la respuesta en la base de datos
+        int rowsAffected = db.update(
+                "respuesta",
+                values,
+                "empresa=? AND pregunta=?",
+                new String[]{nombreEmpresa, numeroPregunta});
+
+        if (rowsAffected > 0) {
+            Log.d("DBHelper", "Respuesta actualizada correctamente en la tabla respuestas");
+        } else {
+            Log.e("DBHelper", "Error al actualizar la respuesta en la tabla respuestas");
+        }
+
+        db.close();
+    }
 
     // Método para obtener el elemento de una pregunta dada
     @SuppressLint("Range")
@@ -397,7 +468,7 @@ public class DBHelper extends SQLiteAssetHelper {
 
             // Ahora obtenemos las respuestas para esta pregunta y empresa
             Cursor respuestaCursor = v_db.rawQuery(
-                    "SELECT opcionActual, opcionPotencial FROM respuestas WHERE pregunta = ? AND empresa = ?",
+                    "SELECT opcion_actual, opcion_potencial FROM respuesta WHERE pregunta = ? AND empresa = ?",
                     new String[]{pregunta, nombreEmpresa}
             );
 
@@ -435,8 +506,8 @@ public class DBHelper extends SQLiteAssetHelper {
 
     private boolean isOpcionRespondida(SQLiteDatabase db, String opcionNumero, String preguntaNumero, String nombreEmpresa) {
         Cursor cursor = db.rawQuery(
-                "SELECT * FROM respuestas WHERE empresa='" + nombreEmpresa + "' AND pregunta='" + preguntaNumero +
-                        "' AND (opcionActual='" + opcionNumero + "' OR opcionPotencial='" + opcionNumero + "')",
+                "SELECT * FROM respuesta WHERE empresa='" + nombreEmpresa + "' AND pregunta='" + preguntaNumero +
+                        "' AND (opcion_actual='" + opcionNumero + "' OR opcion_potencial='" + opcionNumero + "')",
                 null
         );
         boolean respondida = cursor.getCount() > 0;
@@ -477,7 +548,7 @@ public class DBHelper extends SQLiteAssetHelper {
 
         try {
             // Obtener la cantidad de preguntas respondidas para la empresa
-            Cursor cursorRespondidas = db.rawQuery("SELECT COUNT(DISTINCT pregunta) FROM respuestas WHERE empresa='" + nombreEmpresa + "'", null);
+            Cursor cursorRespondidas = db.rawQuery("SELECT COUNT(DISTINCT pregunta) FROM respuesta WHERE empresa='" + nombreEmpresa + "'", null);
             if (cursorRespondidas.moveToFirst()) {
                 preguntasRespondidas = cursorRespondidas.getInt(0);
             }
@@ -499,7 +570,7 @@ public class DBHelper extends SQLiteAssetHelper {
         List<Empresa> empresas = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.rawQuery("SELECT * FROM empresa WHERE nombre IN (SELECT DISTINCT TRIM(Empresa) AS Empresa FROM respuestas)", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM empresa WHERE nombre IN (SELECT DISTINCT TRIM(Empresa) AS Empresa FROM respuesta)", null);
 
         if (cursor.moveToFirst()) {
             do {
@@ -525,34 +596,13 @@ public class DBHelper extends SQLiteAssetHelper {
 
         return empresas;
     }
-    public void updateAnswerInDatabase(String nombreEmpresa, String numeroPregunta, String opcionActual, String opcionPotencial) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("opcionActual", opcionActual);
-        values.put("opcionPotencial", opcionPotencial);
-
-        // Actualizar la respuesta en la base de datos
-        int rowsAffected = db.update(
-                "respuestas",
-                values,
-                "empresa=? AND pregunta=?",
-                new String[]{nombreEmpresa, numeroPregunta});
-
-        if (rowsAffected > 0) {
-            Log.d("DBHelper", "Respuesta actualizada correctamente en la tabla respuestas");
-        } else {
-            Log.e("DBHelper", "Error al actualizar la respuesta en la tabla respuestas");
-        }
-
-        db.close();
-    }
 
     public boolean isQuestionInDatabase(String nombreEmpresa, String numeroPregunta) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
 
         try {
-            String query = "SELECT * FROM respuestas WHERE empresa = ? AND pregunta = ?";
+            String query = "SELECT * FROM respuesta WHERE empresa = ? AND pregunta = ?";
             cursor = db.rawQuery(query, new String[]{nombreEmpresa, numeroPregunta});
 
             // Si hay al menos una fila en el cursor, significa que la pregunta ya está en la base de datos
@@ -595,7 +645,7 @@ public class DBHelper extends SQLiteAssetHelper {
         int count = 0;
 
         try (SQLiteDatabase db = this.getReadableDatabase()) {
-            Cursor cursor = db.rawQuery("SELECT COUNT(DISTINCT empresa) FROM respuestas", null);
+            Cursor cursor = db.rawQuery("SELECT COUNT(DISTINCT empresa) FROM respuesta", null);
             if (cursor.moveToFirst()) {
                 count = cursor.getInt(0);
             }
@@ -613,7 +663,7 @@ public class DBHelper extends SQLiteAssetHelper {
         try (SQLiteDatabase db = this.getReadableDatabase()) {
             String[] selectionArgs = {selectedEmpresa};
             Cursor cursor = db.rawQuery(
-                    "SELECT empresa, pregunta, opcionActual, opcionPotencial, elemento FROM respuestas WHERE empresa = ?",
+                    "SELECT empresa, pregunta, opcion_actual, opcion_potencial, elemento FROM respuesta WHERE empresa = ?",
                     selectionArgs
             );
 
@@ -635,13 +685,13 @@ public class DBHelper extends SQLiteAssetHelper {
             try (FileWriter writer = new FileWriter(file)) {
                 if (cursor != null && cursor.moveToFirst()) {
                     // Write column names, including the new 'elemento' column
-                    writer.append("empresa,pregunta,opcionActual,opcionPotencial,elemento\n");
+                    writer.append("empresa,pregunta,opcion_actual,opcion_potencial,elemento\n");
 
                     do {
                         writer.append(cursor.getString(cursor.getColumnIndex("empresa"))).append(",");
                         writer.append(cursor.getString(cursor.getColumnIndex("pregunta"))).append(",");
-                        writer.append(cursor.getString(cursor.getColumnIndex("opcionActual"))).append(",");
-                        writer.append(cursor.getString(cursor.getColumnIndex("opcionPotencial"))).append(",");
+                        writer.append(cursor.getString(cursor.getColumnIndex("opcion_actual"))).append(",");
+                        writer.append(cursor.getString(cursor.getColumnIndex("opcion_potencial"))).append(",");
                         writer.append(cursor.getString(cursor.getColumnIndex("elemento"))).append("\n");
                     } while (cursor.moveToNext());
                 }
@@ -722,7 +772,8 @@ public class DBHelper extends SQLiteAssetHelper {
 
         // Consulta para obtener todas las respuestas agrupadas por pregunta y opción
         Cursor cursorRespuestas = db.rawQuery(
-                "SELECT pregunta, opcionActual, opcionPotencial FROM respuestas WHERE empresa = ?",
+                "SELECT pregunta, opcion_actual, opcion_potencial FROM respuesta WHERE empresa = ?",
+
                 new String[]{nombreEmpresa}
         );
 
@@ -834,7 +885,7 @@ public class DBHelper extends SQLiteAssetHelper {
         // Consulta SQL para contar el número de preguntas respondidas en el grupo especificado
         String query = "SELECT COUNT(*) AS answered FROM pregunta p " +
                 "INNER JOIN elemento e ON p.elemento = e.numero " +
-                "INNER JOIN respuestas r ON p.numero = r.pregunta " +
+                "INNER JOIN respuesta r ON p.numero = r.pregunta " +
                 "WHERE e.grupo = ? AND r.empresa = ?";
         Cursor cursor = db.rawQuery(query, new String[] { String.valueOf(grupoNumero), nombreEmpresa });
 
@@ -878,9 +929,9 @@ public class DBHelper extends SQLiteAssetHelper {
 
         try {
             // Query to count the number of companies that have completed all their surveys
-            String query = "SELECT COUNT(DISTINCT r.empresa) FROM respuestas r " +
+            String query = "SELECT COUNT(DISTINCT r.empresa) FROM respuesta r " +
                     "JOIN (SELECT empresa, COUNT(DISTINCT pregunta) as total_preguntas " +
-                    "FROM respuestas GROUP BY empresa) t " +
+                    "FROM respuesta GROUP BY empresa) t " +
                     "ON r.empresa = t.empresa " +
                     "WHERE t.total_preguntas = (SELECT COUNT(*) FROM pregunta)";
             Cursor cursor = db.rawQuery(query, null);
@@ -988,12 +1039,12 @@ public class DBHelper extends SQLiteAssetHelper {
         }
 
         // Consulta para obtener las respuestas del día actual
-        String query = "SELECT fechaRespuesta, COUNT(*) as cantidad FROM respuestas WHERE empresa = ? AND strftime('%w', fechaRespuesta) = ? GROUP BY fechaRespuesta";
+        String query = "SELECT fecha_respuesta, COUNT(*) as cantidad FROM respuesta WHERE empresa = ? AND strftime('%w', fecha_respuesta) = ? GROUP BY fecha_respuesta";
         Cursor cursor = db.rawQuery(query, new String[]{empresa, String.valueOf(diaSemanaActual - 1)});
 
         if (cursor.moveToFirst()) {
             do {
-                @SuppressLint("Range") String fecha = cursor.getString(cursor.getColumnIndex("fechaRespuesta"));
+                @SuppressLint("Range") String fecha = cursor.getString(cursor.getColumnIndex("fecha_respuesta"));
                 @SuppressLint("Range") int cantidad = cursor.getInt(cursor.getColumnIndex("cantidad"));
                 respuestasPorDia.put(diasSemana[diaSemanaActual - 1], cantidad);
             } while (cursor.moveToNext());
@@ -1109,5 +1160,155 @@ public class DBHelper extends SQLiteAssetHelper {
         cursor.close();
         db.close();
         return representante;
+    }
+
+    public List<String> getAllOperadorNames() {
+        List<String> operadorNames = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT nombre, apellido FROM operador", null);
+        if (cursor.moveToFirst()) {
+            do {
+                String fullName = cursor.getString(0) + " " + cursor.getString(1);
+                operadorNames.add(fullName);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return operadorNames;
+    }
+
+    public long[] guardarAsignar(String idEmpresa, String idOperador, List<String> numerosElementos) {
+        // Obtén una instancia de la base de datos en modo escritura
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Array para almacenar los IDs de las filas insertadas
+        long[] newRowIds = new long[numerosElementos.size()];
+
+        // Itera sobre cada número de elemento y realiza la inserción
+        for (int i = 0; i < numerosElementos.size(); i++) {
+            // Crea un objeto ContentValues para almacenar los valores a insertar
+            ContentValues values = new ContentValues();
+            values.put("id_operador", idOperador); // Inserta el id del operador
+            values.put("id_elemento", numerosElementos.get(i)); // Inserta el número completo del elemento (con decimales si es necesario)
+            values.put("id_empresa", idEmpresa); // Inserta el id de la empresa
+
+            // Inserta la fila en la tabla y almacena el ID de la fila insertada
+            newRowIds[i] = db.insert("asignar", null, values);
+        }
+
+        // Cierra la base de datos
+        db.close();
+
+        return newRowIds;
+    }
+
+
+
+
+    @SuppressLint("Range")
+    public int obtenerIdOperadorPorNombre(String nombreOperador) {
+        // Obtén una instancia de la base de datos en modo lectura
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Define la consulta SQL
+        String query = "SELECT id FROM operador WHERE nombre = ?";
+
+        // Ejecuta la consulta
+        Cursor cursor = db.rawQuery(query, new String[]{nombreOperador});
+
+        int idOperador = -1;
+        if (cursor.moveToFirst()) {
+            // Obtén el ID del operador
+            idOperador = cursor.getInt(cursor.getColumnIndex("id"));
+        }
+
+        // Cierra el cursor y la base de datos
+        cursor.close();
+        db.close();
+
+        return idOperador;
+    }
+
+    public List<Operador> getAllOperadores() {
+
+        List<Operador> v_operadores = new ArrayList<>();
+
+        try (SQLiteDatabase v_db = this.getReadableDatabase()) {
+
+            Cursor v_cursor = v_db.rawQuery("select id, nombre, apellido, cedula, email, password from operador order by id", null);
+
+            if (null != v_cursor) {
+                while (v_cursor.moveToNext()) {
+
+                    Operador v_operador = new Operador(
+                            v_cursor.getString(1), // nombre
+                            v_cursor.getString(2), // apellido
+                            v_cursor.getString(3), // cedula
+                            v_cursor.getString(4), // email
+                            v_cursor.getString(5)  // password
+                    );
+
+                    v_operador.setId(v_cursor.getInt(0)); // id
+
+                    v_operadores.add(v_operador);
+                }
+                v_cursor.close();
+            }
+
+        } catch (SQLException e) {
+            Log.e(TAG, e.toString());
+            e.printStackTrace();
+        }
+
+        return v_operadores;
+    }
+
+    @SuppressLint("Range")
+    public String getNombreEmpresa(int idEmpresa) {
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
+        String nombreEmpresa = null;
+        try {
+            db = this.getReadableDatabase();
+            cursor = db.rawQuery("SELECT nombre FROM empresa WHERE id = ?", new String[]{String.valueOf(idEmpresa)});
+            if (cursor != null && cursor.moveToFirst()) {
+                nombreEmpresa = cursor.getString(cursor.getColumnIndex("nombre"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null) {
+                db.close();
+            }
+        }
+        return nombreEmpresa;
+    }
+
+    @SuppressLint("Range")
+    public List<Elemento> getElementosAsignados(int idOperador) {
+        List<Elemento> elementos = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT e.* FROM elemento e " +
+                "INNER JOIN asignar a ON e.numero = a.id_elemento " +
+                "WHERE a.id_operador = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(idOperador)});
+
+        if (cursor.moveToFirst()) {
+            do {
+                Elemento elemento = new Elemento();
+                elemento.setNumero(cursor.getString(cursor.getColumnIndex("numero")));
+                elemento.setNombre(cursor.getString(cursor.getColumnIndex("nombre")));
+                elementos.add(elemento);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return elementos;
     }
 }

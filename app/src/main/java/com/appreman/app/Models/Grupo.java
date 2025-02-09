@@ -33,4 +33,9 @@ public class Grupo {
     public void setNumero(int numero) {
         mNumero = numero;
     }
+
+    @Override
+    public String toString() {
+        return mNumero + ". " + mNombre;
+    }
 }

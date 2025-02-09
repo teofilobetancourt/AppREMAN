@@ -51,4 +51,9 @@ public class Elemento {
         mNumero = numero;
     }
 
+    @Override
+    public String toString() {
+        return mNumero + ". " + mNombre;
+    }
+
 }

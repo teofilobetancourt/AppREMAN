@@ -34,12 +34,16 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.Motivo
     private final Context context;
     private final DBHelper dbHelper;
     private final String nombreEmpresa;
+    private final String nombreEncuestado;
+    private final String cargoEncuestado;
 
-    public PreguntaAdapter(Context context, List<Pregunta> items, String nombreEmpresa) {
+    public PreguntaAdapter(Context context, List<Pregunta> items, String nombreEmpresa, String nombreEncuestado, String cargoEncuestado) {
         this.context = context;
         this.items = items;
         this.dbHelper = new DBHelper(context);
         this.nombreEmpresa = nombreEmpresa;
+        this.nombreEncuestado = nombreEncuestado;
+        this.cargoEncuestado = cargoEncuestado;
     }
 
     @NonNull
@@ -60,7 +64,7 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.Motivo
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
         holder.recycler.setLayoutManager(layoutManager);
 
-        OpcionAdapter opcionAdapter = new OpcionAdapter(opciones, this);
+        OpcionAdapter opcionAdapter = new OpcionAdapter(context, opciones, this);
         holder.recycler.setAdapter(opcionAdapter);
 
         // Verificar si la pregunta ha sido respondida
@@ -85,18 +89,29 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.Motivo
                 Opcion opcionActual = opcionesSeleccionadas.get(0);
                 Opcion opcionPotencial = opcionesSeleccionadas.size() > 1 ? opcionesSeleccionadas.get(1) : opcionActual;
 
+                // Guardar una cadena vacía en lugar de null si el comentario está vacío
+                String comentario = opcionActual.getComentario().isEmpty() ? "" : opcionActual.getComentario();
+
                 if (isQuestionInDatabase(nombreEmpresa, preguntaNumero)) {
-                    dbHelper.updateAnswerInDatabase(nombreEmpresa, preguntaNumero, opcionActual.getNumero(), opcionPotencial.getNumero());
+                    dbHelper.updateAnswerInDatabase(nombreEmpresa, preguntaNumero, opcionActual.getNumero(), opcionPotencial.getNumero(), comentario, nombreEncuestado, cargoEncuestado);
                 } else {
-                    dbHelper.insertarOpcionesEnRespuestas(nombreEmpresa, preguntaNumero, opcionActual.getNumero(), opcionPotencial.getNumero(), fechaRespuesta);
+                    dbHelper.insertarOpcionesEnRespuestas(nombreEmpresa, preguntaNumero, opcionActual.getNumero(), opcionPotencial.getNumero(), fechaRespuesta, comentario, nombreEncuestado, cargoEncuestado);
                 }
 
                 preguntaOpcionAdapter.notifyDataSetChanged();
 
-                mostrarToast("Opciones guardadas correctamente");
+                // Mostrar un log con los datos guardados en una sola fila
+                Log.d(TAG, "Opciones guardadas correctamente: " +
+                        "Nombre de la empresa: " + nombreEmpresa + ", " +
+                        "Número de la pregunta: " + preguntaNumero + ", " +
+                        "Opción actual: " + opcionActual.getNumero() + ", " +
+                        "Opción potencial: " + opcionPotencial.getNumero() + ", " +
+                        "Fecha de respuesta: " + fechaRespuesta + ", " +
+                        "Comentario: " + comentario + ", " +
+                        "Nombre del encuestado: " + nombreEncuestado + ", " +
+                        "Cargo del encuestado: " + cargoEncuestado);
 
-                Log.d(TAG, "Pregunta seleccionada: " + preguntaNumero);
-                Log.d(TAG, "Nombre de la empresa seleccionada: " + nombreEmpresa);
+                mostrarToast("Opciones guardadas correctamente");
 
                 // Restaurar el color del botón después de guardar
                 holder.btnPreguntas.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
