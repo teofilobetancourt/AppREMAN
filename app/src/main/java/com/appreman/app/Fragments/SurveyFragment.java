@@ -29,13 +29,15 @@ public class SurveyFragment extends Fragment {
     private GestureDetector gestureDetector;
     private String email;
 
-    public static SurveyFragment newInstance(String email) {
+    public static SurveyFragment newInstance(String email, String idOperador) {
         SurveyFragment fragment = new SurveyFragment();
         Bundle args = new Bundle();
         args.putString("email", email);
+        args.putString("id_operador", idOperador); // Guardar id_operador en el Bundle
         fragment.setArguments(args);
         return fragment;
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,16 +49,18 @@ public class SurveyFragment extends Fragment {
         dbHelper = new DBHelper(requireActivity());
         appPreferences = new AppPreferences(requireActivity());
 
-        // Obtener el email del Bundle
+        // Obtener email e id_operador del Bundle
         if (getArguments() != null) {
             email = getArguments().getString("email");
-            Log.d("SurveyFragment", "Email obtenido del Bundle: " + email);
+            String idOperador = getArguments().getString("id_operador"); // Obtener id_operador
+            Log.d("SurveyFragment", "Email: " + email + ", ID Operador: " + idOperador);
         }
 
         setupRecyclerView();
 
         return rootView;
     }
+
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {

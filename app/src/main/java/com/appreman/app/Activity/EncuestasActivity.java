@@ -62,8 +62,19 @@ public class EncuestasActivity extends AppCompatActivity {
         setSupportActionBar(binding.toolbar);
         binding.toolbar.setTitle(getTitle());
 
-        email = getIntent().getStringExtra("email");
-        Log.d("EncuestasActivity", "Email obtenido en EncuestasActivity es: " + email);
+        // Obtener los datos del Intent
+        String nombreEmpresa = getIntent().getStringExtra("empresa_nombre"); // Obtener el nombre de la empresa
+        int idEmpresa = getIntent().getIntExtra("id_empresa", -1); // Obtener el ID de la empresa (por defecto -1 si no existe)
+        int idOperador = getIntent().getIntExtra("id_operador", -1);  // Usamos -1 como valor predeterminado
+        String email = getIntent().getStringExtra("email"); // Obtener el email
+
+        // Mostrar los datos recibidos por log para verificar
+        Log.d("EncuestasActivity", "Nombre de la empresa: " + nombreEmpresa);
+        Log.d("EncuestasActivity", "ID de la empresa: " + idEmpresa);
+        Log.d("EncuestasActivity", "ID del operador: " + idOperador);
+        Log.d("EncuestasActivity", "Email: " + email);
+
+        // Continuar con el resto de la configuración de la actividad
 
         viewPager = binding.viewPager;
         FloatingActionButton fabNotification = binding.fabNotification;
@@ -71,8 +82,15 @@ public class EncuestasActivity extends AppCompatActivity {
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), 0);
         dbHelper = new DBHelper(getApplicationContext());
 
-        // Obtener la lista de elementos desde la base de datos
-        List<Elemento> elementos = dbHelper.getAllElementos();
+        // Obtener la lista de elementos asignados a este operador y empresa
+        List<Elemento> elementos = dbHelper.getElementosAsignados(idOperador, idEmpresa);
+
+        // Verificar si la lista de elementos está vacía
+        if (elementos.isEmpty()) {
+            Log.d("EncuestasActivity", "No se encontraron elementos asignados.");
+        } else {
+            Log.d("EncuestasActivity", "Se encontraron " + elementos.size() + " elementos.");
+        }
 
         // Usar un TreeMap para agrupar los elementos por su número completo (por ejemplo, "1.1", "1.2", "2.1")
         Map<String, List<Elemento>> elementosAgrupados = new TreeMap<>();
@@ -81,7 +99,13 @@ public class EncuestasActivity extends AppCompatActivity {
             String claveGrupo = elemento.getNumero();  // El número completo como String (por ejemplo, "1.1", "1.2")
             elementosAgrupados.putIfAbsent(claveGrupo, new ArrayList<>());
             elementosAgrupados.get(claveGrupo).add(elemento);
+
+            // Log para cada elemento agregado
+            Log.d("EncuestasActivity", "Elemento agregado: " + elemento.getNombre() + ", Grupo: " + claveGrupo);
         }
+
+        // Verificar cuántos grupos se han creado
+        Log.d("EncuestasActivity", "Número de grupos creados: " + elementosAgrupados.size());
 
         // Agregar los fragmentos por cada grupo de elementos
         for (Map.Entry<String, List<Elemento>> entry : elementosAgrupados.entrySet()) {
@@ -90,6 +114,9 @@ public class EncuestasActivity extends AppCompatActivity {
 
             // Obtener el nombre del primer elemento del grupo (si existe)
             String nombreElemento = elementosGrupo.isEmpty() ? "Sin Nombre" : elementosGrupo.get(0).getNombre();
+
+            // Log para cada fragmento que se agregará
+            Log.d("EncuestasActivity", "Agregando fragmento: Grupo = " + grupo + ", Nombre Elemento = " + nombreElemento);
 
             // Crear el fragmento pasando el nombre del primer elemento
             ElementosFragment fragment = ElementosFragment.newInstance(grupo, nombreElemento);
@@ -122,7 +149,14 @@ public class EncuestasActivity extends AppCompatActivity {
         AppPreferences appPreferences = new AppPreferences(this);
         nombreEmpresa = appPreferences.getNombreEmpresa();
 
+        // Obtener el representante de la empresa desde la base de datos
         String representanteEmpresa = dbHelper.getRepresentanteEmpresa(nombreEmpresa);
+
+        // Si el representante es null o vacío, se asigna un valor predeterminado
+        if (representanteEmpresa == null || representanteEmpresa.isEmpty()) {
+            representanteEmpresa = "Desconocido"; // O cualquier valor que consideres adecuado
+        }
+
         dbHelper.insertarTiempo(nombreEmpresa, true);
 
         String subject = "Inicio de Encuesta";
@@ -133,8 +167,6 @@ public class EncuestasActivity extends AppCompatActivity {
 
         showEncuestadoDialog();
     }
-
-
 
     private void showEncuestadoDialog() {
         LayoutInflater inflater = getLayoutInflater();

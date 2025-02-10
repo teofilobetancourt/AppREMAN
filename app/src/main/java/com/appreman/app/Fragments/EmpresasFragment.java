@@ -33,15 +33,27 @@ public class EmpresasFragment extends Fragment {
     private DBHelper dbHelper;
     private String email;
 
+    // Método estático para crear una nueva instancia del fragmento y pasarle los argumentos
+    public static EmpresasFragment newInstance(String email, String idOperador) {
+        EmpresasFragment fragment = new EmpresasFragment();
+        Bundle args = new Bundle();
+        args.putString("email", email); // Pasa el email
+        args.putString("idOperador", idOperador); // Pasa el idOperador
+        fragment.setArguments(args); // Establece los argumentos
+        return fragment;
+    }
+
     @SuppressLint("MissingInflatedId")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_empresas, container, false);
 
-        // Obtener el email del Bundle
+        // Obtener los argumentos (email y idOperador)
         if (getArguments() != null) {
             email = getArguments().getString("email");
+            String idOperador = getArguments().getString("idOperador");
+            // Usa estos valores según lo necesites
         }
 
         barChart1 = view.findViewById(R.id.barChart1);
@@ -54,7 +66,7 @@ public class EmpresasFragment extends Fragment {
 
         setupBarCharts();
 
-        /// Encuentra los CardView y configura los OnClickListener
+        // Encuentra los CardView y configura los OnClickListener
         MaterialCardView cardNuevaEmpresa = view.findViewById(R.id.cardNuevaEmpresa);
         cardNuevaEmpresa.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), NuevaEmpresaActivity.class);
@@ -71,6 +83,7 @@ public class EmpresasFragment extends Fragment {
 
         return view;
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

@@ -1,7 +1,9 @@
 package com.appreman.app.Activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -48,7 +50,20 @@ public class LoginActivity extends AppCompatActivity {
                 // Verificar credenciales
                 boolean credencialesCorrectas = dbHelper.verificarOperador(email, password);
                 if (credencialesCorrectas) {
-                    // Si las credenciales son correctas, iniciar la siguiente actividad y pasar el email
+                    // Obtener el ID del operador
+                    int idOperador = dbHelper.getOperadorIdPorEmail(email);
+
+                    // Guardar el ID del operador en SharedPreferences
+                    SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putInt("id_operador", idOperador);
+                    editor.apply();
+
+                    // Logcat para verificar valores antes de pasar a MainActivity
+                    Log.d("LoginActivity", "Email: " + email);
+                    Log.d("LoginActivity", "ID Operador: " + idOperador);
+
+                    // Iniciar la siguiente actividad sin pasar el id_operador
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.putExtra("email", email);
                     startActivity(intent);

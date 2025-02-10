@@ -242,31 +242,6 @@ public class DBHelper extends SQLiteAssetHelper {
         return v_preguntas;
     }
 
-    @SuppressLint("Range")
-    public List<Elemento> getElementosAsignados(int idOperador, int idEmpresa) {
-        List<Elemento> elementos = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT e.* FROM elemento e " +
-                        "JOIN asignar a ON e.numero = a.id_elemento " +
-                        "WHERE a.id_operador = ? AND a.id_empresa = ?",
-                new String[]{String.valueOf(idOperador), String.valueOf(idEmpresa)});
-        if (cursor.moveToFirst()) {
-            do {
-                Elemento elemento = new Elemento();
-                elemento.setNumero(cursor.getString(cursor.getColumnIndex("numero")));
-                elemento.setNombre(cursor.getString(cursor.getColumnIndex("nombre")));
-                elemento.setGrupo(cursor.getInt(cursor.getColumnIndex("grupo")));
-                elementos.add(elemento);
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        db.close();
-        return elementos;
-    }
-
-
-
-
     /* -TODO .- Opciones ------------------------------------------------------------------------------------------- */
 
 
@@ -287,6 +262,23 @@ public class DBHelper extends SQLiteAssetHelper {
         contentValues.put("plantas_implementar", numeroDePlantIm);
         contentValues.put("fecha_registro", fecha);
         contentValues.put("id_operador", operadorId); // Agregar el campo id_operador
+
+        // Log para ver los valores que se están guardando
+        Log.d("DBHelper", "Insertando empresa con los siguientes valores: " +
+                "nombre=" + nombre + ", " +
+                "pais=" + pais + ", " +
+                "region=" + region + ", " +
+                "sitio=" + sitio + ", " +
+                "sector_industrial=" + sector + ", " +
+                "tipo_planta=" + planta + ", " +
+                "representante_empresa=" + representante + ", " +
+                "telefono=" + telefono + ", " +
+                "email=" + email + ", " +
+                "cliente_actual=" + clienteAct + ", " +
+                "numero_plantas=" + numeroDePlant + ", " +
+                "plantas_implementar=" + numeroDePlantIm + ", " +
+                "fecha_registro=" + fecha + ", " +
+                "id_operador=" + operadorId);
 
         long result = db.insert("empresa", null, contentValues);
 
@@ -1148,18 +1140,23 @@ public class DBHelper extends SQLiteAssetHelper {
         return email;
     }
 
-    @SuppressLint("Range")
     public String getRepresentanteEmpresa(String nombreEmpresa) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String representante = null;
-        String query = "SELECT representante_empresa FROM empresa WHERE nombre = ?";
-        Cursor cursor = db.rawQuery(query, new String[]{nombreEmpresa});
-        if (cursor.moveToFirst()) {
-            representante = cursor.getString(cursor.getColumnIndex("representante_empresa"));
+        if (nombreEmpresa == null) {
+            return null; // O cualquier valor predeterminado que consideres adecuado
         }
-        cursor.close();
-        db.close();
-        return representante;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT representante_empresa FROM empresa WHERE nombre = ?", new String[]{nombreEmpresa});
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                @SuppressLint("Range") String representante = cursor.getString(cursor.getColumnIndex("representante_empresa"));
+                cursor.close();
+                return representante;
+            }
+            cursor.close();
+        }
+        return null;
     }
 
     public List<String> getAllOperadorNames() {
@@ -1189,7 +1186,7 @@ public class DBHelper extends SQLiteAssetHelper {
             // Crea un objeto ContentValues para almacenar los valores a insertar
             ContentValues values = new ContentValues();
             values.put("id_operador", idOperador); // Inserta el id del operador
-            values.put("id_elemento", numerosElementos.get(i)); // Inserta el número completo del elemento (con decimales si es necesario)
+            values.put("id_elemento", String.valueOf(numerosElementos.get(i)));// Inserta el número completo del elemento (con decimales si es necesario)
             values.put("id_empresa", idEmpresa); // Inserta el id de la empresa
 
             // Inserta la fila en la tabla y almacena el ID de la fila insertada
@@ -1288,27 +1285,54 @@ public class DBHelper extends SQLiteAssetHelper {
     }
 
     @SuppressLint("Range")
-    public List<Elemento> getElementosAsignados(int idOperador) {
-        List<Elemento> elementos = new ArrayList<>();
+    public List<Elemento> getElementosAsignados(int idOperador, int idEmpresa) {
+        List<Elemento> elementosAsignados = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String query = "SELECT e.* FROM elemento e " +
-                "INNER JOIN asignar a ON e.numero = a.id_elemento " +
-                "WHERE a.id_operador = ?";
-        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(idOperador)});
+        Log.d("DBHelper", "Consultando elementos asignados para idOperador: " + idOperador + ", idEmpresa: " + idEmpresa);
+
+        // Verificar registros en la tabla 'asignar' antes de hacer la consulta
+        Cursor testCursor = db.rawQuery("SELECT * FROM asignar", null);
+        if (testCursor.moveToFirst()) {
+            Log.d("DBHelper", "Registros en la tabla asignar:");
+            do {
+                int idOperadorDb = testCursor.getInt(testCursor.getColumnIndex("id_operador"));
+                int idEmpresaDb = testCursor.getInt(testCursor.getColumnIndex("id_empresa"));
+                String idElementoDb = testCursor.getString(testCursor.getColumnIndex("id_elemento"));
+
+                Log.d("DBHelper", "idOperador: " + idOperadorDb + ", idEmpresa: " + idEmpresaDb + ", idElemento: " + idElementoDb);
+            } while (testCursor.moveToNext());
+        } else {
+            Log.d("DBHelper", "La tabla asignar está vacía.");
+        }
+        testCursor.close();
+
+        // Consulta corregida asegurando el orden correcto
+        Cursor cursor = db.rawQuery(
+                "SELECT e.numero, e.nombre FROM elemento e " +
+                        "INNER JOIN asignar a ON e.numero = a.id_elemento " +
+                        "WHERE a.id_operador = ? AND a.id_empresa = ?",
+                new String[]{String.valueOf(idOperador), String.valueOf(idEmpresa)}
+        );
 
         if (cursor.moveToFirst()) {
             do {
                 Elemento elemento = new Elemento();
                 elemento.setNumero(cursor.getString(cursor.getColumnIndex("numero")));
                 elemento.setNombre(cursor.getString(cursor.getColumnIndex("nombre")));
-                elementos.add(elemento);
+
+                Log.d("DBHelper", "Elemento obtenido: Número = " + elemento.getNumero() + ", Nombre = " + elemento.getNombre());
+
+                elementosAsignados.add(elemento);
             } while (cursor.moveToNext());
+        } else {
+            Log.d("DBHelper", "No se encontraron elementos asignados.");
         }
 
         cursor.close();
         db.close();
 
-        return elementos;
+        Log.d("DBHelper", "Total de elementos asignados encontrados: " + elementosAsignados.size());
+        return elementosAsignados;
     }
 }

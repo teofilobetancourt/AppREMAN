@@ -492,8 +492,8 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:minHeight="48dp"
-            android:textStyle="bold"
             android:text="Encuestar"
+            android:textStyle="bold"
             tools:ignore="HardcodedText,TouchTargetSizeCheck" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

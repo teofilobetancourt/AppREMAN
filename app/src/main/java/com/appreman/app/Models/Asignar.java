@@ -15,7 +15,7 @@ public class Asignar {
     private int idOperador;
 
     @ColumnInfo(name = "id_elemento")
-    private int idElemento;
+    private String idElemento;
 
     // Getters y setters
     public int getIdEmpresa() {
@@ -34,11 +34,11 @@ public class Asignar {
         this.idOperador = idOperador;
     }
 
-    public int getIdElemento() {
+    public String getIdElemento() {
         return idElemento;
     }
 
-    public void setIdElemento(int idElemento) {
+    public void setIdElemento(String idElemento) {
         this.idElemento = idElemento;
     }
 }

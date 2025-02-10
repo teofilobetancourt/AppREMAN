@@ -3,8 +3,10 @@ package com.appreman.app.Activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private NetworkChangeReceiver networkChangeReceiver;
     private android.app.AlertDialog alertDialog;
     private String email;
+    private int idOperador; // Variable para almacenar el ID del operador
     private Fragment previousFragment; // Variable para almacenar el fragmento anterior
 
     @Override
@@ -49,12 +52,14 @@ public class MainActivity extends AppCompatActivity {
 
         navigation = findViewById(R.id.navigation);
 
-        nombre_empresa = getIntent().getStringExtra("empresa_nombre");
-        if (nombre_empresa == null) {
-            nombre_empresa = ""; // Valor por defecto
-        }
-
         email = getIntent().getStringExtra("email");
+
+        // Obtener el ID del operador desde SharedPreferences
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        idOperador = sharedPreferences.getInt("id_operador", -1); // Valor por defecto -1 si no se encuentra
+
+        // Agregar log para verificar el valor de idOperador
+        Log.d("MainActivity", "ID del operador recibido: " + idOperador);
 
         DBHelper dbHelper = new DBHelper(this);
         Map<String, String> nombreApellido = dbHelper.getNombreApellidoPorEmail(email);
@@ -67,44 +72,46 @@ public class MainActivity extends AppCompatActivity {
             userNameTextView.setText("Usuario");
         }
 
-        displayFragment(HomeFragment.newInstance(nombre_empresa, email), false, null);
+        // Agregar log para verificar el idOperador que se está pasando
+        Log.d("MainActivity", "ID del operador que se está pasando: " + idOperador);
+
+        displayFragment(HomeFragment.newInstance(email, idOperador), false, null);
 
         navigation.setOnItemSelectedListener(item -> {
             Fragment fragment = null;
             int id = item.getItemId();
             Bundle bundle = new Bundle();
             bundle.putString("email", email);
+            bundle.putString("id_operador", String.valueOf(idOperador));
 
             if (id == R.id.navigation_home) {
-                fragment = HomeFragment.newInstance(nombre_empresa, email);
+                fragment = HomeFragment.newInstance(email, idOperador);
             } else if (id == R.id.navigation_empresa) {
-                fragment = new EmpresasFragment();
+                fragment = EmpresasFragment.newInstance(email, String.valueOf(idOperador));
             } else if (id == R.id.navigation_survey) {
-                fragment = SurveyFragment.newInstance(email);
+                fragment = SurveyFragment.newInstance(email, String.valueOf(idOperador));
             }
 
-            displayFragment(fragment, true, bundle);
+            if (fragment != null) {
+                displayFragment(fragment, false, null);
+            }
+
             return true;
         });
 
+        // Configurar el detector de gestos
         gestureDetector = new GestureDetector(this, new GestureListener());
         findViewById(R.id.fragment_content).setOnTouchListener((v, event) -> {
             gestureDetector.onTouchEvent(event);
             return true;
         });
 
-        getSupportFragmentManager().addOnBackStackChangedListener(() -> {
-            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_content);
-            if (currentFragment != null) {
-                updateToolbarTitle(currentFragment);
-                updateNavigationSelection(currentFragment);
-            }
-        });
-
+        // Registrar el receptor de cambios de red
         networkChangeReceiver = new NetworkChangeReceiver();
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(networkChangeReceiver, filter);
 
+        // Configurar el botón flotante
         @SuppressLint({"MissingInflatedId", "LocalSuppress"}) FloatingActionButton fab = findViewById(R.id.asignar);
         if (!"admin".equals(email)) {
             fab.setVisibility(View.GONE);
@@ -122,6 +129,14 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+
+        getSupportFragmentManager().addOnBackStackChangedListener(() -> {
+            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_content);
+            if (currentFragment != null) {
+                updateToolbarTitle(currentFragment);
+                updateNavigationSelection(currentFragment);
+            }
+        });
     }
 
     public void displayFragment(Fragment fragment, boolean addToBackStack, Bundle bundle) {
@@ -215,9 +230,9 @@ public class MainActivity extends AppCompatActivity {
             if (currentFragment instanceof HomeFragment) {
                 displayFragment(new EmpresasFragment(), true, null);
             } else if (currentFragment instanceof EmpresasFragment) {
-                displayFragment(SurveyFragment.newInstance(email), true, null);
+                displayFragment(SurveyFragment.newInstance(email, String.valueOf(idOperador)), true, null);
             } else if (currentFragment instanceof SurveyFragment) {
-                displayFragment(HomeFragment.newInstance(nombre_empresa, email), true, null);
+                displayFragment(HomeFragment.newInstance(nombre_empresa, idOperador), true, null);
             }
         }
 
@@ -226,9 +241,9 @@ public class MainActivity extends AppCompatActivity {
             if (currentFragment instanceof SurveyFragment) {
                 displayFragment(new EmpresasFragment(), true, null);
             } else if (currentFragment instanceof EmpresasFragment) {
-                displayFragment(HomeFragment.newInstance(nombre_empresa, email), true, null);
+                displayFragment(HomeFragment.newInstance(nombre_empresa, idOperador), true, null);
             } else if (currentFragment instanceof HomeFragment) {
-                displayFragment(SurveyFragment.newInstance(email), true, null);
+                displayFragment(SurveyFragment.newInstance(email, String.valueOf(idOperador)), true, null);
             }
         }
     }

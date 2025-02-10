@@ -9,6 +9,7 @@ public class AppPreferences {
     public static final String KEY_ID_EMPRESA = "id_empresa";
     public static final String KEY_NOMBRE_ENCUESTADO = "nombre_encuestado";
     public static final String KEY_CARGO_ENCUESTADO = "cargo_encuestado";
+    public static final String KEY_ID_OPERADOR = "id_operador"; // Nueva clave para el ID del operador
 
     private final SharedPreferences sharedPreferences;
 
@@ -38,7 +39,7 @@ public class AppPreferences {
 
     // Obtener el nombre del encuestado
     public String getNombreEncuestado() {
-        return sharedPreferences.getString(KEY_NOMBRE_ENCUESTADO, "");
+        return sharedPreferences.getString(KEY_NOMBRE_ENCUESTADO, null); // Devuelve null si no está guardado
     }
 
     // Guardar el nombre del encuestado
@@ -48,11 +49,21 @@ public class AppPreferences {
 
     // Obtener el cargo del encuestado
     public String getCargoEncuestado() {
-        return sharedPreferences.getString(KEY_CARGO_ENCUESTADO, "");
+        return sharedPreferences.getString(KEY_CARGO_ENCUESTADO, null); // Devuelve null si no está guardado
     }
 
     // Guardar el cargo del encuestado
     public void setCargoEncuestado(String cargoEncuestado) {
         sharedPreferences.edit().putString(KEY_CARGO_ENCUESTADO, cargoEncuestado).apply();
+    }
+
+    // Obtener el ID del operador
+    public int getIdOperador() {
+        return sharedPreferences.getInt(KEY_ID_OPERADOR, -1); // Devuelve -1 si no se ha guardado un ID
+    }
+
+    // Guardar el ID del operador
+    public void setIdOperador(int idOperador) {
+        sharedPreferences.edit().putInt(KEY_ID_OPERADOR, idOperador).apply();
     }
 }

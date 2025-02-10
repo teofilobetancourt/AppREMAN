@@ -628,7 +628,7 @@ public class AsignarFragment extends Fragment {
                     }
 
                     // Guardamos los números de los elementos (como String)
-                    dbHelper.guardarAsignar(String.valueOf(idEmpresa), nombreOperador, numerosElementos);
+                    dbHelper.guardarAsignar(String.valueOf(idEmpresa), String.valueOf(idOperador), numerosElementos);
                     Log.d("AsignarFragment", "Se ha guardado correctamente: Empresa: " + idEmpresa + ", Operador: " + idOperador + ", Elementos (números): " + numerosElementos.toString());
                 }
             }
