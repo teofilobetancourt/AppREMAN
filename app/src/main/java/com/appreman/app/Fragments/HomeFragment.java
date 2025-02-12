@@ -24,17 +24,12 @@ import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import java.util.Locale; // Importar la clase Locale
-
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-
 import com.appreman.app.Activity.EncuestasActivity;
 import com.appreman.app.Database.DBHelper;
-import com.appreman.app.Email.Credentials;
 import com.appreman.app.Email.MailSender;
 import com.appreman.app.Email.PendingEmail;
 import com.appreman.app.Repository.AppPreferences;
@@ -49,14 +44,10 @@ import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.card.MaterialCardView;
-
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import android.widget.ProgressBar;
 
 public class HomeFragment extends Fragment implements WebSocketManager.NotificationListener {

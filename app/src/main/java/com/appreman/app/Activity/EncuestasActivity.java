@@ -25,6 +25,7 @@ import com.appreman.app.Fragments.ElementosFragment;
 import com.appreman.app.Models.Elemento;
 import com.appreman.app.Models.Grupo;
 import com.appreman.app.Repository.AppPreferences;
+import com.appreman.app.Sync.SyncService;
 import com.appreman.appreman.R;
 import com.appreman.appreman.databinding.ActivityEncuestasBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -61,6 +62,10 @@ public class EncuestasActivity extends AppCompatActivity {
 
         setSupportActionBar(binding.toolbar);
         binding.toolbar.setTitle(getTitle());
+
+        // Iniciar el SyncService
+        Intent syncServiceIntent = new Intent(this, SyncService.class);
+        startService(syncServiceIntent);
 
         // Obtener los datos del Intent
         String nombreEmpresa = getIntent().getStringExtra("empresa_nombre"); // Obtener el nombre de la empresa
@@ -144,7 +149,7 @@ public class EncuestasActivity extends AppCompatActivity {
             }
         });
 
-        fabNotification.setOnClickListener(v -> showGroupInfoDialog());
+        fabNotification.setOnClickListener(v -> showElementInfoDialog(idOperador, idEmpresa));
 
         AppPreferences appPreferences = new AppPreferences(this);
         nombreEmpresa = appPreferences.getNombreEmpresa();
@@ -255,45 +260,69 @@ public class EncuestasActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void showGroupInfoDialog() {
-        int currentItem = viewPager.getCurrentItem(); // Obtiene el índice del grupo actual
-        Grupo currentGrupo = dbHelper.getGrupoByPosition(currentItem); // Obtiene el grupo basado en el índice
+    private void showElementInfoDialog(int idOperador, int idEmpresa) {
+        // Obtener el nombre de la empresa
+        String nombreEmpresa = dbHelper.getNombreEmpresa(idEmpresa);
 
-        if (currentGrupo == null) {
-            Log.e("EncuestasActivity", "Grupo no encontrado para la posición: " + currentItem);
-            return;
+        if (nombreEmpresa == null) {
+            Log.e("EncuestasActivity", "Error: nombreEmpresa es null para idEmpresa: " + idEmpresa);
+            return; // Evita continuar si el nombre es nulo
         }
 
-        // Aquí obtén los datos reales basados en currentItem
-        int totalQuestions = dbHelper.getTotalQuestionsForGrupo(currentGrupo.getNumero(), nombreEmpresa);
-        int questionsPerElement = dbHelper.getTotalElementsForGrupo(currentGrupo.getNumero());
-        int answeredQuestions = dbHelper.getAnsweredQuestionsForGrupo(currentGrupo.getNumero(), nombreEmpresa);
-        int unansweredQuestions = totalQuestions - answeredQuestions;
+        // Obtener los elementos asignados al operador y a la empresa
+        List<Elemento> elementosAsignados = dbHelper.getElementosAsignados(idOperador, idEmpresa);
+
+        if (elementosAsignados.isEmpty()) {
+            Log.e("EncuestasActivity", "No se encontraron elementos asignados.");
+            return;
+        }
 
         // Infla el diseño del diálogo
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_group_info, null);
 
         // Configura los valores en los TextViews
-        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView empresaNameView = dialogView.findViewById(R.id.text_empresa_name);
+        TextView empresaNameView = dialogView.findViewById(R.id.text_empresa_name);
         TextView totalQuestionsView = dialogView.findViewById(R.id.text_total_questions);
-        TextView elementQuestionsView = dialogView.findViewById(R.id.text_element_questions);
+        TextView elementNameView = dialogView.findViewById(R.id.text_element_questions);
         TextView answeredQuestionsView = dialogView.findViewById(R.id.text_answered_questions);
         TextView unansweredQuestionsView = dialogView.findViewById(R.id.text_unanswered_questions);
 
         empresaNameView.setText("Nombre de la Empresa: " + nombreEmpresa);
-        totalQuestionsView.setText("Total de Preguntas: " + totalQuestions);
-        elementQuestionsView.setText("Numero de Elementos: " + questionsPerElement);
+
+        // Variables para acumular los totales
+        int totalQuestions = 0;
+        int answeredQuestions = 0;
+
+        // Iterar sobre cada elemento asignado
+        for (Elemento elemento : elementosAsignados) {
+            int elementTotalQuestions = dbHelper.getTotalQuestionsForElemento(elemento.getNumero(), nombreEmpresa);
+            int elementAnsweredQuestions = dbHelper.getAnsweredQuestionsForElemento(elemento.getNumero(), nombreEmpresa);
+
+            totalQuestions += elementTotalQuestions;
+            answeredQuestions += elementAnsweredQuestions;
+
+            // Mostrar información del elemento
+            elementNameView.append("\nElemento: " + elemento.getNombre());
+            elementNameView.append("\nTotal de Preguntas: " + elementTotalQuestions);
+            elementNameView.append("\nPreguntas Respondidas: " + elementAnsweredQuestions);
+            elementNameView.append("\nPreguntas por Responder: " + (elementTotalQuestions - elementAnsweredQuestions) + "\n");
+        }
+
+        int unansweredQuestions = totalQuestions - answeredQuestions;
+
+        totalQuestionsView.setText("Total de Elementos: " + elementosAsignados.size());
         answeredQuestionsView.setText("Preguntas Respondidas: " + answeredQuestions);
         unansweredQuestionsView.setText("Preguntas por Responder: " + unansweredQuestions);
 
         // Crea y muestra el diálogo
         new AlertDialog.Builder(this)
-                .setTitle("Información del Grupo")
+                .setTitle("Información del Elemento")
                 .setView(dialogView)
                 .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
                 .show();
     }
+
 
     private void sendEmail(String subject, String messageBody, String recipient) {
         new Thread(() -> {

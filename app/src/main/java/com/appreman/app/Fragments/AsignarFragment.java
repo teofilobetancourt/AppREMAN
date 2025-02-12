@@ -32,6 +32,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale; // Importar la clase Locale
@@ -499,26 +500,26 @@ public class AsignarFragment extends Fragment {
     private void mostrarDialogoSeleccionElementos(int idEmpresa, String empresaSeleccionada, List<Integer> idsOperadores, List<String> nombresOperadores) {
 
         List<Elemento> elementosTotales = dbHelper.getAllElementos(); // Obtener todos los elementos
+
+        // Ordenar los elementos por su número en orden ascendente
+        Collections.sort(elementosTotales, (e1, e2) -> e1.getNumero().compareTo(e2.getNumero()));
+
         Map<Integer, List<Elemento>> asignaciones = new HashMap<>();  // Mapa para las asignaciones
-        Set<Integer> elementosAsignados = new HashSet<>(); // IDs de elementos ya asignados
+        Set<String> elementosAsignados = new HashSet<>(); // IDs de elementos ya asignados
 
-        // Llenar el conjunto con IDs de elementos asignados
-        for (List<Elemento> lista : asignaciones.values()) {
-            for (Elemento elemento : lista) {
-                elementosAsignados.add(Integer.valueOf(elemento.getNumero())); // Asume que tienes un método getId()
+        // Cargar las asignaciones existentes desde la base de datos
+        for (int idOperador : idsOperadores) {
+            List<Elemento> elementosAsignadosOperador = dbHelper.getElementosAsignados(idOperador, idEmpresa);
+            asignaciones.put(idOperador, elementosAsignadosOperador);
+            for (Elemento elemento : elementosAsignadosOperador) {
+                elementosAsignados.add(elemento.getNumero());
             }
         }
 
-        // Filtrar los elementos disponibles para el primer operador seleccionado
-        int idOperadorInicial = idsOperadores.get(0);
-        List<Elemento> elementosDisponibles = new ArrayList<>();
-        for (Elemento elemento : elementosTotales) {
-            if (!elementosAsignados.contains(elemento.getNumero())) {
-                elementosDisponibles.add(elemento);
-            }
-        }
+        // Obtener los elementos disponibles utilizando el método de dbHelper
+        List<Elemento> elementosDisponibles = dbHelper.getElementosDisponibles();
 
-        ElementosAdapter elementosAdapter = new ElementosAdapter(requireContext(), elementosDisponibles, asignaciones, idOperadorInicial);
+        ElementosAdapter elementosAdapter = new ElementosAdapter(requireContext(), elementosDisponibles, asignaciones, idsOperadores.get(0));
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle("Asignar Elementos");
@@ -558,13 +559,7 @@ public class AsignarFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 int idOperadorSeleccionado = idsOperadores.get(position);
-                List<Elemento> elementosDisponiblesNuevo = new ArrayList<>();
-
-                for (Elemento elemento : elementosTotales) {
-                    if (!elementosAsignados.contains(elemento.getNumero()) || asignaciones.getOrDefault(idOperadorSeleccionado, new ArrayList<>()).contains(elemento)) {
-                        elementosDisponiblesNuevo.add(elemento);
-                    }
-                }
+                List<Elemento> elementosDisponiblesNuevo = dbHelper.getElementosDisponibles();
 
                 elementosAdapter.actualizarLista(elementosDisponiblesNuevo, idOperadorSeleccionado);
                 actualizarTextViewSelecciones(textViewSelecciones, empresaSeleccionada, elementosDisponiblesNuevo, asignaciones.getOrDefault(idOperadorSeleccionado, new ArrayList<>()));
@@ -575,7 +570,18 @@ public class AsignarFragment extends Fragment {
         });
 
         builder.setPositiveButton("Aceptar", (dialog, which) -> {
-            mostrarDialogoConfirmacionMultiple(idEmpresa, empresaSeleccionada, idsOperadores, nombresOperadores, asignaciones);
+            // Filtrar los elementos nuevos asignados
+            Map<Integer, List<Elemento>> nuevasAsignaciones = new HashMap<>();
+            for (Map.Entry<Integer, List<Elemento>> entry : asignaciones.entrySet()) {
+                List<Elemento> nuevosElementos = new ArrayList<>();
+                for (Elemento elemento : entry.getValue()) {
+                    if (!elementosAsignados.contains(elemento.getNumero())) {
+                        nuevosElementos.add(elemento);
+                    }
+                }
+                nuevasAsignaciones.put(entry.getKey(), nuevosElementos);
+            }
+            mostrarDialogoConfirmacionMultiple(idEmpresa, empresaSeleccionada, idsOperadores, nombresOperadores, nuevasAsignaciones);
         });
 
         builder.setNegativeButton("Cancelar", (dialog, which) -> mostrarDialogoSeleccionOperadores(empresaSeleccionada, idEmpresa));
@@ -628,7 +634,7 @@ public class AsignarFragment extends Fragment {
                     }
 
                     // Guardamos los números de los elementos (como String)
-                    dbHelper.guardarAsignar(String.valueOf(idEmpresa), String.valueOf(idOperador), numerosElementos);
+                    dbHelper.guardarAsignar(String.valueOf(idEmpresa), empresaSeleccionada, String.valueOf(idOperador), numerosElementos);
                     Log.d("AsignarFragment", "Se ha guardado correctamente: Empresa: " + idEmpresa + ", Operador: " + idOperador + ", Elementos (números): " + numerosElementos.toString());
                 }
             }
@@ -640,10 +646,6 @@ public class AsignarFragment extends Fragment {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-
-
-
-
 
     private void actualizarTextViewSelecciones(TextView textViewSelecciones, String empresaSeleccionada, List<Elemento> elementos, List<Elemento> elementosSeleccionados) {
         StringBuilder seleccionados = new StringBuilder("Empresa seleccionada: " + empresaSeleccionada + "\nElementos seleccionados: ");

@@ -23,6 +23,7 @@ import com.appreman.app.Models.Opcion;
 import com.appreman.app.Models.Operador;
 import com.appreman.app.Models.Pregunta;
 import com.appreman.app.Models.Respuesta;
+import com.appreman.app.Sync.SyncAdapter;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import java.io.File;
@@ -44,6 +45,8 @@ public class DBHelper extends SQLiteAssetHelper {
     private static final String TAG = "REMAN";
     private static final String DATABASE_NAME = "reman.db";
     private static final int DATABASE_VERSION = 1;
+    private SyncAdapter syncAdapter;
+
 
 
     @SuppressLint("SdCardPath")
@@ -1174,7 +1177,7 @@ public class DBHelper extends SQLiteAssetHelper {
         return operadorNames;
     }
 
-    public long[] guardarAsignar(String idEmpresa, String idOperador, List<String> numerosElementos) {
+    public long[] guardarAsignar(String idEmpresa, String nombreEmpresa, String idOperador, List<String> numerosElementos) {
         // Obtén una instancia de la base de datos en modo escritura
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -1186,8 +1189,9 @@ public class DBHelper extends SQLiteAssetHelper {
             // Crea un objeto ContentValues para almacenar los valores a insertar
             ContentValues values = new ContentValues();
             values.put("id_operador", idOperador); // Inserta el id del operador
-            values.put("id_elemento", String.valueOf(numerosElementos.get(i)));// Inserta el número completo del elemento (con decimales si es necesario)
+            values.put("id_elemento", String.valueOf(numerosElementos.get(i))); // Inserta el número completo del elemento (con decimales si es necesario)
             values.put("id_empresa", idEmpresa); // Inserta el id de la empresa
+            values.put("nombre_empresa", nombreEmpresa); // Inserta el nombre de la empresa
 
             // Inserta la fila en la tabla y almacena el ID de la fila insertada
             newRowIds[i] = db.insert("asignar", null, values);
@@ -1291,6 +1295,77 @@ public class DBHelper extends SQLiteAssetHelper {
 
         Log.d("DBHelper", "Consultando elementos asignados para idOperador: " + idOperador + ", idEmpresa: " + idEmpresa);
 
+        try {
+            // Consulta para obtener los elementos asignados
+            Cursor cursor = db.rawQuery(
+                    "SELECT e.numero, e.nombre FROM elemento e " +
+                            "INNER JOIN asignar a ON e.numero = a.id_elemento " +
+                            "WHERE a.id_operador = ? AND a.id_empresa = ?",
+                    new String[]{String.valueOf(idOperador), String.valueOf(idEmpresa)}
+            );
+
+            if (cursor.moveToFirst()) {
+                do {
+                    Elemento elemento = new Elemento();
+                    elemento.setNumero(cursor.getString(cursor.getColumnIndex("numero")));
+                    elemento.setNombre(cursor.getString(cursor.getColumnIndex("nombre")));
+
+                    Log.d("DBHelper", "Elemento obtenido: Número = " + elemento.getNumero() + ", Nombre = " + elemento.getNombre());
+
+                    elementosAsignados.add(elemento);
+                } while (cursor.moveToNext());
+            } else {
+                Log.d("DBHelper", "No se encontraron elementos asignados.");
+            }
+
+            cursor.close();
+        } catch (Exception e) {
+            Log.e("DBHelper", "Error al consultar elementos asignados: ", e);
+        } finally {
+            db.close();
+        }
+
+        Log.d("DBHelper", "Total de elementos asignados encontrados: " + elementosAsignados.size());
+        return elementosAsignados;
+    }
+
+    @SuppressLint("Range")
+    public List<Elemento> getElementosDisponibles() {
+        List<Elemento> elementosDisponibles = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Consulta para obtener los elementos que no están asignados a ningún operador
+        String query = "SELECT e.numero, e.nombre FROM elemento e " +
+                "LEFT JOIN asignar a ON e.numero = a.id_elemento " +
+                "WHERE a.id_elemento IS NULL";
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Elemento elemento = new Elemento();
+                elemento.setNumero(cursor.getString(cursor.getColumnIndex("numero")));
+                elemento.setNombre(cursor.getString(cursor.getColumnIndex("nombre")));
+                elementosDisponibles.add(elemento);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return elementosDisponibles;
+    }
+
+    /*@SuppressLint("Range")
+    public List<Elemento> getElementosAsignados(int idOperador, int idEmpresa) {
+        // Primero, actualiza las asignaciones
+        syncAdapter.actualizarAsignaciones();
+
+        List<Elemento> elementosAsignados = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Log.d("DBHelper", "Consultando elementos asignados para idOperador: " + idOperador + ", idEmpresa: " + idEmpresa);
+
         // Verificar registros en la tabla 'asignar' antes de hacer la consulta
         Cursor testCursor = db.rawQuery("SELECT * FROM asignar", null);
         if (testCursor.moveToFirst()) {
@@ -1334,5 +1409,50 @@ public class DBHelper extends SQLiteAssetHelper {
 
         Log.d("DBHelper", "Total de elementos asignados encontrados: " + elementosAsignados.size());
         return elementosAsignados;
+    }*/
+
+    public int getTotalQuestionsForElemento(String numeroElemento, String nombreEmpresa) {
+        int totalQuestions = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Consulta para contar las preguntas de un elemento específico
+        String query = "SELECT COUNT(*) FROM pregunta WHERE elemento = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{numeroElemento});
+
+        if (cursor.moveToFirst()) {
+            totalQuestions = cursor.getInt(0);
+        }
+
+        cursor.close();
+        db.close();
+
+        return totalQuestions;
     }
+
+    public int getAnsweredQuestionsForElemento(String numeroElemento, String nombreEmpresa) {
+        if (numeroElemento == null || nombreEmpresa == null) {
+            Log.e("DBHelper", "Error: numeroElemento o nombreEmpresa es null");
+            return 0; // Evita la consulta si hay valores nulos
+        }
+
+        int answeredQuestions = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT COUNT(*) FROM respuesta WHERE elemento = ? AND empresa = ? AND opcion_actual IS NOT NULL";
+        Cursor cursor = db.rawQuery(query, new String[]{numeroElemento, nombreEmpresa});
+
+        if (cursor.moveToFirst()) {
+            answeredQuestions = cursor.getInt(0);
+        }
+
+        cursor.close();
+        db.close();
+
+        return answeredQuestions;
+    }
+
+
+
+
+
 }
