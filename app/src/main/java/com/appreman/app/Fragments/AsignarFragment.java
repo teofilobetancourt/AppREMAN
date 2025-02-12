@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale; // Importar la clase Locale
@@ -499,27 +500,35 @@ public class AsignarFragment extends Fragment {
 
     private void mostrarDialogoSeleccionElementos(int idEmpresa, String empresaSeleccionada, List<Integer> idsOperadores, List<String> nombresOperadores) {
 
-        List<Elemento> elementosTotales = dbHelper.getAllElementos(); // Obtener todos los elementos
-
-        // Ordenar los elementos por su número en orden ascendente
-        Collections.sort(elementosTotales, (e1, e2) -> e1.getNumero().compareTo(e2.getNumero()));
-
+        List<Elemento> elementosTotales = dbHelper.getElementosDisponibles(); // Obtener todos los elementos
         Map<Integer, List<Elemento>> asignaciones = new HashMap<>();  // Mapa para las asignaciones
-        Set<String> elementosAsignados = new HashSet<>(); // IDs de elementos ya asignados
+        Set<Integer> elementosAsignados = new HashSet<>(); // IDs de elementos ya asignados
 
-        // Cargar las asignaciones existentes desde la base de datos
-        for (int idOperador : idsOperadores) {
-            List<Elemento> elementosAsignadosOperador = dbHelper.getElementosAsignados(idOperador, idEmpresa);
-            asignaciones.put(idOperador, elementosAsignadosOperador);
-            for (Elemento elemento : elementosAsignadosOperador) {
-                elementosAsignados.add(elemento.getNumero());
+        // Llenar el conjunto con IDs de elementos asignados
+        for (List<Elemento> lista : asignaciones.values()) {
+            for (Elemento elemento : lista) {
+                elementosAsignados.add(Integer.valueOf(elemento.getNumero())); // Asume que tienes un método getId()
             }
         }
 
-        // Obtener los elementos disponibles utilizando el método de dbHelper
-        List<Elemento> elementosDisponibles = dbHelper.getElementosDisponibles();
+        // Filtrar los elementos disponibles para el primer operador seleccionado
+        int idOperadorInicial = idsOperadores.get(0);
+        List<Elemento> elementosDisponibles = new ArrayList<>();
+        for (Elemento elemento : elementosTotales) {
+            if (!elementosAsignados.contains(elemento.getNumero())) {
+                elementosDisponibles.add(elemento);
+            }
+        }
 
-        ElementosAdapter elementosAdapter = new ElementosAdapter(requireContext(), elementosDisponibles, asignaciones, idsOperadores.get(0));
+        // Ordenar los elementos disponibles de forma ascendente
+        Collections.sort(elementosDisponibles, new Comparator<Elemento>() {
+            @Override
+            public int compare(Elemento e1, Elemento e2) {
+                return e1.getNumero().compareTo(e2.getNumero());
+            }
+        });
+
+        ElementosAdapter elementosAdapter = new ElementosAdapter(requireContext(), elementosDisponibles, asignaciones, idOperadorInicial);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle("Asignar Elementos");
@@ -559,7 +568,21 @@ public class AsignarFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 int idOperadorSeleccionado = idsOperadores.get(position);
-                List<Elemento> elementosDisponiblesNuevo = dbHelper.getElementosDisponibles();
+                List<Elemento> elementosDisponiblesNuevo = new ArrayList<>();
+
+                for (Elemento elemento : elementosTotales) {
+                    if (!elementosAsignados.contains(elemento.getNumero()) || asignaciones.getOrDefault(idOperadorSeleccionado, new ArrayList<>()).contains(elemento)) {
+                        elementosDisponiblesNuevo.add(elemento);
+                    }
+                }
+
+                // Ordenar los elementos disponibles de forma ascendente
+                Collections.sort(elementosDisponiblesNuevo, new Comparator<Elemento>() {
+                    @Override
+                    public int compare(Elemento e1, Elemento e2) {
+                        return e1.getNumero().compareTo(e2.getNumero());
+                    }
+                });
 
                 elementosAdapter.actualizarLista(elementosDisponiblesNuevo, idOperadorSeleccionado);
                 actualizarTextViewSelecciones(textViewSelecciones, empresaSeleccionada, elementosDisponiblesNuevo, asignaciones.getOrDefault(idOperadorSeleccionado, new ArrayList<>()));
@@ -570,18 +593,7 @@ public class AsignarFragment extends Fragment {
         });
 
         builder.setPositiveButton("Aceptar", (dialog, which) -> {
-            // Filtrar los elementos nuevos asignados
-            Map<Integer, List<Elemento>> nuevasAsignaciones = new HashMap<>();
-            for (Map.Entry<Integer, List<Elemento>> entry : asignaciones.entrySet()) {
-                List<Elemento> nuevosElementos = new ArrayList<>();
-                for (Elemento elemento : entry.getValue()) {
-                    if (!elementosAsignados.contains(elemento.getNumero())) {
-                        nuevosElementos.add(elemento);
-                    }
-                }
-                nuevasAsignaciones.put(entry.getKey(), nuevosElementos);
-            }
-            mostrarDialogoConfirmacionMultiple(idEmpresa, empresaSeleccionada, idsOperadores, nombresOperadores, nuevasAsignaciones);
+            mostrarDialogoConfirmacionMultiple(idEmpresa, empresaSeleccionada, idsOperadores, nombresOperadores, asignaciones);
         });
 
         builder.setNegativeButton("Cancelar", (dialog, which) -> mostrarDialogoSeleccionOperadores(empresaSeleccionada, idEmpresa));
