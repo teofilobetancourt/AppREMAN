@@ -1,8 +1,11 @@
 package com.appreman.app.Activity;
 
+import static com.appreman.app.Repository.AppPreferences.KEY_ASIGNACIONES;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +25,7 @@ import com.appreman.app.Database.DBHelper;
 import com.appreman.app.Email.Credentials;
 import com.appreman.app.Email.MailSender;
 import com.appreman.app.Fragments.ElementosFragment;
+import com.appreman.app.Models.Asignar;
 import com.appreman.app.Models.Elemento;
 import com.appreman.app.Models.Grupo;
 import com.appreman.app.Repository.AppPreferences;
@@ -30,7 +34,10 @@ import com.appreman.appreman.R;
 import com.appreman.appreman.databinding.ActivityEncuestasBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -63,6 +70,9 @@ public class EncuestasActivity extends AppCompatActivity {
         setSupportActionBar(binding.toolbar);
         binding.toolbar.setTitle(getTitle());
 
+        // Inicializar dbHelper
+        dbHelper = new DBHelper(this);
+
         // Iniciar el SyncService
         Intent syncServiceIntent = new Intent(this, SyncService.class);
         startService(syncServiceIntent);
@@ -85,10 +95,27 @@ public class EncuestasActivity extends AppCompatActivity {
         FloatingActionButton fabNotification = binding.fabNotification;
 
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), 0);
-        dbHelper = new DBHelper(getApplicationContext());
 
-        // Obtener la lista de elementos asignados a este operador y empresa
-        List<Elemento> elementos = dbHelper.getElementosAsignados(idOperador, idEmpresa);
+        // Obtener la lista de asignaciones desde las preferencias
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        String asignacionesJson = sharedPreferences.getString(KEY_ASIGNACIONES, null);
+        List<Asignar> asignarList = new ArrayList<>();
+        if (asignacionesJson != null) {
+            Gson gson = new Gson();
+            Type type = new TypeToken<List<Asignar>>() {}.getType();
+            asignarList = gson.fromJson(asignacionesJson, type);
+        }
+
+        // Filtrar los elementos asignados a este operador y empresa
+        List<Elemento> elementos = new ArrayList<>();
+        for (Asignar asignar : asignarList) {
+            if (asignar.getIdOperador() == idOperador && asignar.getIdEmpresa() == idEmpresa) {
+                Elemento elemento = dbHelper.getElementoById(asignar.getIdElemento()); // Obtener el elemento desde la base de datos
+                if (elemento != null) {
+                    elementos.add(elemento);
+                }
+            }
+        }
 
         // Verificar si la lista de elementos está vacía
         if (elementos.isEmpty()) {
@@ -154,21 +181,26 @@ public class EncuestasActivity extends AppCompatActivity {
         AppPreferences appPreferences = new AppPreferences(this);
         nombreEmpresa = appPreferences.getNombreEmpresa();
 
-        // Obtener el representante de la empresa desde la base de datos
-        String representanteEmpresa = dbHelper.getRepresentanteEmpresa(nombreEmpresa);
+        // Asegúrate de que dbHelper no sea null antes de usarlo
+        if (dbHelper != null) {
+            // Obtener el representante de la empresa desde la base de datos
+            String representanteEmpresa = dbHelper.getRepresentanteEmpresa(nombreEmpresa);
 
-        // Si el representante es null o vacío, se asigna un valor predeterminado
-        if (representanteEmpresa == null || representanteEmpresa.isEmpty()) {
-            representanteEmpresa = "Desconocido"; // O cualquier valor que consideres adecuado
+            // Si el representante es null o vacío, se asigna un valor predeterminado
+            if (representanteEmpresa == null || representanteEmpresa.isEmpty()) {
+                representanteEmpresa = "Desconocido"; // O cualquier valor que consideres adecuado
+            }
+
+            dbHelper.insertarTiempo(nombreEmpresa, true);
+
+            String subject = "Inicio de Encuesta";
+            String messageBody = "Se ha iniciado una nueva encuesta para: " + nombreEmpresa +
+                    "\nRepresentante de la Empresa: " + representanteEmpresa +
+                    "\nFecha y hora de inicio: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+            sendEmail(subject, messageBody, email);
+        } else {
+            Log.e("EncuestasActivity", "dbHelper es null");
         }
-
-        dbHelper.insertarTiempo(nombreEmpresa, true);
-
-        String subject = "Inicio de Encuesta";
-        String messageBody = "Se ha iniciado una nueva encuesta para: " + nombreEmpresa +
-                "\nRepresentante de la Empresa: " + representanteEmpresa +
-                "\nFecha y hora de inicio: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
-        sendEmail(subject, messageBody, email);
 
         showEncuestadoDialog();
     }

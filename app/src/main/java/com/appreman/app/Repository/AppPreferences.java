@@ -3,6 +3,9 @@ package com.appreman.app.Repository;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 public class AppPreferences {
     public static final String APP_PREFERENCES = "app_preferences";
     public static final String KEY_NOMBRE_EMPRESA = "nombre_empresa";
@@ -10,6 +13,7 @@ public class AppPreferences {
     public static final String KEY_NOMBRE_ENCUESTADO = "nombre_encuestado";
     public static final String KEY_CARGO_ENCUESTADO = "cargo_encuestado";
     public static final String KEY_ID_OPERADOR = "id_operador"; // Nueva clave para el ID del operador
+    public static final String KEY_ASIGNACIONES = "asignaciones"; // Nueva clave para las asignaciones
 
     private final SharedPreferences sharedPreferences;
 
@@ -65,5 +69,15 @@ public class AppPreferences {
     // Guardar el ID del operador
     public void setIdOperador(int idOperador) {
         sharedPreferences.edit().putInt(KEY_ID_OPERADOR, idOperador).apply();
+    }
+
+    // Guardar las asignaciones
+    public void setAsignaciones(String asignacionesJson) {
+        sharedPreferences.edit().putString(KEY_ASIGNACIONES, asignacionesJson).apply();
+    }
+
+    // Obtener las asignaciones
+    public String getAsignaciones() {
+        return sharedPreferences.getString(KEY_ASIGNACIONES, null); // Devuelve null si no está guardado
     }
 }

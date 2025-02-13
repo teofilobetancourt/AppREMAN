@@ -1,5 +1,6 @@
 package com.appreman.app.Activity;
 
+import static com.appreman.app.Repository.AppPreferences.KEY_ASIGNACIONES;
 import static com.appreman.app.Utils.Constant.URL;
 
 import android.content.Intent;
@@ -18,10 +19,12 @@ import com.appreman.app.Database.DBHelper;
 import com.appreman.app.Models.Asignar;
 import com.appreman.app.Utils.Constant;
 import com.appreman.appreman.R;
+import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -35,6 +38,8 @@ public class LoginActivity extends AppCompatActivity {
     private Button buttonIngresar;
     private DBHelper dbHelper;
     private ApiServices appServices;
+    private SharedPreferences sharedPreferences;
+    private Gson gson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +51,8 @@ public class LoginActivity extends AppCompatActivity {
         etPass = findViewById(R.id.etPass);
         buttonIngresar = findViewById(R.id.buttonIngresar);
         dbHelper = new DBHelper(this);
+        sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        gson = new Gson();
 
         ApiAdapter apiAdapter = new ApiAdapter();
         appServices = apiAdapter.getApiService(URL);
@@ -77,7 +84,6 @@ public class LoginActivity extends AppCompatActivity {
                     int idOperador = dbHelper.getOperadorIdPorEmail(email);
 
                     // Guardar el ID del operador en SharedPreferences
-                    SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putInt("id_operador", idOperador);
                     editor.apply();
@@ -101,67 +107,63 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    // TODO: ******************************* ASIGNAR *****************************************
-
-
-    private void  agetAsignar(){
+    private void agetAsignar() {
         Call<AsignarResponse> callSync = appServices.getAsignaciones();
 
-        try
-        {
+        try {
             Response<AsignarResponse> response = callSync.execute();
 
-
             if (response.isSuccessful()) {
-
-
-
                 List<Asignar> asignarList = fetchResultsAsignar(response);
 
+                if (asignarList != null) {
+                    // Guardar las asignaciones en SharedPreferences
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    String asignacionesJson = gson.toJson(asignarList);
+                    editor.putString(KEY_ASIGNACIONES, asignacionesJson);
+                    editor.apply();  // Guarda de manera asíncrona
 
-                //assert asignar != null;
+                    // Verificar si los datos se guardaron correctamente
+                    String savedData = sharedPreferences.getString(KEY_ASIGNACIONES, null);
+                    Log.d(TAG, "✅ Datos guardados en SharedPreferences: " + savedData);
 
-                for (Asignar asignar : asignarList) {
-                     Log.e(TAG, "Operador:" + asignar.getIdOperador() + "\n" + "Elemento:" + asignar.getIdElemento());
+                    // Imprimir detalles de las asignaciones
+                    StringBuilder asignaciones = new StringBuilder();
+                    for (Asignar asignar : asignarList) {
+                        asignaciones.append("Operador: ").append(asignar.getIdOperador())
+                                .append(", Empresa: ").append(asignar.getIdEmpresa())
+                                .append(", Elemento: ").append(asignar.getIdElemento())
+                                .append(", Nombre Empresa: ").append(asignar.getNombreEmpresa()).append("\n");
+                    }
 
-                }
-
-
-
-            }else {
-
-                if (response.code() == 401) {
-
-
-
+                    Log.d(TAG, "✅ Asignaciones anexadas al JSON y guardadas en SharedPreferences");
+                    Log.d(TAG, "📌 Asignaciones: \n" + asignaciones);
                 } else {
-
+                    Log.e(TAG, "⚠️ Error: La lista de asignaciones es null.");
+                }
+            } else {
+                Log.e(TAG, "❌ Error en la respuesta: " + response.code());
+                if (response.code() == 401) {
+                    Log.e(TAG, "❌ Error 401: No autorizado.");
+                } else {
                     try {
-
                         assert response.errorBody() != null;
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
-
-
+                        Log.e(TAG, "❌ Error Body: " + jObjError.toString());
                     } catch (Exception e) {
-
                         e.printStackTrace();
-
-
                     }
                 }
             }
-
-        }
-        catch (IOException e)
-        {
-
-            e.printStackTrace();
+        } catch (IOException e) {
+            Log.e(TAG, "❌ IOException al ejecutar la llamada a la API", e);
         }
     }
-
 
     private List<Asignar> fetchResultsAsignar(Response<AsignarResponse> response) {
         AsignarResponse asignarResponse = response.body();
-        return asignarResponse != null ? asignarResponse.getAsignaciones() : null;
+        return asignarResponse != null ? asignarResponse.getAsignaciones() : new ArrayList<>();
     }
+
+
 }

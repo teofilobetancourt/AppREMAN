@@ -32,6 +32,7 @@ import com.appreman.app.Activity.EncuestasActivity;
 import com.appreman.app.Database.DBHelper;
 import com.appreman.app.Email.MailSender;
 import com.appreman.app.Email.PendingEmail;
+import com.appreman.app.Models.Asignar;
 import com.appreman.app.Repository.AppPreferences;
 import com.appreman.app.Repository.WebSocketManager;
 import com.appreman.appreman.R;
@@ -44,7 +45,11 @@ import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.card.MaterialCardView;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -74,13 +79,14 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
     private List<String> notificationMessages = new ArrayList<>();
     private String email; // Variable para almacenar el email
     private WebSocketManager webSocketManager;
-    private int idOperador;  // Declaración de la variable idOperador
+    private int idOperador;
 
-    public static HomeFragment newInstance(String email, int id_operador) {
+    public static HomeFragment newInstance(String email, int idOperador, List<Asignar> asignarList) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
         args.putString("email", email);
-        args.putInt("id_operador", id_operador);
+        args.putInt("id_operador", idOperador);
+        args.putSerializable("asignar_list", (Serializable) asignarList);
         fragment.setArguments(args);
         return fragment;
     }
@@ -89,117 +95,112 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        dbHelper = new DBHelper(requireActivity());
-        appPreferences = new AppPreferences(requireActivity());
+        if (getArguments() != null) {
+            String email = getArguments().getString("email");
+            int idOperador = getArguments().getInt("id_operador");
+            List<Asignar> asignarList = (List<Asignar>) getArguments().getSerializable("asignar_list");
 
-        spinner = view.findViewById(R.id.spinner_empresas);
-        List<String> empresaNames = dbHelper.getAllEmpresaNames();
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(requireActivity(), R.layout.spinner_dropdown_item, empresaNames);
-        spinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-        spinner.setAdapter(spinnerAdapter);
+            dbHelper = new DBHelper(requireActivity());
+            appPreferences = new AppPreferences(getContext());
 
-        // Variables de las CardView
-        cardActual = view.findViewById(R.id.card_actual);
-        cardPotencial = view.findViewById(R.id.card_potencial);
-        cardAmbas = view.findViewById(R.id.card_ambas);
-        cardContinuar = view.findViewById(R.id.card_continuar);
+            spinner = view.findViewById(R.id.spinner_empresas);
 
-        // Elementos de la interfaz
-        textBalanceTotal = view.findViewById(R.id.text_balance_total);
-        lineChart = view.findViewById(R.id.chart1);
-        menuIcon = view.findViewById(R.id.menu_icon);
-        notifi = view.findViewById(R.id.notification_icon);
-        notificationBadge = view.findViewById(R.id.notification_badge);
+            Log.d("HomeFragment", "📌 ID del Operador obtenido: " + idOperador);
 
-        // Inicializar el punto rojo como invisible
-        notificationBadge.setVisibility(View.GONE);
-
-        notifi.setOnClickListener(v -> {
-            if (notificationBadge.getVisibility() == View.VISIBLE) {
-                notificationBadge.setVisibility(View.GONE);
-
-                View popupView = LayoutInflater.from(requireContext()).inflate(R.layout.popup_notifications, null);
-                PopupWindow popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
-
-                actualizarMensajeNotificacion(email, requireContext());
-
-                TextView notificationText = popupView.findViewById(R.id.notification_text);
-                notificationText.setText(notificationMessage);
-
-                popupWindow.setOutsideTouchable(true);
-                popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-                popupWindow.showAsDropDown(notifi);
-                notificationMessage = "";
+            // Filtrar asignaciones por el operador actual
+            List<String> empresaNames = new ArrayList<>();
+            if (asignarList != null && !asignarList.isEmpty()) {
+                for (Asignar asignar : asignarList) {
+                    if (asignar.getIdOperador() == idOperador) {
+                        empresaNames.add(asignar.getNombreEmpresa());
+                    }
+                }
             }
-        });
+            Log.d("HomeFragment", "📌 Empresas asignadas al operador: " + empresaNames);
 
-        // Configurar el ícono del menú para mostrar el PopupMenu
-        menuIcon.setOnClickListener(this::showPopupMenu);
+            // Configurar el Spinner con los nombres de empresas
+            ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(requireActivity(), R.layout.spinner_dropdown_item, empresaNames);
+            spinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+            spinner.setAdapter(spinnerAdapter);
 
-        // Obtener los argumentos pasados desde la actividad
-        Bundle args = getArguments();
-        if (args != null) {
-            String empresaName = args.getString("empresa_nombre");
-            email = args.getString("email");
-            idOperador = args.getInt("id_operador"); // Cambiar a int para recibir el ID
+            // Variables para los CardView
+            cardActual = view.findViewById(R.id.card_actual);
+            cardPotencial = view.findViewById(R.id.card_potencial);
+            cardAmbas = view.findViewById(R.id.card_ambas);
+            cardContinuar = view.findViewById(R.id.card_continuar);
 
-            // Guardar idOperador en AppPreferences
-            appPreferences.setIdOperador(idOperador);
+            // Elementos de la interfaz
+            textBalanceTotal = view.findViewById(R.id.text_balance_total);
+            lineChart = view.findViewById(R.id.chart1);
+            menuIcon = view.findViewById(R.id.menu_icon);
+            notifi = view.findViewById(R.id.notification_icon);
+            notificationBadge = view.findViewById(R.id.notification_badge);
 
-            if (empresaName != null) {
-                appPreferences.setNombreEmpresa(empresaName);
-                updateFinancialData(view, empresaName);
+            // Inicializar el punto rojo como invisible
+            notificationBadge.setVisibility(View.GONE);
+
+            notifi.setOnClickListener(v -> {
+                if (notificationBadge.getVisibility() == View.VISIBLE) {
+                    notificationBadge.setVisibility(View.GONE);
+
+                    View popupView = LayoutInflater.from(requireContext()).inflate(R.layout.popup_notifications, null);
+                    PopupWindow popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+
+                    actualizarMensajeNotificacion(email, requireContext());
+
+                    TextView notificationText = popupView.findViewById(R.id.notification_text);
+                    notificationText.setText(notificationMessage);
+
+                    popupWindow.setOutsideTouchable(true);
+                    popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                    popupWindow.showAsDropDown(notifi);
+                    notificationMessage = "";
+                }
+            });
+
+            // Configuración del menú emergente
+            menuIcon.setOnClickListener(this::showPopupMenu);
+
+            // Configuración del Spinner
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                    String selectedEmpresa = (String) parentView.getItemAtPosition(position);
+                    appPreferences.setNombreEmpresa(selectedEmpresa);
+                    updateFinancialData(view, selectedEmpresa);
+
+                    // Guardar ID de la empresa basado en la posición del Spinner
+                    int idEmpresa = position;
+                    appPreferences.setIdEmpresa(idEmpresa);
+
+                    Log.d("HomeFragment", "📌 ID de la Empresa seleccionada: " + idEmpresa);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parentView) {}
+            });
+
+            // Seleccionar la última empresa elegida en el Spinner
+            String lastSelectedEmpresa = appPreferences.getNombreEmpresa();
+            if (lastSelectedEmpresa != null && !lastSelectedEmpresa.isEmpty()) {
+                int spinnerPosition = spinnerAdapter.getPosition(lastSelectedEmpresa);
+                if (spinnerPosition >= 0) {
+                    spinner.setSelection(spinnerPosition);
+                }
             }
 
-            // Log para verificar que se obtuvo correctamente el idOperador
-            Log.d("HomeFragment", "ID Operador: " + idOperador);
+            // Botón de continuar
+            cardContinuar.setOnClickListener(v -> iniciarEncuestasActivity());
 
-            // Aquí puedes usar idOperador según sea necesario
-        } else {
-            // Obtener idOperador desde AppPreferences si no hay argumentos
-            idOperador = appPreferences.getIdOperador();
-            Log.d("HomeFragment", "ID Operador desde AppPreferences: " + idOperador);
+            // Iniciar WebSocketManager
+            webSocketManager = new WebSocketManager(this);
+            webSocketManager.start();
         }
-
-        // Configuración del Spinner
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                String selectedEmpresa = (String) parentView.getItemAtPosition(position);
-                appPreferences.setNombreEmpresa(selectedEmpresa);
-                updateFinancialData(view, selectedEmpresa);
-
-                // Calcular el ID de la empresa basado en la posición del Spinner
-                int idEmpresa = position + 1;
-                appPreferences.setIdEmpresa(idEmpresa);
-
-                // Log para verificar el ID de la empresa
-                Log.d("HomeFragment", "ID Empresa: " + idEmpresa);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {}
-        });
-
-        // Configuración de la selección previa del Spinner
-        String lastSelectedEmpresa = appPreferences.getNombreEmpresa();
-        if (lastSelectedEmpresa != null && !lastSelectedEmpresa.isEmpty()) {
-            int spinnerPosition = spinnerAdapter.getPosition(lastSelectedEmpresa);
-            if (spinnerPosition >= 0 && spinnerPosition < spinnerAdapter.getCount()) {
-                spinner.setSelection(spinnerPosition);
-            }
-        }
-
-        // Listener para el botón de continuar
-        cardContinuar.setOnClickListener(v -> iniciarEncuestasActivity());
-
-        // Configuración del WebSocket Manager
-        webSocketManager = new WebSocketManager(this);
-        webSocketManager.start();
 
         return view;
     }
+
 
     @Override
     public void onNotificationReceived(int count) {

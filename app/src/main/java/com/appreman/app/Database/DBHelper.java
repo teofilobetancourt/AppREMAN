@@ -1417,30 +1417,6 @@ public class DBHelper extends SQLiteAssetHelper {
         return elementosAsignados;
     }
 
-    @SuppressLint("Range")
-    private List<Asignar> obtenerAsignacionesDesdeBD() {
-        List<Asignar> asignaciones = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        Cursor cursor = db.rawQuery("SELECT id_operador, id_elemento, id_empresa, nombre_empresa FROM asignar", null);
-
-        if (cursor.moveToFirst()) {
-            do {
-                Asignar asignar = new Asignar();
-                asignar.setIdOperador(cursor.getInt(cursor.getColumnIndex("id_operador")));
-                asignar.setIdEmpresa(cursor.getInt(cursor.getColumnIndex("id_empresa")));
-                asignar.setIdElemento(cursor.getString(cursor.getColumnIndex("id_elemento")));
-                asignar.setNombreEmpresa(cursor.getString(cursor.getColumnIndex("nombre_empresa")));
-                asignaciones.add(asignar);
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
-        db.close();
-
-        return asignaciones;
-    }
-
     public int getTotalQuestionsForElemento(String numeroElemento, String nombreEmpresa) {
         int totalQuestions = 0;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -1481,8 +1457,21 @@ public class DBHelper extends SQLiteAssetHelper {
         return answeredQuestions;
     }
 
-
-
-
+    @SuppressLint("Range")
+    public Elemento getElementoById(String idElemento) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query("elemento", new String[]{"numero", "nombre", "grupo"}, "numero = ?", new String[]{idElemento}, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+            Elemento elemento = new Elemento();
+            elemento.setNumero(cursor.getString(cursor.getColumnIndex("numero")));
+            elemento.setNombre(cursor.getString(cursor.getColumnIndex("nombre")));
+            elemento.setGrupo(cursor.getInt(cursor.getColumnIndex("grupo")));
+            cursor.close();
+            return elemento;
+        } else {
+            return null;
+        }
+    }
 
 }
