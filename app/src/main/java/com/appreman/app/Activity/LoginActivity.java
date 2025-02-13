@@ -1,5 +1,7 @@
 package com.appreman.app.Activity;
 
+import static com.appreman.app.Utils.Constant.URL;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,16 +10,31 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.appreman.app.Api.ApiAdapter;
+import com.appreman.app.Api.ApiServices;
+import com.appreman.app.Api.Response.AsignarResponse;
 import com.appreman.app.Database.DBHelper;
+import com.appreman.app.Models.Asignar;
+import com.appreman.app.Utils.Constant;
 import com.appreman.appreman.R;
+
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private static final String TAG = "APPREMAM";
     private EditText etUser;
     private EditText etPass;
     private Button buttonIngresar;
     private DBHelper dbHelper;
-    private static final String TAG = "LoginActivity";
+    private ApiServices appServices;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +46,12 @@ public class LoginActivity extends AppCompatActivity {
         etPass = findViewById(R.id.etPass);
         buttonIngresar = findViewById(R.id.buttonIngresar);
         dbHelper = new DBHelper(this);
+
+        ApiAdapter apiAdapter = new ApiAdapter();
+        appServices = apiAdapter.getApiService(URL);
+
+        // Llamar a agetAsignar al iniciar la actividad
+        new Thread(this::agetAsignar).start();
 
         // Configurar el botón de ingreso
         buttonIngresar.setOnClickListener(v -> {
@@ -76,5 +99,69 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    // TODO: ******************************* ASIGNAR *****************************************
+
+
+    private void  agetAsignar(){
+        Call<AsignarResponse> callSync = appServices.getAsignaciones();
+
+        try
+        {
+            Response<AsignarResponse> response = callSync.execute();
+
+
+            if (response.isSuccessful()) {
+
+
+
+                List<Asignar> asignarList = fetchResultsAsignar(response);
+
+
+                //assert asignar != null;
+
+                for (Asignar asignar : asignarList) {
+                     Log.e(TAG, "Operador:" + asignar.getIdOperador() + "\n" + "Elemento:" + asignar.getIdElemento());
+
+                }
+
+
+
+            }else {
+
+                if (response.code() == 401) {
+
+
+
+                } else {
+
+                    try {
+
+                        assert response.errorBody() != null;
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+
+
+                    } catch (Exception e) {
+
+                        e.printStackTrace();
+
+
+                    }
+                }
+            }
+
+        }
+        catch (IOException e)
+        {
+
+            e.printStackTrace();
+        }
+    }
+
+
+    private List<Asignar> fetchResultsAsignar(Response<AsignarResponse> response) {
+        AsignarResponse asignarResponse = response.body();
+        return asignarResponse != null ? asignarResponse.getAsignaciones() : null;
     }
 }

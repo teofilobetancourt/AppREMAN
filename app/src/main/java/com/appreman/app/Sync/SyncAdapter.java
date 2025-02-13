@@ -14,6 +14,7 @@ import android.util.Log;
 
 import com.appreman.app.Api.ApiAdapter;
 import com.appreman.app.Api.ApiServices;
+import com.appreman.app.Api.Response.ActualizarAsignarResponse;
 import com.appreman.app.Api.Response.AsignarResponse;
 import com.appreman.app.Models.Asignar;
 import com.appreman.app.Utils.Constant;
@@ -24,7 +25,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
@@ -56,6 +59,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 if (asignaciones != null && !asignaciones.isEmpty()) {
                     asignacionesArray.clear();
                     asignacionesArray.addAll(asignaciones);
+                    // Llama al método para enviar las asignaciones al microservicio
+                    enviarAsignacionesAlMicroservicio(asignacionesArray);
                 }
             } else {
                 handleErrorResponse(response);
@@ -63,6 +68,26 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         } catch (IOException e) {
             Log.e(TAG, "Error executing call: ", e);
         }
+    }
+
+    public void enviarAsignacionesAlMicroservicio(List<Asignar> asignaciones) {
+        Call<ActualizarAsignarResponse> call = appServices.postActualizarAsignar((RequestBody) asignaciones);
+
+        call.enqueue(new Callback<ActualizarAsignarResponse>() {
+            @Override
+            public void onResponse(Call<ActualizarAsignarResponse> call, Response<ActualizarAsignarResponse> response) {
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "Asignaciones enviadas exitosamente: " + response.body().getMensaje());
+                } else {
+                    Log.e(TAG, "Error al enviar asignaciones: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ActualizarAsignarResponse> call, Throwable t) {
+                Log.e(TAG, "Error en la llamada: ", t);
+            }
+        });
     }
 
     private void handleErrorResponse(Response<?> response) {

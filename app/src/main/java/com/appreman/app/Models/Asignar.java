@@ -4,20 +4,21 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.google.gson.annotations.SerializedName;
+
 @Entity(tableName = "asignar")
 public class Asignar {
 
-    @ColumnInfo(name = "id_empresa")
+    @SerializedName("id_empresa")
     private int idEmpresa;
 
-    @PrimaryKey
-    @ColumnInfo(name = "id_operador")
-    private int idOperador;
-
-    @ColumnInfo(name = "id_elemento")
+    @SerializedName("id_elemento")
     private String idElemento;
 
-    @ColumnInfo(name = "nombre_empresa")
+    @SerializedName("id_operador")
+    private int idOperador;
+
+    @SerializedName("nombre_empresa")
     private String nombreEmpresa;
 
     // Getters y setters

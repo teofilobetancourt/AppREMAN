@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
 
+import com.appreman.app.Models.Asignar;
 import com.appreman.app.Models.Elemento;
 import com.appreman.app.Models.Empresa;
 import com.appreman.app.Models.Grupo;
@@ -1177,35 +1178,6 @@ public class DBHelper extends SQLiteAssetHelper {
         return operadorNames;
     }
 
-    public long[] guardarAsignar(String idEmpresa, String nombreEmpresa, String idOperador, List<String> numerosElementos) {
-        // Obtén una instancia de la base de datos en modo escritura
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        // Array para almacenar los IDs de las filas insertadas
-        long[] newRowIds = new long[numerosElementos.size()];
-
-        // Itera sobre cada número de elemento y realiza la inserción
-        for (int i = 0; i < numerosElementos.size(); i++) {
-            // Crea un objeto ContentValues para almacenar los valores a insertar
-            ContentValues values = new ContentValues();
-            values.put("id_operador", idOperador); // Inserta el id del operador
-            values.put("id_elemento", String.valueOf(numerosElementos.get(i))); // Inserta el número completo del elemento (con decimales si es necesario)
-            values.put("id_empresa", idEmpresa); // Inserta el id de la empresa
-            values.put("nombre_empresa", nombreEmpresa); // Inserta el nombre de la empresa
-
-            // Inserta la fila en la tabla y almacena el ID de la fila insertada
-            newRowIds[i] = db.insert("asignar", null, values);
-        }
-
-        // Cierra la base de datos
-        db.close();
-
-        return newRowIds;
-    }
-
-
-
-
     @SuppressLint("Range")
     public int obtenerIdOperadorPorNombre(String nombreOperador) {
         // Obtén una instancia de la base de datos en modo lectura
@@ -1288,7 +1260,35 @@ public class DBHelper extends SQLiteAssetHelper {
         return nombreEmpresa;
     }
 
-    @SuppressLint("Range")
+    public long[] guardarAsignar(String idEmpresa, String nombreEmpresa, String idOperador, List<String> numerosElementos) {
+        // Obtén una instancia de la base de datos en modo escritura
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Array para almacenar los IDs de las filas insertadas
+        long[] newRowIds = new long[numerosElementos.size()];
+
+        // Itera sobre cada número de elemento y realiza la inserción
+        for (int i = 0; i < numerosElementos.size(); i++) {
+            // Crea un objeto ContentValues para almacenar los valores a insertar
+            ContentValues values = new ContentValues();
+            values.put("id_operador", idOperador); // Inserta el id del operador
+            values.put("id_elemento", String.valueOf(numerosElementos.get(i))); // Inserta el número completo del elemento (con decimales si es necesario)
+            values.put("id_empresa", idEmpresa); // Inserta el id de la empresa
+            values.put("nombre_empresa", nombreEmpresa); // Inserta el nombre de la empresa
+
+            // Inserta la fila en la tabla y almacena el ID de la fila insertada
+            newRowIds[i] = db.insert("asignar", null, values);
+        }
+
+        // Cierra la base de datos
+        db.close();
+
+        return newRowIds;
+    }
+
+    /* -TODO Elementos Asignados sin SyncAdapter .-  ------------------------------------------------------------------------------------------- */
+
+    /*@SuppressLint("Range")
     public List<Elemento> getElementosAsignados(int idOperador, int idEmpresa) {
         List<Elemento> elementosAsignados = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -1327,7 +1327,7 @@ public class DBHelper extends SQLiteAssetHelper {
 
         Log.d("DBHelper", "Total de elementos asignados encontrados: " + elementosAsignados.size());
         return elementosAsignados;
-    }
+    }*/
 
     @SuppressLint("Range")
     public List<Elemento> getElementosDisponibles() {
@@ -1356,10 +1356,16 @@ public class DBHelper extends SQLiteAssetHelper {
         return elementosDisponibles;
     }
 
-    /*@SuppressLint("Range")
+    /* -TODO Elementos Asignados con SyncAdapter .-  ------------------------------------------------------------------------------------------- */
+
+    @SuppressLint("Range")
     public List<Elemento> getElementosAsignados(int idOperador, int idEmpresa) {
         // Primero, actualiza las asignaciones
-        syncAdapter.actualizarAsignaciones();
+        if (syncAdapter != null) {
+            syncAdapter.actualizarAsignaciones();
+        } else {
+            Log.e(TAG, "SyncAdapter es null");
+        }
 
         List<Elemento> elementosAsignados = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -1371,9 +1377,9 @@ public class DBHelper extends SQLiteAssetHelper {
         if (testCursor.moveToFirst()) {
             Log.d("DBHelper", "Registros en la tabla asignar:");
             do {
-                int idOperadorDb = testCursor.getInt(testCursor.getColumnIndex("id_operador"));
-                int idEmpresaDb = testCursor.getInt(testCursor.getColumnIndex("id_empresa"));
-                String idElementoDb = testCursor.getString(testCursor.getColumnIndex("id_elemento"));
+                @SuppressLint("Range") int idOperadorDb = testCursor.getInt(testCursor.getColumnIndex("id_operador"));
+                @SuppressLint("Range") int idEmpresaDb = testCursor.getInt(testCursor.getColumnIndex("id_empresa"));
+                @SuppressLint("Range") String idElementoDb = testCursor.getString(testCursor.getColumnIndex("id_elemento"));
 
                 Log.d("DBHelper", "idOperador: " + idOperadorDb + ", idEmpresa: " + idEmpresaDb + ", idElemento: " + idElementoDb);
             } while (testCursor.moveToNext());
@@ -1409,7 +1415,31 @@ public class DBHelper extends SQLiteAssetHelper {
 
         Log.d("DBHelper", "Total de elementos asignados encontrados: " + elementosAsignados.size());
         return elementosAsignados;
-    }*/
+    }
+
+    @SuppressLint("Range")
+    private List<Asignar> obtenerAsignacionesDesdeBD() {
+        List<Asignar> asignaciones = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT id_operador, id_elemento, id_empresa, nombre_empresa FROM asignar", null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Asignar asignar = new Asignar();
+                asignar.setIdOperador(cursor.getInt(cursor.getColumnIndex("id_operador")));
+                asignar.setIdEmpresa(cursor.getInt(cursor.getColumnIndex("id_empresa")));
+                asignar.setIdElemento(cursor.getString(cursor.getColumnIndex("id_elemento")));
+                asignar.setNombreEmpresa(cursor.getString(cursor.getColumnIndex("nombre_empresa")));
+                asignaciones.add(asignar);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return asignaciones;
+    }
 
     public int getTotalQuestionsForElemento(String numeroElemento, String nombreEmpresa) {
         int totalQuestions = 0;

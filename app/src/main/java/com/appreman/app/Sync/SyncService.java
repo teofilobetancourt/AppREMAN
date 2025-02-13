@@ -24,4 +24,8 @@ public class SyncService extends Service {
     public IBinder onBind(Intent intent) {
         return sSyncAdapter.getSyncAdapterBinder();
     }
+
+    public static SyncAdapter getSyncAdapter() {
+        return sSyncAdapter;
+    }
 }
