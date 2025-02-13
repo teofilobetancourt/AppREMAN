@@ -77,14 +77,13 @@ public class EncuestasActivity extends AppCompatActivity {
         Intent syncServiceIntent = new Intent(this, SyncService.class);
         startService(syncServiceIntent);
 
-        // Obtener los datos del Intent
-        String nombreEmpresa = getIntent().getStringExtra("empresa_nombre"); // Obtener el nombre de la empresa
-        int idEmpresa = getIntent().getIntExtra("id_empresa", -1); // Obtener el ID de la empresa (por defecto -1 si no existe)
-        int idOperador = getIntent().getIntExtra("id_operador", -1);  // Usamos -1 como valor predeterminado
-        String email = getIntent().getStringExtra("email"); // Obtener el email
+        // Obtener los datos desde el Intent
+        Intent intent = getIntent();
+        int idEmpresa = intent.getIntExtra("id_empresa", -1);
+        int idOperador = intent.getIntExtra("id_operador", -1);
+        String email = intent.getStringExtra("email");
 
         // Mostrar los datos recibidos por log para verificar
-        Log.d("EncuestasActivity", "Nombre de la empresa: " + nombreEmpresa);
         Log.d("EncuestasActivity", "ID de la empresa: " + idEmpresa);
         Log.d("EncuestasActivity", "ID del operador: " + idOperador);
         Log.d("EncuestasActivity", "Email: " + email);
@@ -105,6 +104,9 @@ public class EncuestasActivity extends AppCompatActivity {
             Type type = new TypeToken<List<Asignar>>() {}.getType();
             asignarList = gson.fromJson(asignacionesJson, type);
         }
+
+        // Log para ver la lista de asignaciones obtenida
+        Log.d("EncuestasActivity", "Lista de asignaciones obtenida: " + asignarList.toString());
 
         // Filtrar los elementos asignados a este operador y empresa
         List<Elemento> elementos = new ArrayList<>();
@@ -179,7 +181,7 @@ public class EncuestasActivity extends AppCompatActivity {
         fabNotification.setOnClickListener(v -> showElementInfoDialog(idOperador, idEmpresa));
 
         AppPreferences appPreferences = new AppPreferences(this);
-        nombreEmpresa = appPreferences.getNombreEmpresa();
+        String nombreEmpresa = appPreferences.getNombreEmpresa();
 
         // Asegúrate de que dbHelper no sea null antes de usarlo
         if (dbHelper != null) {

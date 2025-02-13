@@ -171,7 +171,7 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
                     updateFinancialData(view, selectedEmpresa);
 
                     // Guardar ID de la empresa basado en la posición del Spinner
-                    int idEmpresa = position;
+                    int idEmpresa = position + 1; // Sumar 1 a la posición del Spinner
                     appPreferences.setIdEmpresa(idEmpresa);
 
                     Log.d("HomeFragment", "📌 ID de la Empresa seleccionada: " + idEmpresa);
@@ -191,7 +191,7 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
             }
 
             // Botón de continuar
-            cardContinuar.setOnClickListener(v -> iniciarEncuestasActivity());
+            cardContinuar.setOnClickListener(v -> iniciarEncuestasActivity(idOperador, email));
 
             // Iniciar WebSocketManager
             webSocketManager = new WebSocketManager(this);
@@ -413,7 +413,7 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
     }
 
     @SuppressLint("LongLogTag")
-    private void iniciarEncuestasActivity() {
+    private void iniciarEncuestasActivity(int idOperador, String email) {
         String selectedEmpresa = (String) spinner.getSelectedItem();
 
         if (selectedEmpresa != null && !selectedEmpresa.isEmpty()) {
