@@ -88,6 +88,7 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
         holder.txtOpcion.setOnClickListener(v -> handleOptionSelection(opcion));
     }
 
+
     @SuppressLint("NotifyDataSetChanged")
     private void handleOptionSelection(Opcion selectedOption) {
         if (selectedOption.getNumero().equals("Comentario")) {
@@ -127,11 +128,6 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
                     selectedOption.setNombreOpcion("");
                 }
 
-                // Evitar que la palabra "Comentario" se guarde en las opciones "Actual" y "Potencial"
-                if (selectedOption.getNumero().equals("Comentario")) {
-                    selectedOption.setNombreOpcion("");
-                }
-
                 notifyDataSetChanged();
 
                 if (opcionSelectionListener != null) {
@@ -142,6 +138,7 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
             }
         }
     }
+
 
     private void mostrarDialogoComentario(Opcion opcion) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -173,7 +170,7 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
 
     private void uncheckOldestSelectedOptions(String pregunta) {
         for (Opcion option : items) {
-            if (option.isSeleccionada() && option.getPregunta().equals(pregunta) && !option.getNombreOpcion().equals("Actual")) {
+            if (option.isSeleccionada() && option.getPregunta().equals(pregunta) && !option.getNombreOpcion().equals("Actual") && !option.getNumero().equals("Comentario")) {
                 option.setSeleccionada(false);
                 option.setNombreOpcion("");
                 notifyItemChanged(items.indexOf(option));
@@ -201,7 +198,7 @@ public class OpcionAdapter extends RecyclerView.Adapter<OpcionAdapter.MotivosVie
     private int getSelectedCount() {
         int count = 0;
         for (Opcion opcion : items) {
-            if (opcion.isSeleccionada()) {
+            if (opcion.isSeleccionada() && !opcion.getNumero().equals("Comentario")) {
                 count++;
             }
         }

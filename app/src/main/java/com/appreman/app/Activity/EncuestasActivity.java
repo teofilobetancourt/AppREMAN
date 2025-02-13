@@ -246,6 +246,11 @@ public class EncuestasActivity extends AppCompatActivity {
                     // Almacenar los valores en SharedPreferences
                     appPreferences.setNombreEncuestado(nuevoNombreEncuestado);
                     appPreferences.setCargoEncuestado(nuevoCargoEncuestado);
+
+                    // Agregar logs para verificar los valores guardados
+                    Log.d("EncuestadoDialog", "Nombre guardado: " + nuevoNombreEncuestado);
+                    Log.d("EncuestadoDialog", "Cargo guardado: " + nuevoCargoEncuestado);
+
                     dialog.dismiss();
                 }
             });

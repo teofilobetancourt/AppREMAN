@@ -57,6 +57,12 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.Motivo
     public void onBindViewHolder(@NonNull MotivosViewHolder holder, final int i) {
         Pregunta pregunta = items.get(i);
 
+        // Obtener valores de SharedPreferences
+        AppPreferences appPreferences = new AppPreferences(context);
+        String nombreEmpresa = appPreferences.getNombreEmpresa();
+        String nombreEncuestado = appPreferences.getNombreEncuestado();
+        String cargoEncuestado = appPreferences.getCargoEncuestado();
+
         holder.txtPregunta.setText(pregunta.getNumero().concat(".- ").concat(pregunta.getDescripcion()));
 
         List<Opcion> opciones = dbHelper.getOpcionesPregunta(pregunta.getNumero(), nombreEmpresa);
@@ -82,42 +88,58 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.Motivo
             List<Opcion> opcionesSeleccionadas = preguntaOpcionAdapter.obtenerOpcionesSeleccionadas();
 
             String preguntaNumero = pregunta.getNumero();
-            String nombreEmpresa = obtenerNombreEmpresaDesdePreferencias();
             String fechaRespuesta = obtenerFechaActual(); // Método para obtener la fecha actual
 
-            if (!opcionesSeleccionadas.isEmpty()) {
-                Opcion opcionActual = opcionesSeleccionadas.get(0);
-                Opcion opcionPotencial = opcionesSeleccionadas.size() > 1 ? opcionesSeleccionadas.get(1) : opcionActual;
-
-                // Guardar una cadena vacía en lugar de null si el comentario está vacío
-                String comentario = opcionActual.getComentario().isEmpty() ? "" : opcionActual.getComentario();
-
-                if (isQuestionInDatabase(nombreEmpresa, preguntaNumero)) {
-                    dbHelper.updateAnswerInDatabase(nombreEmpresa, preguntaNumero, opcionActual.getNumero(), opcionPotencial.getNumero(), comentario, nombreEncuestado, cargoEncuestado);
-                } else {
-                    dbHelper.insertarOpcionesEnRespuestas(nombreEmpresa, preguntaNumero, opcionActual.getNumero(), opcionPotencial.getNumero(), fechaRespuesta, comentario, nombreEncuestado, cargoEncuestado);
+            Opcion opcionComentario = null;
+            for (Opcion opcion : opcionesSeleccionadas) {
+                if (opcion.getNumero().equals("Comentario")) {
+                    opcionComentario = opcion;
+                    break;
                 }
-
-                preguntaOpcionAdapter.notifyDataSetChanged();
-
-                // Mostrar un log con los datos guardados en una sola fila
-                Log.d(TAG, "Opciones guardadas correctamente: " +
-                        "Nombre de la empresa: " + nombreEmpresa + ", " +
-                        "Número de la pregunta: " + preguntaNumero + ", " +
-                        "Opción actual: " + opcionActual.getNumero() + ", " +
-                        "Opción potencial: " + opcionPotencial.getNumero() + ", " +
-                        "Fecha de respuesta: " + fechaRespuesta + ", " +
-                        "Comentario: " + comentario + ", " +
-                        "Nombre del encuestado: " + nombreEncuestado + ", " +
-                        "Cargo del encuestado: " + cargoEncuestado);
-
-                mostrarToast("Opciones guardadas correctamente");
-
-                // Restaurar el color del botón después de guardar
-                holder.btnPreguntas.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
-            } else {
-                Log.e(TAG, "No se pudieron obtener opciones seleccionadas.");
             }
+
+            if (opcionComentario != null) {
+                opcionesSeleccionadas.remove(opcionComentario); // Removemos la opción "Comentario" de la lista
+            }
+
+            String opcionActual = "";
+            String opcionPotencial = "";
+            String comentario = opcionComentario != null ? opcionComentario.getComentario() : "";
+
+            // Si hay solo una opción seleccionada, asignarla como actual y potencial
+            if (opcionesSeleccionadas.size() == 1) {
+                opcionActual = opcionesSeleccionadas.get(0).getNumero();
+                opcionPotencial = opcionActual; // La misma opción se guarda en ambas columnas
+            } else if (opcionesSeleccionadas.size() == 2) {
+                opcionActual = opcionesSeleccionadas.get(0).getNumero();
+                opcionPotencial = opcionesSeleccionadas.get(1).getNumero();
+            }
+
+            // Guardamos en la BD asegurándonos de que "Comentario" no sustituya el número de la opción
+            if (isQuestionInDatabase(nombreEmpresa, preguntaNumero)) {
+                dbHelper.updateAnswerInDatabase(nombreEmpresa, preguntaNumero, opcionActual, opcionPotencial, comentario, nombreEncuestado, cargoEncuestado);
+            } else {
+                dbHelper.insertarOpcionesEnRespuestas(nombreEmpresa, preguntaNumero, opcionActual, opcionPotencial, fechaRespuesta, comentario, nombreEncuestado, cargoEncuestado);
+            }
+
+
+            preguntaOpcionAdapter.notifyDataSetChanged();
+
+            // Mostrar un log con los datos guardados en una sola fila
+            Log.d(TAG, "Opciones guardadas correctamente: " +
+                    "Nombre de la empresa: " + nombreEmpresa + ", " +
+                    "Número de la pregunta: " + preguntaNumero + ", " +
+                    "Opción actual: " + (opcionesSeleccionadas.isEmpty() ? "" : opcionesSeleccionadas.get(0).getNumero()) + ", " +
+                    "Opción potencial: " + (opcionesSeleccionadas.size() > 1 ? opcionesSeleccionadas.get(1).getNumero() : "") + ", " +
+                    "Fecha de respuesta: " + fechaRespuesta + ", " +
+                    "Comentario: " + (opcionComentario != null ? opcionComentario.getComentario() : "") + ", " +
+                    "Nombre del encuestado: " + nombreEncuestado + ", " +
+                    "Cargo del encuestado: " + cargoEncuestado);
+
+            mostrarToast("Opciones guardadas correctamente");
+
+            // Restaurar el color del botón después de guardar
+            holder.btnPreguntas.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
         });
     }
 
