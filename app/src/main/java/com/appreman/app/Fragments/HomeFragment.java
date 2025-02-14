@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -51,6 +52,7 @@ import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import android.widget.ProgressBar;
@@ -109,10 +111,12 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
 
             // Filtrar asignaciones por el operador actual
             List<String> empresaNames = new ArrayList<>();
+            final Map<String, Integer> empresaIdMap = new HashMap<>();
             if (asignarList != null && !asignarList.isEmpty()) {
                 for (Asignar asignar : asignarList) {
                     if (asignar.getIdOperador() == idOperador) {
                         empresaNames.add(asignar.getNombreEmpresa());
+                        empresaIdMap.put(asignar.getNombreEmpresa(), asignar.getIdEmpresa());
                     }
                 }
             }
@@ -170,8 +174,8 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
                     appPreferences.setNombreEmpresa(selectedEmpresa);
                     updateFinancialData(view, selectedEmpresa);
 
-                    // Guardar ID de la empresa basado en la posición del Spinner
-                    int idEmpresa = position + 1; // Sumar 1 a la posición del Spinner
+                    // Guardar ID de la empresa basado en el nombre seleccionado
+                    int idEmpresa = empresaIdMap.get(selectedEmpresa);
                     appPreferences.setIdEmpresa(idEmpresa);
 
                     Log.d("HomeFragment", "📌 ID de la Empresa seleccionada: " + idEmpresa);
@@ -191,7 +195,10 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
             }
 
             // Botón de continuar
-            cardContinuar.setOnClickListener(v -> iniciarEncuestasActivity(idOperador, email));
+            cardContinuar.setOnClickListener(v -> {
+                int idEmpresa = appPreferences.getIdEmpresa();
+                iniciarEncuestasActivity(idOperador, email, idEmpresa);
+            });
 
             // Iniciar WebSocketManager
             webSocketManager = new WebSocketManager(this);
@@ -412,37 +419,13 @@ public class HomeFragment extends Fragment implements WebSocketManager.Notificat
         chart.invalidate(); // Refresca el gráfico
     }
 
-    @SuppressLint("LongLogTag")
-    private void iniciarEncuestasActivity(int idOperador, String email) {
-        String selectedEmpresa = (String) spinner.getSelectedItem();
-
-        if (selectedEmpresa != null && !selectedEmpresa.isEmpty()) {
-            int idEmpresa = spinner.getSelectedItemPosition() + 1; // Sumar uno a la posición del Spinner
-
-            // Mostrar detalles del proceso en Logcat
-            Log.d("iniciarEncuestasActivity", "Correo de inicio de encuesta enviado para la empresa: " + selectedEmpresa);
-            Log.d("iniciarEncuestasActivity", "ID Empresa (Posición Spinner): " + idEmpresa);
-            Log.d("iniciarEncuestasActivity", "ID Operador: " + idOperador);
-            Log.d("iniciarEncuestasActivity", "Email: " + email);
-
-            // Iniciar la actividad de encuestas
-            Intent intent = new Intent(getActivity(), EncuestasActivity.class);
-            intent.putExtra("empresa_nombre", selectedEmpresa);
-            intent.putExtra("id_empresa", idEmpresa);
-            intent.putExtra("id_operador", idOperador);
-            intent.putExtra("email", email);
-
-            // Verificar que los datos están siendo añadidos al Intent
-            Log.d("iniciarEncuestasActivity", "Intent preparado con los siguientes datos:");
-            Log.d("iniciarEncuestasActivity", "empresa_nombre: " + selectedEmpresa);
-            Log.d("iniciarEncuestasActivity", "id_empresa: " + idEmpresa);
-            Log.d("iniciarEncuestasActivity", "id_operador: " + idOperador);
-            Log.d("iniciarEncuestasActivity", "email: " + email);
-
-            startActivity(intent);
-        } else {
-            Log.w("iniciarEncuestasActivity", "No se seleccionó ninguna empresa.");
-        }
+    private void iniciarEncuestasActivity(int idOperador, String email, int idEmpresa) {
+        Log.d("HomeFragment", "Iniciando EncuestasActivity con idOperador: " + idOperador + ", email: " + email + ", idEmpresa: " + idEmpresa);
+        Intent intent = new Intent(getActivity(), EncuestasActivity.class);
+        intent.putExtra("id_operador", idOperador);
+        intent.putExtra("email", email);
+        intent.putExtra("id_empresa", idEmpresa);
+        startActivity(intent);
     }
 
 
