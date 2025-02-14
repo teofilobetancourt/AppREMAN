@@ -345,28 +345,28 @@ public class DBHelper extends SQLiteAssetHelper {
 
         // Crear una instancia del modelo Respuesta
         Respuesta respuesta = new Respuesta(
-                nombreEmpresa,
-                numeroPregunta,
-                opcionActual != null ? opcionActual : "",  // Asegurar que la opción actual no sea nula
-                opcionPotencial != null ? opcionPotencial : "",  // Asegurar que la opción potencial no sea nula
+                nombreEmpresa != null ? nombreEmpresa : "",
+                numeroPregunta != null ? numeroPregunta : "",
+                opcionActual != null ? opcionActual : "",
+                opcionPotencial != null ? opcionPotencial : "",
                 elemento,
-                fechaRespuesta,
-                comentario != null ? comentario : "",  // Asegurar que el comentario no sea nulo
-                nombreEncuestado != null ? nombreEncuestado : "",  // Asegurar que el nombre encuestado no sea nulo
-                cargoEncuestado != null ? cargoEncuestado : ""  // Asegurar que el cargo encuestado no sea nulo
+                fechaRespuesta != null ? fechaRespuesta : "",
+                comentario != null ? comentario : "",
+                nombreEncuestado != null ? nombreEncuestado : "",
+                cargoEncuestado != null ? cargoEncuestado : ""
         );
 
         // Insertar en la base de datos
         ContentValues values = new ContentValues();
         values.put("empresa", respuesta.getNombreEmpresa());
         values.put("pregunta", respuesta.getPregunta());
-        values.put("opcion_actual", respuesta.getOpcionActual().isEmpty() ? null : respuesta.getOpcionActual());  // Guardar null si la opción actual está vacía
-        values.put("opcion_potencial", respuesta.getOpcionPotencial().isEmpty() ? null : respuesta.getOpcionPotencial());  // Guardar null si la opción potencial está vacía
+        values.put("opcion_actual", respuesta.getOpcionActual());  // Ahora nunca será null
+        values.put("opcion_potencial", respuesta.getOpcionPotencial());  // Ahora nunca será null
         values.put("elemento", respuesta.getElemento());
         values.put("fecha_respuesta", respuesta.getFechaRespuesta());
-        values.put("comentario", respuesta.getComentario());  // Guardar el comentario tal cual, incluso si está vacío
-        values.put("nombre_encuestado", respuesta.getNombreEncuestado());  // Guardar el nombre del encuestado
-        values.put("cargo_encuestado", respuesta.getCargoEncuestado());  // Guardar el cargo del encuestado
+        values.put("comentario", respuesta.getComentario());
+        values.put("nombre_encuestado", respuesta.getNombreEncuestado());
+        values.put("cargo_encuestado", respuesta.getCargoEncuestado());
 
         // Log de los valores que se van a insertar
         Log.d("DBHelper", "Insertando respuesta con valores: " + values.toString());
@@ -386,6 +386,13 @@ public class DBHelper extends SQLiteAssetHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
+        // Reemplazar valores nulos por cadenas vacías
+        opcionActual = opcionActual != null ? opcionActual : "";
+        opcionPotencial = opcionPotencial != null ? opcionPotencial : "";
+        comentario = comentario != null ? comentario : "";
+        nombreEncuestado = nombreEncuestado != null ? nombreEncuestado : "";
+        cargoEncuestado = cargoEncuestado != null ? cargoEncuestado : "";
+
         // Verificar si las opciones están vacías
         if (!opcionActual.equals("Comentario")) {
             values.put("opcion_actual", opcionActual);
@@ -399,9 +406,9 @@ public class DBHelper extends SQLiteAssetHelper {
             values.put("opcion_potencial", "");
         }
 
-        values.put("comentario", comentario);  // Agregar el comentario
-        values.put("nombre_encuestado", nombreEncuestado);  // Agregar el nombre del encuestado
-        values.put("cargo_encuestado", cargoEncuestado);  // Agregar el cargo del encuestado
+        values.put("comentario", comentario);
+        values.put("nombre_encuestado", nombreEncuestado);
+        values.put("cargo_encuestado", cargoEncuestado);
 
         // Log de los valores que se van a actualizar
         Log.d("DBHelper", "Actualizando respuesta con valores: " + values.toString());
@@ -411,7 +418,7 @@ public class DBHelper extends SQLiteAssetHelper {
                 "respuesta",
                 values,
                 "empresa=? AND pregunta=?",
-                new String[]{nombreEmpresa, numeroPregunta});
+                new String[]{nombreEmpresa != null ? nombreEmpresa : "", numeroPregunta != null ? numeroPregunta : ""});
 
         if (rowsAffected > 0) {
             Log.d("DBHelper", "Respuesta actualizada correctamente en la tabla respuestas");
@@ -421,6 +428,7 @@ public class DBHelper extends SQLiteAssetHelper {
 
         db.close();
     }
+
 
     // Método para obtener el elemento de una pregunta dada
     @SuppressLint("Range")
@@ -760,20 +768,16 @@ public class DBHelper extends SQLiteAssetHelper {
     public Map<String, Double> obtenerContadoresYPorcentajes(String nombreEmpresa) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        // Contadores
         int contadorActual = 0;
         int contadorPotencial = 0;
         int contadorAmbas = 0;
         int totalOpciones = 0;
 
-        // Consulta para obtener todas las respuestas agrupadas por pregunta y opción
         Cursor cursorRespuestas = db.rawQuery(
                 "SELECT pregunta, opcion_actual, opcion_potencial FROM respuesta WHERE empresa = ?",
-
                 new String[]{nombreEmpresa}
         );
 
-        // Mapas para contar opciones
         Map<String, Integer> mapaOpcionesActual = new HashMap<>();
         Map<String, Integer> mapaOpcionesPotencial = new HashMap<>();
         Map<String, Integer> mapaOpcionesAmbas = new HashMap<>();
@@ -784,7 +788,11 @@ public class DBHelper extends SQLiteAssetHelper {
                 String opcionActual = cursorRespuestas.getString(1);
                 String opcionPotencial = cursorRespuestas.getString(2);
 
-                // Actualiza los contadores para cada opción
+                // Evitar NullPointerException
+                if (opcionActual == null) opcionActual = "";
+                if (opcionPotencial == null) opcionPotencial = "";
+
+                // Comparación corregida
                 if (opcionActual.equals(opcionPotencial)) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         mapaOpcionesAmbas.put(pregunta, mapaOpcionesAmbas.getOrDefault(pregunta, 0) + 1);
@@ -801,26 +809,20 @@ public class DBHelper extends SQLiteAssetHelper {
         }
         cursorRespuestas.close();
 
-        // Calcula los contadores totales
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             contadorActual = mapaOpcionesActual.values().stream().mapToInt(Integer::intValue).sum();
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             contadorPotencial = mapaOpcionesPotencial.values().stream().mapToInt(Integer::intValue).sum();
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             contadorAmbas = mapaOpcionesAmbas.values().stream().mapToInt(Integer::intValue).sum();
         }
+
         totalOpciones = contadorActual + contadorPotencial + contadorAmbas;
 
-        // Crear un mapa para los resultados
         Map<String, Double> resultados = new HashMap<>();
         resultados.put("Actual", (double) contadorActual);
         resultados.put("Potencial", (double) contadorPotencial);
         resultados.put("Ambas", (double) contadorAmbas);
         resultados.put("Total", (double) totalOpciones);
 
-        // Calcular porcentajes
         if (totalOpciones > 0) {
             resultados.put("ActualPorcentaje", (contadorActual * 100.0) / totalOpciones);
             resultados.put("PotencialPorcentaje", (contadorPotencial * 100.0) / totalOpciones);
@@ -834,6 +836,7 @@ public class DBHelper extends SQLiteAssetHelper {
         db.close();
         return resultados;
     }
+
     // Devuelve el número total de preguntas en un grupo específico.
     @SuppressLint("Range")
     public int getTotalQuestionsForGrupo(int grupoNumero, String nombreEmpresa) {

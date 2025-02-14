@@ -115,6 +115,18 @@ public class PreguntaAdapter extends RecyclerView.Adapter<PreguntaAdapter.Motivo
                 opcionPotencial = opcionesSeleccionadas.get(1).getNumero();
             }
 
+            // Asegurar que no haya valores nulos
+            if (opcionActual == null) {
+                opcionActual = "";
+            }
+            if (opcionPotencial == null) {
+                opcionPotencial = "";
+            }
+            if (comentario == null) {
+                comentario = "";
+            }
+
+
             // Guardamos en la BD asegurándonos de que "Comentario" no sustituya el número de la opción
             if (isQuestionInDatabase(nombreEmpresa, preguntaNumero)) {
                 dbHelper.updateAnswerInDatabase(nombreEmpresa, preguntaNumero, opcionActual, opcionPotencial, comentario, nombreEncuestado, cargoEncuestado);
