@@ -1,9 +1,10 @@
 package com.appreman.app.Fragments;
 
+import static com.appreman.app.Utils.Constant.URL;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -22,7 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -36,7 +36,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Locale; // Importar la clase Locale
 
 
 import androidx.appcompat.app.AlertDialog;
@@ -46,41 +45,43 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.appreman.app.Activity.EncuestasActivity;
 import com.appreman.app.Adapter.ElementosAdapter;
+import com.appreman.app.Api.ApiAdapter;
+import com.appreman.app.Api.ApiServices;
+import com.appreman.app.Api.Response.ActualizarAsignarResponse;
 import com.appreman.app.Database.DBHelper;
-import com.appreman.app.Email.Credentials;
 import com.appreman.app.Email.MailSender;
 import com.appreman.app.Email.PendingEmail;
+import com.appreman.app.Models.Asignar;
 import com.appreman.app.Models.Elemento;
 import com.appreman.app.Models.Empresa;
-import com.appreman.app.Models.Grupo;
 import com.appreman.app.Models.Operador;
 import com.appreman.app.Repository.AppPreferences;
-import com.appreman.app.Repository.WebSocketManager;
 import com.appreman.appreman.R;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.card.MaterialCardView;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import android.widget.ProgressBar;
-import android.widget.ViewFlipper;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Response;
 
 public class AsignarFragment extends Fragment {
+    private static final String TAG = "ASIGNAR FRAGMENT";
 
     private static final int REQUEST_WRITE_STORAGE = 112;
 
@@ -100,6 +101,8 @@ public class AsignarFragment extends Fragment {
     private String notificationMessage;
     private List<String> notificationMessages = new ArrayList<>();
     private String email; // Variable para almacenar el email
+    private ApiServices appServices;
+    private Executor executor = Executors.newSingleThreadExecutor();
 
     public static AsignarFragment newInstance() {
         AsignarFragment fragment = new AsignarFragment();
@@ -128,6 +131,9 @@ public class AsignarFragment extends Fragment {
 
         // Inicializar el punto rojo como invisible
         notificationBadge.setVisibility(View.GONE);
+
+        ApiAdapter apiAdapter = new ApiAdapter();
+        appServices = apiAdapter.getApiService(URL);
 
         notifi.setOnClickListener(v -> {
             // Verificar si el punto rojo está visible
@@ -647,6 +653,19 @@ public class AsignarFragment extends Fragment {
 
                     // Guardamos los números de los elementos (como String)
                     dbHelper.guardarAsignar(String.valueOf(idEmpresa), empresaSeleccionada, String.valueOf(idOperador), numerosElementos);
+
+                    // Ejecutamos la tarea en el hilo de fondo
+                    executor.execute(() -> {
+                        try {
+                            // Llamar al método para enviar los datos
+                            enviarAsignar(getJsonEncodeAsignar(String.valueOf(idEmpresa), empresaSeleccionada, String.valueOf(idOperador), numerosElementos));
+                            Log.d("AsignarFragment", "Mensaje enviado correctamente");
+                        } catch (Exception e) {
+                            Log.e("AsignarFragment", "Error al enviar mensaje", e);
+                        }
+                    });
+
+
                     Log.d("AsignarFragment", "Se ha guardado correctamente: Empresa: " + idEmpresa + ", Operador: " + idOperador + ", Elementos (números): " + numerosElementos.toString());
                 }
             }
@@ -680,6 +699,83 @@ public class AsignarFragment extends Fragment {
 
         textViewSelecciones.setText(spannableString);
         textViewSelecciones.setVisibility(View.VISIBLE); // Mostrar el texto cuando se selecciona algo
+    }
+
+    // TODO: ******************************* ASIGNAR POST *****************************************
+
+
+    private void enviarAsignar(RequestBody getJsonEncode) {
+
+
+        Call<ActualizarAsignarResponse> callSync = appServices.postActualizarAsignar(getJsonEncode);
+
+        try {
+            Response<ActualizarAsignarResponse> response = callSync.execute();
+
+            if (response.isSuccessful()) {
+
+                ActualizarAsignarResponse actualizarAsignarResponse = response.body();
+
+            } else {
+
+                if (response.code() == 401) {
+
+                    Log.e(TAG, "CODIGO ERROR:" + response.code());
+
+
+                } else {
+
+                    try {
+
+                        assert response.errorBody() != null;
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        Log.e(TAG, "ERROR:" + jObjError.getString("message"));
+
+
+                    } catch (Exception e) {
+
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+        }
+
+    }
+
+    private RequestBody getJsonEncodeAsignar(String idEmpresa, String nombreEmpresa, String idOperador, List<String> numerosElementos) {
+
+        JSONArray jsonAsignar = new JSONArray();
+
+        // Crear un objeto JSON por cada número de elemento
+        for (int i = 0; i < numerosElementos.size(); i++) {
+            JSONObject obj = new JSONObject();
+
+            try {
+                obj.put("id_operador", idOperador);
+                obj.put("id_empresa",  idEmpresa);
+                obj.put("id_elemento", String.valueOf(numerosElementos.get(i)));
+                obj.put("nombre_empresa", nombreEmpresa);
+
+                jsonAsignar.put(obj); // Agregar al arreglo jsonAsignar
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Aquí construimos el objeto JSON con la clave "asignarList"
+        Map<String, Object> jsonParams = new HashMap<>();
+        jsonParams.put("asinarList", jsonAsignar);
+
+        Log.e(TAG, "asinarList:" + jsonParams.toString());
+
+        // Convertir a JSON y luego a RequestBody
+        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), new JSONObject(jsonParams).toString());
+        return body;
     }
 
 }
